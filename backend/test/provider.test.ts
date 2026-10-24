@@ -115,3 +115,71 @@ it('reports the Anthropic error type without exposing provider messages', async 
   expect(result).toMatchObject({ ok: false, error: 'anthropic 400 (invalid_request_error)' });
   expect(JSON.stringify(result)).not.toContain('private provider detail');
 });
+
+function setupQwen(env: Record<string, string> = {}) {
+  vi.stubEnv('MODEL_PROVIDER', 'qwen');
+  for (const key of ['QWEN_BASE_URL', 'QWEN_API_KEY', 'QWEN_MODEL', 'QWEN_PLANNER_MODEL']) vi.stubEnv(key, env[key] ?? '');
+  const calls: { url: string; headers: Record<string, string>; body: Record<string, any> }[] = [];
+  const replies: unknown[] = [];
+  vi.stubGlobal('fetch', vi.fn(async (url, init) => {
+    calls.push({ url: String(url), headers: init.headers, body: JSON.parse(init.body) });
+    return Response.json(replies.shift());
+  }));
+  return { calls, replies };
+}
+const qwenText = (content: string, finish_reason = 'stop') => ({ choices: [{ finish_reason, message: { role: 'assistant', content } }] });
+
+it('sends Qwen calls to the free OVH endpoint without a key by default', async () => {
+  const { calls, replies } = setupQwen();
+  replies.push(qwenText('Hallo!'));
+  expect(await callModel(request)).toMatchObject({ ok: true, text: 'Hallo!' });
+  expect(calls[0].url).toBe('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions');
+  expect(calls[0].headers.authorization).toBeUndefined();
+  expect(calls[0].body).toMatchObject({ model: 'Qwen2.5-VL-72B-Instruct', stream: false, max_tokens: 5000, messages: [{ role: 'system', content: 'Write a lesson.' }, ...request.messages] });
+  expect(plannerModelName()).toBe('Qwen2.5-VL-72B-Instruct');
+});
+
+it('works with a local Ollama Qwen and strips its thinking', async () => {
+  const { calls, replies } = setupQwen({ QWEN_BASE_URL: 'http://localhost:11434/v1', QWEN_MODEL: 'qwen2.5:7b' });
+  replies.push(qwenText('<think>Ich überlege.</think>\n\nDie Antwort.'));
+  expect(await callModel(request)).toMatchObject({ ok: true, text: 'Die Antwort.' });
+  expect(calls[0]).toMatchObject({ url: 'http://localhost:11434/v1/chat/completions', body: { model: 'qwen2.5:7b' } });
+});
+
+it('sends a bearer key to a hosted Qwen endpoint and trims its trailing slash', async () => {
+  const { calls, replies } = setupQwen({ QWEN_BASE_URL: 'https://openrouter.ai/api/v1/', QWEN_API_KEY: 'test-key', QWEN_PLANNER_MODEL: 'qwen/qwen3-235b' });
+  replies.push(qwenText('lesson'));
+  await callModel({ ...request, planner: true });
+  expect(calls[0]).toMatchObject({ url: 'https://openrouter.ai/api/v1/chat/completions', headers: { authorization: 'Bearer test-key' }, body: { model: 'qwen/qwen3-235b' } });
+});
+
+it('runs the planner tool loop over Qwen tool calls and tool messages', async () => {
+  const { calls, replies } = setupQwen();
+  replies.push(
+    { choices: [{ finish_reason: 'tool_calls', message: { content: null, tool_calls: [{ id: 'q-1', type: 'function', function: { name: tool.name, arguments: '{"trackId":"photosynthese"}' } }] } }] },
+    qwenText('done'),
+  );
+  const messages: AgentMessage[] = [{ role: 'user', content: 'Plan next step' }];
+  const first = await callAgent({ system: 'Plan', messages, tools: [tool], timeoutMs: 1000 });
+  if (!first.ok) throw new Error(first.error);
+  expect(first).toMatchObject({ stopReason: 'tool_use', content: [{ type: 'tool_use', id: 'q-1', name: tool.name, input: { trackId: 'photosynthese' } }] });
+  messages.push({ role: 'assistant', content: first.content }, { role: 'user', content: [{ type: 'tool_result', tool_use_id: 'q-1', content: '{"state":"ready"}' }] });
+  expect(await callAgent({ system: 'Plan', messages, tools: [tool], timeoutMs: 1000 })).toMatchObject({ ok: true, stopReason: 'end_turn', content: [{ type: 'text', text: 'done' }] });
+  expect(calls[0].body).toMatchObject({ tool_choice: 'auto', tools: [{ type: 'function', function: { name: tool.name, description: tool.description, parameters: tool.input_schema } }] });
+  expect(calls[1].body.messages).toEqual([
+    { role: 'system', content: 'Plan' },
+    { role: 'user', content: 'Plan next step' },
+    { role: 'assistant', content: null, tool_calls: [{ id: 'q-1', type: 'function', function: { name: tool.name, arguments: '{"trackId":"photosynthese"}' } }] },
+    { role: 'tool', tool_call_id: 'q-1', content: '{"state":"ready"}' },
+  ]);
+});
+
+it('rejects cut-off Qwen replies and reports rate limits without provider messages', async () => {
+  const { replies } = setupQwen();
+  replies.push(qwenText('{"partial":', 'length'));
+  expect(await callModel(request)).toMatchObject({ ok: false, error: 'qwen reply cut off' });
+  vi.stubGlobal('fetch', vi.fn(async () => Response.json({ error: { code: 'rate_limited', message: 'private provider detail' } }, { status: 429 })));
+  const result = await callModel(request);
+  expect(result).toMatchObject({ ok: false, error: 'qwen 429 (rate_limited)' });
+  expect(JSON.stringify(result)).not.toContain('private provider detail');
+});

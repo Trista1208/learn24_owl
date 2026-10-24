@@ -23,12 +23,13 @@ export interface ModelRequest {
 
 export type ModelReply = { ok: true; text: string; call: ModelCall } | { ok: false; error: string; call: ModelCall };
 
-type Provider = 'anthropic' | 'openai' | 'mock' | 'none';
+type Provider = 'anthropic' | 'openai' | 'qwen' | 'mock' | 'none';
 
 export function providerName(): Provider {
   const p = (process.env.MODEL_PROVIDER ?? 'none').toLowerCase();
   if (p === 'anthropic' && process.env.ANTHROPIC_API_KEY) return 'anthropic';
   if (p === 'openai' && process.env.OPENAI_API_KEY && process.env.OPENAI_MODEL) return 'openai';
+  if (p === 'qwen') return 'qwen';
   if (p === 'mock') return 'mock';
   return 'none';
 }
@@ -56,11 +57,15 @@ const openAIReasoning = (planner = false) => {
   if (!['none', 'low', 'medium', 'high', 'xhigh', 'max'].includes(effort)) throw new Error('invalid OpenAI reasoning effort');
   return { effort };
 };
+// Qwen over an OpenAI-compatible chat completions endpoint. The default is the free OVHcloud endpoint the owl chat
+// uses (no key). Ollama (http://localhost:11434/v1) and OpenRouter work the same way via QWEN_BASE_URL.
+const qwenBase = () => (process.env.QWEN_BASE_URL || 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1').replace(/\/$/, '');
+const qwenModel = (planner = false) => (planner && process.env.QWEN_PLANNER_MODEL) || process.env.QWEN_MODEL || 'Qwen2.5-VL-72B-Instruct';
 
 /** Name of the model the planner and generator use, for the provenance of generated lessons. */
 export function plannerModelName(): string {
   const provider = providerName();
-  return provider === 'anthropic' ? plannerModel() : provider === 'openai' ? openAIModel(true) : provider;
+  return provider === 'anthropic' ? plannerModel() : provider === 'openai' ? openAIModel(true) : provider === 'qwen' ? qwenModel(true) : provider;
 }
 
 /** The mock provider honours timeouts too, so tests can simulate a slow model. */
@@ -94,6 +99,8 @@ export async function callModel(req: ModelRequest): Promise<ModelReply> {
       text = await withTimeout(Promise.resolve(mockHandler(req)), timeoutMs);
     } else if (provider === 'anthropic') {
       text = await callAnthropic(req, timeoutMs);
+    } else if (provider === 'qwen') {
+      text = await callQwen(req, timeoutMs);
     } else {
       text = await callOpenAI(req, timeoutMs);
     }
@@ -186,6 +193,54 @@ async function openAIResponse(body: Record<string, unknown>, timeoutMs: number):
   return { output: data.output ?? [] };
 }
 
+interface QwenToolCall {
+  id?: string;
+  type?: string;
+  function?: { name?: string; arguments?: unknown };
+}
+
+interface QwenChoice {
+  finish_reason?: string;
+  message?: { content?: string | null; refusal?: string | null; tool_calls?: QwenToolCall[] };
+}
+
+async function qwenChat(body: Record<string, unknown>, timeoutMs: number): Promise<QwenChoice & { message: NonNullable<QwenChoice['message']> }> {
+  const headers: Record<string, string> = { 'content-type': 'application/json' };
+  if (process.env.QWEN_API_KEY) headers.authorization = `Bearer ${process.env.QWEN_API_KEY}`;
+  const res = await fetch(`${qwenBase()}/chat/completions`, {
+    method: 'POST',
+    signal: AbortSignal.timeout(timeoutMs),
+    headers,
+    body: JSON.stringify({ ...body, stream: false }),
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({})) as { error?: { code?: unknown; type?: unknown } };
+    const code = [error.error?.code, error.error?.type].find((c): c is string => typeof c === 'string' && /^[a-z_]+$/.test(c));
+    // Like the OpenAI errors: a safe code only, never the provider's message.
+    throw new Error(`qwen ${res.status}${code ? ` (${code})` : ''}`);
+  }
+  const data = (await res.json()) as { choices?: QwenChoice[] };
+  const choice = data.choices?.[0];
+  if (!choice?.message) throw new Error('no message in qwen reply');
+  if (choice.message.refusal) throw new Error('refusal');
+  return choice as QwenChoice & { message: NonNullable<QwenChoice['message']> };
+}
+
+/** Reasoning variants of Qwen put their thought in think tags; the app only wants the answer. */
+function withoutThinking(text: string): string {
+  return text.replace(/<think>[\s\S]*?<\/think>/g, '').replace(/^[\s\S]*?<\/think>/, '').trim();
+}
+
+async function callQwen(req: ModelRequest, timeoutMs: number): Promise<string> {
+  const choice = await qwenChat({
+    model: qwenModel(req.planner),
+    messages: [{ role: 'system', content: req.system }, ...req.messages],
+    max_tokens: (req.maxTokens ?? 700) + THINKING_HEADROOM,
+  }, timeoutMs);
+  if (choice.finish_reason === 'length') throw new Error('qwen reply cut off');
+  return withoutThinking(choice.message.content ?? '');
+}
+
 // --- Tool use for the planner agent ---------------------------------------------------------------
 // Messages API with client tools. The caller runs the loop; this sends one step.
 
@@ -241,6 +296,8 @@ export async function callAgent(req: AgentRequest): Promise<AgentReply> {
       ({ content, stopReason } = await callAnthropicTools(req));
     } else if (provider === 'openai') {
       ({ content, stopReason } = await callOpenAITools(req));
+    } else if (provider === 'qwen') {
+      ({ content, stopReason } = await callQwenTools(req));
     } else {
       throw new Error(`no tool use with provider ${provider}`);
     }
@@ -306,4 +363,43 @@ async function callAnthropicTools(req: AgentRequest): Promise<{ content: AgentBl
   if (!res.ok) throw await anthropicError(res);
   const data = (await res.json()) as { content?: AgentBlock[]; stop_reason?: string };
   return { content: data.content ?? [], stopReason: data.stop_reason ?? 'end_turn' };
+}
+
+async function callQwenTools(req: AgentRequest): Promise<{ content: AgentBlock[]; stopReason: string }> {
+  const messages: Record<string, unknown>[] = [{ role: 'system', content: req.system }];
+  for (const message of req.messages) {
+    if (typeof message.content === 'string') {
+      messages.push({ role: message.role, content: message.content });
+      continue;
+    }
+    const text = message.content.flatMap(b => b.type === 'text' ? [b.text] : []).join('\n');
+    if (message.role === 'assistant') {
+      const toolCalls = message.content.flatMap(b => b.type === 'tool_use'
+        ? [{ id: b.id, type: 'function', function: { name: b.name, arguments: JSON.stringify(b.input) } }]
+        : []);
+      messages.push({ role: 'assistant', content: text || null, ...(toolCalls.length ? { tool_calls: toolCalls } : {}) });
+    } else {
+      for (const block of message.content) {
+        if (block.type === 'tool_result') messages.push({ role: 'tool', tool_call_id: block.tool_use_id, content: block.content });
+      }
+      if (text) messages.push({ role: 'user', content: text });
+    }
+  }
+  const choice = await qwenChat({
+    model: qwenModel(true),
+    messages,
+    tools: req.tools.map(tool => ({ type: 'function', function: { name: tool.name, description: tool.description, parameters: tool.input_schema } })),
+    tool_choice: 'auto',
+    max_tokens: (req.maxTokens ?? 4000) + THINKING_HEADROOM,
+  }, req.timeoutMs);
+  const content: AgentBlock[] = [];
+  const text = withoutThinking(choice.message.content ?? '');
+  if (text) content.push({ type: 'text', text });
+  (choice.message.tool_calls ?? []).forEach((call, index) => {
+    const raw = call.function?.arguments;
+    const args: unknown = typeof raw === 'string' ? JSON.parse(raw || '{}') : raw;
+    if (!call.function?.name || !args || typeof args !== 'object' || Array.isArray(args)) throw new Error('invalid Qwen tool call');
+    content.push({ type: 'tool_use', id: call.id || `call-${index}`, name: call.function.name, input: args as Record<string, unknown> });
+  });
+  return { content, stopReason: content.some(b => b.type === 'tool_use') ? 'tool_use' : 'end_turn' };
 }
