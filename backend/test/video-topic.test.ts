@@ -9,28 +9,28 @@ import { setMockHandler, type ModelRequest } from '../src/provider.ts';
 import { VideoService } from '../src/video/service.ts';
 
 const design = {
-  name: 'Photosynthese',
+  name: 'Photosynthesis',
   criteria: [
-    { id: 'licht', label: 'Licht als Energie', ruleOfThumb: 'Pflanzen nutzen Licht als Energiequelle.' },
-    { id: 'wasser', label: 'Wasser als Ausgangsstoff', ruleOfThumb: 'Wasser ist ein Ausgangsstoff der Photosynthese.' },
-    { id: 'zucker', label: 'Zucker als Ergebnis', ruleOfThumb: 'Aus Wasser und Kohlendioxid entsteht mit Lichtenergie Zucker.' },
+    { id: 'licht', label: 'Light as energy', ruleOfThumb: 'Plants use light as a source of energy.' },
+    { id: 'wasser', label: 'Water as a raw material', ruleOfThumb: 'Water is a raw material of photosynthesis.' },
+    { id: 'zucker', label: 'Sugar as the result', ruleOfThumb: 'With light energy, water and carbon dioxide become sugar.' },
   ],
-  mission: { suggestions: [], default: 'Ich will die Photosynthese verstehen.' },
-  sources: [{ title: 'Universität', url: 'https://www.ethz.ch/', note: 'Grundlagen der Pflanzenbiologie' }],
+  mission: { suggestions: [], default: 'I want to understand photosynthesis.' },
+  sources: [{ title: 'University', url: 'https://www.ethz.ch/', note: 'Basics of plant biology' }],
   // Even when the agent suggests a chat, the explicit video request must win.
   lessonTypes: ['ai-chat'],
 };
 export const topicVideoReply = {
-  title: 'Wie nutzen Pflanzen Licht?', intro: 'Du erklärst, wofür Pflanzen Licht brauchen.', durationMin: 3,
+  title: 'How do plants use light?', intro: 'You explain what plants need light for.', durationMin: 3,
   primarySourceUrl: 'https://www.ethz.ch/',
   content: {
     narrated: { manifestUrl: 'https://untrusted.example/manifest.json' },
     scenes: [
-      { caption: 'Pflanzen nutzen Licht als Energiequelle für die Photosynthese.', visual: 'steps', items: ['Licht aufnehmen', 'Energie nutzen'], seconds: 7 },
-      { caption: 'Mit dieser Energie stellen sie aus Wasser und Kohlendioxid Zucker her.', visual: 'steps', items: ['Wasser und Kohlendioxid', 'Zucker herstellen'], seconds: 7 },
+      { caption: 'Plants use light as a source of energy for photosynthesis.', visual: 'steps', items: ['Take in light', 'Use the energy'], seconds: 7 },
+      { caption: 'With this energy they make sugar from water and carbon dioxide.', visual: 'steps', items: ['Water and carbon dioxide', 'Make sugar'], seconds: 7 },
     ],
     questions: [
-      { afterScene: 0, prompt: 'Welche Energie nutzen Pflanzen?', options: ['Die Lichtenergie', 'Die Schallenergie', 'Die Bewegungsenergie'], correct: 0, explanation: 'Die Lichtenergie treibt die Photosynthese an.', criterion: 'licht' },
+      { afterScene: 0, prompt: 'Which energy do plants use?', options: ['Light energy', 'Sound energy', 'Kinetic energy'], correct: 0, explanation: 'Light energy drives photosynthesis.', criterion: 'licht' },
     ],
   },
 };
@@ -48,13 +48,13 @@ it('turns a typed novel topic and an explicit video request into a persisted, pl
   const login = await request(app).post('/api/login').send({ name: 'Topic learner', timeBudgetMin: 30 }).expect(201);
   const session = login.body.session.id;
   const result = await request(app).post(`/api/sessions/${session}/own-tracks`)
-    .send({ topic: 'Ich möchte Photosynthese verstehen', selfLevel: 'Grundstufe', lessonType: 'video' }).expect(201);
+    .send({ topic: 'I want to understand photosynthesis', selfLevel: 'Grundstufe', lessonType: 'video' }).expect(201);
   const lesson = result.body.generated.find((l: { type: string }) => l.type === 'video');
   expect(lesson).toBeDefined();
   expect(lesson.content.narrated).toBeUndefined();
   expect(result.body.view.workspace.missions.some((m: { trackId: string }) => m.trackId === result.body.trackId)).toBe(true);
-  expect(requests[0].messages[0].content).toContain('Ich möchte Photosynthese verstehen');
-  expect(requests[1].messages[0].content).toContain('ausdrücklich ein Erklärvideo');
+  expect(requests[0].messages[0].content).toContain('I want to understand photosynthesis');
+  expect(requests[1].messages[0].content).toContain('explicitly wants an explainer video');
   const node = result.body.view.session.nodes.find((n: { lessonId: string }) => n.lessonId === lesson.id);
   expect(result.body.view.recommendation.nodeId).toBe(node.id);
   const url = `/api/sessions/${session}/nodes/${node.id}/video`;
@@ -65,7 +65,7 @@ it('turns a typed novel topic and an explicit video request into a persisted, pl
     expect(status.body.state).toBe('ready'); path = status.body.manifestUrl;
   }, { timeout: 15000 });
   const manifest = await request(app).get(path).expect(200);
-  expect(manifest.body.title).toBe('Wie nutzen Pflanzen Licht?');
+  expect(manifest.body.title).toBe('How do plants use light?');
   expect(manifest.body.scenes).toHaveLength(2);
   expect(JSON.stringify(manifest.body)).not.toContain('untrusted.example');
   expect(JSON.stringify(manifest.body)).not.toContain('"correct"');
@@ -81,7 +81,7 @@ it('does not substitute a different lesson type when the requested video is inva
   setMockHandler(req => { purposes.push(req.purpose); return JSON.stringify(req.purpose === 'design' ? design : { ...topicVideoReply, content: { goal: 'This is a chat, not a video.' } }); });
   const app = createApp();
   const login = await request(app).post('/api/login').send({ name: 'Bad video reply', timeBudgetMin: 30 }).expect(201);
-  await request(app).post(`/api/sessions/${login.body.session.id}/own-tracks`).send({ topic: 'Photosynthese', lessonType: 'video' }).expect(502);
+  await request(app).post(`/api/sessions/${login.body.session.id}/own-tracks`).send({ topic: 'Photosynthesis', lessonType: 'video' }).expect(502);
   expect(purposes).toEqual(['design', 'generate']);
   const generated = await request(app).get(`/api/sessions/${login.body.session.id}/lessons`).expect(200);
   expect(generated.body).toEqual([]);

@@ -1,18 +1,18 @@
-# Sicherheit: Quellen
+# Safety: sources
 
-Geprüft am 2026-10-24.
+Checked on 2026-10-24.
 
 ## Knowledge
 
-- [Phishing, Vishing, Smishing (Bundesamt für Cybersicherheit BACS)](https://www.bacs.admin.ch/de/phishing-de)
-  Offizielle Seite des Bundes. Absender lassen sich fälschen, keine Links aus Mails nutzen, Drohungen sind ein Warnzeichen, Banken verlangen keine Kartendaten per Mail. Use for: alle Lektionen zu Phishing-Mails und Login-Seiten.
-- [S-U-P-E-R.ch (Kampagne des BACS)](https://www.s-u-p-e-r.ch/)
-  Kurze Erklärungen und Quiz zu Betrugsmaschen, z. B. gefälschte Paketlinks und Bank-Logins. Use for: Beispiele aus dem Alltag, Zahlungsaufforderungen.
-- [Phishing («eBanking – aber sicher!», Hochschule Luzern)](https://www.ebas.ch/phishing/)
-  Adresse selbst eintippen, Adresszeile prüfen, keine Login-Daten in Formulare aus Mails. Use for: Webadressen und Login-Seiten prüfen.
+- [Phishing, vishing, smishing (Swiss Federal Office for Cyber Security BACS)](https://www.bacs.admin.ch/de/phishing-de)
+  Official page of the Swiss federal government (in German). Senders can be faked, don't use links from emails, threats are a warning sign, banks don't ask for card details by email. Use for: all lessons on phishing emails and login pages.
+- [S-U-P-E-R.ch (campaign of the Swiss federal cyber security office)](https://www.s-u-p-e-r.ch/)
+  Short explanations and quizzes about scams, e.g. fake parcel links and bank logins. Use for: everyday examples, payment requests.
+- [Phishing (“eBanking – but secure!”, Lucerne University of Applied Sciences)](https://www.ebas.ch/phishing/)
+  In German. Type the address yourself, check the address bar, never enter login details into forms from emails. Use for: checking web addresses and login pages.
 - [DigComp 2.2: The Digital Competence Framework for Citizens (JRC, 2022)](https://publications.jrc.ec.europa.eu/repository/handle/JRC128415)
-  Bereich 4 «Safety». Use for: Einordnung in den DigComp-Rahmen.
+  Area 4 “Safety”. Use for: placing the topic in the DigComp framework.
 
 ## Gaps
 
-- Keine.
+- None.

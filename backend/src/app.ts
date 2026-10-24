@@ -27,7 +27,7 @@ const p = (req: Request, key: string) => String(req.params[key]);
 
 function parseAnswer(body: unknown): Answer {
   const a = (body as { answer?: Answer })?.answer;
-  if (!a || typeof a !== 'object') throw new HttpError(400, 'Antwort fehlt');
+  if (!a || typeof a !== 'object') throw new HttpError(400, 'Answer missing');
   switch (a.type) {
     case 'mark-evidence':
       return { type: a.type, marks: (a.marks ?? {}) as Record<string, 'belegt' | 'erfunden'> };
@@ -39,7 +39,7 @@ function parseAnswer(body: unknown): Answer {
     case 'ai-chat':
       return { type: a.type, turns: parseTurns(a.turns) };
     default:
-      throw new HttpError(400, 'Unbekannter Antworttyp');
+      throw new HttpError(400, 'Unknown answer type');
   }
 }
 
@@ -77,7 +77,7 @@ export function createApp(options: { videoService?: VideoService; podcastService
   }));
 
   app.get('/api/learn-more', h(async (req, res) => {
-    res.json(await learnMore(String(req.query.q ?? ''), String(req.query.lang ?? 'de')));
+    res.json(await learnMore(String(req.query.q ?? ''), String(req.query.lang ?? 'en')));
   }));
 
   app.get('/api/content', (_req, res) => {
@@ -160,17 +160,17 @@ export function createApp(options: { videoService?: VideoService; podcastService
     const st = get(sessionId);
     const node = st.session.nodes.find(n => n.id === nodeId && n.kind === 'lesson');
     const lesson = [...content.lessons, ...st.session.generatedLessons].find(l => l.id === node?.lessonId);
-    if (!lesson) throw new HttpError(404, 'Lektion nicht gefunden');
+    if (!lesson) throw new HttpError(404, 'Lesson not found');
     return lesson;
   };
   const videoOf = (sessionId: string, nodeId: string): VideoLesson => {
     const lesson = lessonOf(sessionId, nodeId);
-    if (lesson.type !== 'video') throw new HttpError(400, 'Diese Lektion ist kein Video.');
+    if (lesson.type !== 'video') throw new HttpError(400, 'This lesson is not a video.');
     return lesson;
   };
   const podcastOf = (sessionId: string, nodeId: string): PodcastLesson => {
     const lesson = lessonOf(sessionId, nodeId);
-    if (lesson.type !== 'podcast') throw new HttpError(400, 'Diese Lektion ist kein Podcast.');
+    if (lesson.type !== 'podcast') throw new HttpError(400, 'This lesson is not a podcast.');
     return lesson;
   };
   app.post('/api/sessions/:id/nodes/:node/video', h(async (req, res) => {
@@ -204,9 +204,9 @@ export function createApp(options: { videoService?: VideoService; podcastService
 
   // Completed runtime videos and bundled videos share the same public asset URL shape.
   app.use('/videos', express.static(videos.options.output), express.static(videos.options.published));
-  app.use('/videos', (_req, res) => res.status(404).json({ error: 'Video-Datei nicht gefunden' }));
+  app.use('/videos', (_req, res) => res.status(404).json({ error: 'Video file not found' }));
   app.use('/podcasts', express.static(podcasts.options.output));
-  app.use('/podcasts', (_req, res) => res.status(404).json({ error: 'Podcast-Datei nicht gefunden' }));
+  app.use('/podcasts', (_req, res) => res.status(404).json({ error: 'Podcast file not found' }));
 
   // Built frontend
   const dist = process.env.FRONTEND_DIST ?? join(import.meta.dirname, '..', '..', 'frontend', 'dist');
@@ -217,18 +217,18 @@ export function createApp(options: { videoService?: VideoService; podcastService
     app.get('/', (_req, res) => {
       res.type('html').send(
         '<!doctype html><meta charset="utf-8"><title>AIthena</title><body style="font-family:system-ui;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.5">' +
-          '<h1>Die App ist noch nicht gebaut</h1><p>Die API läuft, aber <code>frontend/dist</code> fehlt.</p>' +
-          '<p><code>npm run build</code> und danach <code>npm start</code>, dann neu laden. Oder <code>npm run dev</code> und <a href="http://localhost:5173">http://localhost:5173</a> öffnen.</p>',
+          '<h1>The app is not built yet</h1><p>The API is running, but <code>frontend/dist</code> is missing.</p>' +
+          '<p>Run <code>npm run build</code> and then <code>npm start</code>, then reload. Or run <code>npm run dev</code> and open <a href="http://localhost:5173">http://localhost:5173</a>.</p>',
       );
     });
   }
 
-  app.use('/api', (_req, res) => res.status(404).json({ error: 'Nicht gefunden' }));
+  app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
   app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) return res.status(err.status).json({ error: err.message, ...err.body });
     if (err instanceof InputError) return res.status(400).json({ error: err.message });
     console.error(err);
-    res.status(500).json({ error: 'Interner Fehler' });
+    res.status(500).json({ error: 'Internal error' });
   });
   return app;
 }

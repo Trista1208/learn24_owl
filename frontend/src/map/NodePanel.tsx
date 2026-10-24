@@ -12,7 +12,7 @@ import { useStore } from '../lib/store.tsx';
 type T = (de: string, vars?: Record<string, string | number>) => string;
 const same: T = (de) => de;
 
-const LEVEL_TEXT: Record<string, string> = { Grundstufe: 'keins oder wenig', Mittelstufe: 'etwas', Fortgeschritten: 'viel' };
+const LEVEL_TEXT: Record<string, string> = { Grundstufe: 'none or a little', Mittelstufe: 'some', Fortgeschritten: 'a lot' };
 
 /** Own tracks in which nothing is left to do. */
 const idleOwnTracks = (view: SessionView): Track[] =>
@@ -40,7 +40,7 @@ function NextLesson({ track, onFocus }: { track: Track; onFocus: (nodeId: string
   };
   return (
     <div>
-      <button className="btn secondary block" disabled={busy} onClick={go}><Icon name="sparkle" size={16} />{busy ? t('Lektion wird erstellt …') : t('Neue Lektion in «{name}»', { name: trackName(track.id, track.name) })}</button>
+      <button className="btn secondary block" disabled={busy} onClick={go}><Icon name="sparkle" size={16} />{busy ? t('Creating the lesson …') : t('New lesson in “{name}”', { name: trackName(track.id, track.name) })}</button>
       {error && <p className="error small" role="alert">{t(error)}</p>}
     </div>
   );
@@ -48,9 +48,9 @@ function NextLesson({ track, onFocus }: { track: Track; onFocus: (nodeId: string
 
 /** Which plan this is: the agent's (A1), the rules' while the agent still works, or the rules' alone. */
 export function planLabel(rec: Recommendation, view: SessionView, t: T = same) {
-  if (rec.ruleId === 'A1') return t('Agent-Plan');
-  if (rec.provisional) return t('vorläufig');
-  return view.agentAvailable ? t('Regel') : t('Plan nach Regeln');
+  if (rec.ruleId === 'A1') return t('Agent plan');
+  if (rec.provisional) return t('provisional');
+  return view.agentAvailable ? t('Rule') : t('Rule-based plan');
 }
 
 /** The records and events a recommendation cites, in words. */
@@ -64,7 +64,7 @@ export function BasedOn({ rec, view }: { rec: Recommendation; view: SessionView 
       {rec.basedOn.map((id) => {
         const r = records.find((x) => x.id === id);
         const e = events.find((x) => x.id === id);
-        const text = r ? `${r.id}: ${r.title}` : e ? `${t('Ergebnis «{label}»', { label: lessonTitle(e.lessonId, nodes.find((n) => n.id === e.nodeId)?.label ?? e.lessonId) })}: ${e.result.summary}` : id;
+        const text = r ? `${r.id}: ${r.title}` : e ? `${t('Result “{label}”', { label: lessonTitle(e.lessonId, nodes.find((n) => n.id === e.nodeId)?.label ?? e.lessonId) })}: ${e.result.summary}` : id;
         return <li key={id}>{text}</li>;
       })}
     </ul>
@@ -75,9 +75,9 @@ export function BasedOn({ rec, view }: { rec: Recommendation; view: SessionView 
 export function PlanStatus({ view }: { view: SessionView }) {
   const { t } = useI18n();
   if (view.session.planning) {
-    return <p className="planning" role="status"><span className="dot-pulse" aria-hidden="true" />{t('Agent plant … Bis dahin gilt der vorläufige Vorschlag nach Regeln.')}</p>;
+    return <p className="planning" role="status"><span className="dot-pulse" aria-hidden="true" />{t('The agent is planning … Until then the provisional rule-based suggestion applies.')}</p>;
   }
-  if (!view.agentAvailable) return <p className="small muted">{t('Plan nach Regeln: Ohne KI plant der Agent mit den Regeln und den vorbereiteten Lektionen.')}</p>;
+  if (!view.agentAvailable) return <p className="small muted">{t('Rule-based plan: without the AI the agent plans with the rules and the prepared lessons.')}</p>;
   return null;
 }
 
@@ -90,26 +90,26 @@ export function LessonSource({ lesson }: { lesson: Lesson }) {
   if (lesson.source === 'model') {
     return (
       <p className="small source-line">
-        <span className="tag model">{t('Von der KI erstellt')}</span>
-        <span className="tag model">{t('Beispiel erfunden')}</span>
-        {lesson.primarySource && <> {t('Quelle:')} <a href={lesson.primarySource.url} target="_blank" rel="noreferrer">{lesson.primarySource.title}</a></>}
-        {own && <span className="muted">{t('(von der KI vorgeschlagen)')}</span>}
+        <span className="tag model">{t('Made by the AI')}</span>
+        <span className="tag model">{t('Invented example')}</span>
+        {lesson.primarySource && <> {t('Source:')} <a href={lesson.primarySource.url} target="_blank" rel="noreferrer">{lesson.primarySource.title}</a></>}
+        {own && <span className="muted">{t('(suggested by the AI)')}</span>}
       </p>
     );
   }
-  return <p className="small source-line"><span className="tag prepared">{t('Vorbereitet')}</span></p>;
+  return <p className="small source-line"><span className="tag prepared">{t('Prepared')}</span></p>;
 }
 
 function Reason({ rec, view }: { rec: Recommendation; view: SessionView }) {
   const { t, source } = useI18n();
   return (
     <dl className="reason">
-      <div><dt>{t('Was der Agent gesehen hat')}</dt><dd>{t(rec.observation)}</dd></div>
-      <div><dt>{t('Vorschlag')}</dt><dd>{t(rec.reason)}</dd></div>
-      <div><dt>{t('Warum das jetzt hilft')}</dt><dd>{t(rec.why)}</dd></div>
-      {rec.basedOn?.length ? <div><dt>{t('Gestützt auf')}</dt><dd><BasedOn rec={rec} view={view} /></dd></div> : null}
+      <div><dt>{t('What the agent saw')}</dt><dd>{t(rec.observation)}</dd></div>
+      <div><dt>{t('Suggestion')}</dt><dd>{t(rec.reason)}</dd></div>
+      <div><dt>{t('Why this helps now')}</dt><dd>{t(rec.why)}</dd></div>
+      {rec.basedOn?.length ? <div><dt>{t('Based on')}</dt><dd><BasedOn rec={rec} view={view} /></dd></div> : null}
       <div>
-        <dt>{t('Regel')}</dt>
+        <dt>{t('Rule')}</dt>
         <dd>
           {rec.ruleId} {t(rec.ruleName)}{' '}
           {rec.tags.map((tag) => <span key={tag} className={`tag ${tag}`}>{source(tag)}</span>)}
@@ -146,14 +146,14 @@ export function NodePanel({
     return (
       <div className="panel-inner">
         <span className="empty-hero" aria-hidden="true"><Icon name="map" size={26} /></span>
-        <p className="eyebrow">{t("Los geht's")}</p>
-        <h2>{t('Was willst du lernen?')}</h2>
-        <p>{t('Deine Karte ist noch leer. Wähle ein eigenes Thema, zum Beispiel «Security+ Prüfung bestehen», oder einen vorbereiteten Bereich.')}</p>
-        <button className="btn primary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Bereich hinzufügen')}</button>
+        <p className="eyebrow">{t("Let’s go")}</p>
+        <h2>{t('What do you want to learn?')}</h2>
+        <p>{t('Your map is still empty. Pick your own topic, for example “Pass the Security+ exam”, or a prepared area.')}</p>
+        <button className="btn primary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Add an area')}</button>
         <p className="small muted">
           {view.canCreateTracks
-            ? t('Für ein eigenes Thema plant der Agent mit der KI, was du können musst, sucht Quellen und erstellt einen Einstieg.')
-            : t('Ohne KI stehen die vorbereiteten Bereiche zur Wahl. Eigene Themen plant der Agent nur mit KI.')}
+            ? t('For your own topic the agent uses the AI to plan what you need to know, finds sources and creates a first lesson.')
+            : t('Without the AI you can pick the prepared areas. The agent plans own topics only with the AI.')}
         </p>
       </div>
     );
@@ -165,7 +165,7 @@ export function NodePanel({
     return (
       <div className="panel-inner">
         <NextTopics key={`${nextTrackId}:${selected?.topicId ?? 'next'}`} trackId={nextTrackId} initialTopicId={selected?.topicId} onStart={onStart} onFocus={onFocus} />
-        <button className="btn secondary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Bereich hinzufügen')}</button>
+        <button className="btn secondary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Add an area')}</button>
       </div>
     );
   }
@@ -185,22 +185,22 @@ export function NodePanel({
         <LessonFacts node={selected} />
         <p>{lesson.intro}</p>
         <LessonSource lesson={lesson} />
-        {selected.addedByAgent && <p className="note small">{t('Diese Lektion hat der Agent nach deinen Ergebnissen neu hinzugefügt.')}</p>}
+        {selected.addedByAgent && <p className="note small">{t('The agent added this lesson after your results.')}</p>}
         {isAlt && recNode && (
-          <p className="note">{t('Das ist die Alternative zur Empfehlung «{label}». Wenn du sie startest, merkt sich der Agent, dass du die Empfehlung abgelehnt hast.', { label: labelOf(recNode) })}</p>
+          <p className="note">{t('This is the alternative to the suggestion “{label}”. If you start it, the agent remembers that you declined the suggestion.', { label: labelOf(recNode) })}</p>
         )}
-        {selected.state === 'planned' && <p className="small muted">{t('Geplant. Du kannst sie freiwillig jederzeit starten.')}</p>}
+        {selected.state === 'planned' && <p className="small muted">{t('Planned. You can start it whenever you like.')}</p>}
         {selected.state === 'done' && selected.result && (
           <div className={`result ${selected.result.allMet ? 'ok' : 'gap'}`}>
-            <strong>{selected.result.allMet ? t('Gelöst') : t('Mit Lücken')}{selected.helpUsed ? t(', mit Hinweis') : ''}</strong>
+            <strong>{selected.result.allMet ? t('Solved') : t('With gaps')}{selected.helpUsed ? t(', with a hint') : ''}</strong>
             <p className="small">{selected.result.summary}</p>
           </div>
         )}
         <div className="panel-actions">
           <button className="btn primary" onClick={() => onStart(selected.id)}>
-            <Icon name="play" size={16} />{isAlt ? t('Alternative starten') : selected.state === 'done' ? t('Nochmals') : t('Starten')}
+            <Icon name="play" size={16} />{isAlt ? t('Start the alternative') : selected.state === 'done' ? t('Again') : t('Start')}
           </button>
-          {isRec && altNode && <button className="btn secondary" onClick={() => onSelect(altNode.id)}>{t('Lieber etwas anderes')}</button>}
+          {isRec && altNode && <button className="btn secondary" onClick={() => onSelect(altNode.id)}>{t('Something else instead')}</button>}
         </div>
         {isRec && rec && <><PlanStatus view={view} /><Reason rec={rec} view={view} /></>}
       </div>
@@ -222,13 +222,13 @@ export function NodePanel({
         {selected.trackId && <TopicLevel progress={view.rewards.tracks[selected.trackId]} name={labelOf(selected)} />}
         <p>
           {skill?.dccBased ? (
-            <>{t('DCC-Position:')} <strong>{level(lv)}</strong> <span className="muted small">{t('(aus dem DCC, wird hier nicht verändert)')}</span></>
+            <>{t('DCC level:')} <strong>{level(lv)}</strong> <span className="muted small">{t('(from the DCC, not changed here)')}</span></>
           ) : track?.custom ? (
-            <>{t('Eigenes Thema: «{topic}». Vorwissen nach deiner Angabe: {level}.', { topic: track.custom.topic, level: t(LEVEL_TEXT[track.custom.selfLevel]) })} <span className="muted small">{t('Kriterien und Quellen hat die KI vorgeschlagen.')}</span></>
-          ) : t('Kein DCC-Bereich. Der Agent plant hier nur aus deinem Lernverlauf.')}
+            <>{t('Own topic: “{topic}”. Prior knowledge as you stated: {level}.', { topic: track.custom.topic, level: t(LEVEL_TEXT[track.custom.selfLevel]) })} <span className="muted small">{t('The AI suggested the criteria and sources.')}</span></>
+          ) : t('No DCC area. The agent plans here only from your learning history.')}
         </p>
-        {mission && <p className="small"><strong>{t('Dein Ziel:')}</strong> {t(mission.text)}</p>}
-        <h3 className="small-head">{t('Lernstand (aus dem Lernen, kein DCC)')}</h3>
+        {mission && <p className="small"><strong>{t('Your goal:')}</strong> {t(mission.text)}</p>}
+        <h3 className="small-head">{t('Learning progress (from learning, not DCC)')}</h3>
         <ul className="lernstand">
           {stand.map((l) => (
             <li key={l.criterion}>
@@ -251,13 +251,13 @@ export function NodePanel({
         {track && <NextTopics key={track.id} trackId={track.id} onStart={onStart} onFocus={onFocus} />}
         {track?.custom && (
           <>
-            <h3 className="small-head">{t('Quellen')}</h3>
+            <h3 className="small-head">{t('Sources')}</h3>
             <ul className="sources small">
               {track.custom.sources.map((x) => (
                 <li key={x.url}><a href={x.url} target="_blank" rel="noreferrer">{x.title}</a>{x.note ? `: ${x.note}` : ''}</li>
               ))}
             </ul>
-            <p className="small muted">{t('Von der KI vorgeschlagen und beim Anlegen erreichbar, aber nicht von Menschen geprüft.')}</p>
+            <p className="small muted">{t('Suggested by the AI and reachable when created, but not checked by people.')}</p>
             {idleOwnTracks(view).some((tr) => tr.id === track.id) && <NextLesson track={track} onFocus={onFocus} />}
           </>
         )}
@@ -268,17 +268,17 @@ export function NodePanel({
   if (selected.kind === 'skill') {
     const skill = view.skills.find((s) => s.id === selected.skillId);
     const text = skill?.dccBased
-      ? t('Kompetenzbereiche nach DigComp 2.2. Die Stufen kommen aus deinem DCC-Profil.')
+      ? t('Competence areas according to DigComp 2.2. The levels come from your DCC profile.')
       : skill?.id === 'custom'
-        ? t('Deine eigenen Themen. Der Agent hat sie mit der KI geplant und erzeugt die Lektionen dazu.')
-        : t('Bereich ohne DCC-Position. Der Agent plant hier nur aus deinem Lernverlauf.');
+        ? t('Your own topics. The agent planned them with the AI and creates the lessons for them.')
+        : t('Area without a DCC level. Here the agent plans only from your learning history.');
     return (
       <div className="panel-inner">
         <BackLink onClick={() => onSelect(null)} />
         <h2>{labelOf(selected)}</h2>
         {selected.trackId && <TopicLevel progress={view.rewards.tracks[selected.trackId]} name={labelOf(selected)} />}
         <p>{text}</p>
-        <button className="btn secondary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Bereich hinzufügen')}</button>
+        <button className="btn secondary block" onClick={onAddTrack}><Icon name="plus" size={16} />{t('Add an area')}</button>
       </div>
     );
   }
@@ -291,13 +291,13 @@ export function NodePanel({
       <BackLink onClick={() => onSelect(null)} />
       <h2>{session.userName}</h2>
       <p className="small muted">
-        {t('DCC-Profil')} {dcc.source === 'file' ? t('aus «{file}»', { file: dcc.fileName ?? t('Datei') }) : t('von Hand eingegeben')}
-        {dcc.assessedOn ? t(', erhoben am {date}', { date: new Date(dcc.assessedOn).toLocaleDateString(localeOf(lang)) }) : ''}
+        {t('DCC profile')} {dcc.source === 'file' ? t('from “{file}”', { file: dcc.fileName ?? t('file') }) : t('entered by hand')}
+        {dcc.assessedOn ? t(', assessed on {date}', { date: new Date(dcc.assessedOn).toLocaleDateString(localeOf(lang)) }) : ''}
       </p>
       <table className="levels">
         <tbody>
           {content?.skills.filter((s) => s.dccBased).flatMap((s) => s.tracks).map((tr) => (
-            <tr key={tr.id}><td>{tr.dccArea} {trackLabel(tr.id, tr.name)}</td><td>{dcc.levels[tr.id] ? level(dcc.levels[tr.id]) : <span className="muted">{t('nicht erhoben')}</span>}</td></tr>
+            <tr key={tr.id}><td>{tr.dccArea} {trackLabel(tr.id, tr.name)}</td><td>{dcc.levels[tr.id] ? level(dcc.levels[tr.id]) : <span className="muted">{t('not assessed')}</span>}</td></tr>
           ))}
         </tbody>
       </table>
@@ -307,11 +307,11 @@ export function NodePanel({
 
 function stateLabel(n: MapNode, t: T) {
   switch (n.state) {
-    case 'recommended': return t('nächster Schritt');
+    case 'recommended': return t('next step');
     case 'alternative': return t('Alternative');
-    case 'done': return n.result?.allMet ? t('gelöst') : t('mit Lücken');
-    case 'skipped': return t('übersprungen');
-    default: return t('geplant');
+    case 'done': return n.result?.allMet ? t('solved') : t('with gaps');
+    case 'skipped': return t('skipped');
+    default: return t('planned');
   }
 }
 
@@ -324,7 +324,7 @@ function LessonFacts({ node }: { node: MapNode }) {
     <p className="facts">
       <span className="pill">{type(l.type)}</span>
       <span>{mode(l.mode)}</span>
-      <span>{l.durationMin} {t('Min.')}</span>
+      <span>{l.durationMin} {t('min')}</span>
       <span>{level(l.level)}</span>
     </p>
   );
@@ -333,16 +333,16 @@ function LessonFacts({ node }: { node: MapNode }) {
 function Legend() {
   const { t } = useI18n();
   return (
-    <div className="legend" aria-label={t('Legende')}>
-      <span><i className="lg rec" />{t('nächster Schritt')}</span>
+    <div className="legend" aria-label={t('Legend')}>
+      <span><i className="lg rec" />{t('next step')}</span>
       <span><i className="lg alt" />{t('Alternative')}</span>
-      <span><i className="lg planned" />{t('geplant')}</span>
-      <span><i className="lg done" />{t('erledigt')}</span>
+      <span><i className="lg planned" />{t('planned')}</span>
+      <span><i className="lg done" />{t('done')}</span>
     </div>
   );
 }
 
 function BackLink({ onClick }: { onClick: () => void }) {
   const { t } = useI18n();
-  return <button className="linkbtn small back" onClick={onClick}><Icon name="back" size={16} />{t('Zurück zum nächsten Schritt')}</button>;
+  return <button className="linkbtn small back" onClick={onClick}><Icon name="back" size={16} />{t('Back to the next step')}</button>;
 }

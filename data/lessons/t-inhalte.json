@@ -4,40 +4,40 @@
     "trackId": "t-inhalte",
     "type": "ai-chat",
     "level": "Grundstufe",
-    "title": "Ein klarer Auftrag an die KI",
-    "intro": "Schreib der KI einen Auftrag, damit sie aus deinen Notizen eine Zusammenfassung für deine Projektleiterin Sarah macht.",
+    "title": "A clear brief for the AI",
+    "intro": "Write the AI a brief so that it turns your notes into a summary for your project lead Sarah.",
     "durationMin": 5,
     "mode": "ai",
     "targets": ["adressat", "umfang", "inhalt", "luecken"],
-    "transfer": "Schreib in deinen nächsten KI-Auftrag vier Dinge: für wen, wie lang, was hinein muss und «Fehlendes als offen markieren, nichts erfinden».",
+    "transfer": "Put four things into your next AI brief: who it is for, how long, what must be in it, and “mark missing details as open, make nothing up”.",
     "source": "prepared",
     "content": {
       "kind": "prompt-lab",
-      "goal": "Dein Auftrag sagt der KI, für wen sie schreibt, wie lang es sein soll, was hinein muss und was sie mit fehlenden Angaben tun soll.",
-      "aiRole": "Du bist ein KI-Assistent in einer Übung. Die Person schreibt dir einen Auftrag (Prompt), um die Notizen aus dem Material für ihre Projektleiterin Sarah zusammenzufassen. Führe jeden Auftrag wörtlich aus – nicht klüger, als er ist. Was der Auftrag offenlässt, füllst du sichtbar selbst: Sagt er nicht, für wen, schreibst du allgemein. Sagt er keine Länge oder Form, schreibst du einen langen Fliesstext. Sagt er nicht, was mit fehlenden Angaben passieren soll, erfindest du plausible Werte (zum Beispiel einen Termin für den Testlauf, ein Datum für die Logo-Freigabe oder ein Budget für die Übersetzung) und markierst jede erfundene Stelle mit [erfunden]. Erkläre nicht, was am Auftrag fehlt, und schreib keinen besseren Auftrag vor. Nach jeder Zusammenfassung fragst du in einem Satz, ob die Person den Auftrag verbessern will. Ausser der Zusammenfassung höchstens 2–3 kurze Sätze, eine Frage aufs Mal. Erfüllt der Auftrag alle vier Punkte (für wen, Umfang, was hinein muss, Umgang mit fehlenden Angaben), führst du ihn sauber aus, markierst Fehlendes als «offen» und sagst kurz, dass der Auftrag jetzt klar war.",
-      "opening": "Hallo! Ich habe deine Notizen rechts und mache genau, was du mir aufträgst. Wie lautet dein Auftrag?",
+      "goal": "Your brief tells the AI who it is writing for, how long it should be, what must be in it and what to do with missing details.",
+      "aiRole": "You are an AI assistant in an exercise. The learner writes you a brief (prompt) to summarise the notes from the material for their project lead Sarah. Carry out every brief literally, no smarter than it is. Whatever the brief leaves open, you fill in yourself, visibly: if it does not say who it is for, you write for a general reader. If it gives no length or form, you write a long block of prose. If it does not say what should happen with missing details, you invent plausible values (for example a date for the test run, a date for the logo approval or a budget for the translation) and mark every invented part with [made up]. Do not explain what is missing from the brief, and do not write a better brief for them. After each summary, ask in one sentence whether the learner wants to improve the brief. Apart from the summary, at most 2 to 3 short sentences, one question at a time. If the brief covers all four points (who it is for, length, what must be in it, handling missing details), carry it out cleanly, mark missing details as “open” and say briefly that the brief was clear this time.",
+      "opening": "Hello! I have your notes on the right and I will do exactly what you tell me. What is your brief?",
       "material": {
-        "title": "Deine Projektnotizen (erfunden)",
+        "title": "Your project notes (made up)",
         "lines": [
-          "Projekt Kundenportal",
-          "Texte Startseite fertig (Lea)",
-          "Logo-Freigabe offen",
-          "Testlauf: Daniel organisiert, Termin noch offen",
-          "Budget Übersetzung nicht besprochen"
+          "Customer portal project",
+          "Home page texts done (Lea)",
+          "Logo approval open",
+          "Test run: Daniel organises, date still open",
+          "Translation budget not discussed"
         ]
       },
       "criteria": [
-        { "id": "adressat", "label": "Für wen", "hint": "Sag der KI, wer das Ergebnis liest – hier deine Projektleiterin Sarah.", "patterns": ["sarah", "projektleit", "chefin|\\bchef\\b", "vorgesetzt", "liest", "leserin|leser\\b", "empfänger", "adressat"] },
-        { "id": "umfang", "label": "Umfang und Format", "hint": "Gib Länge und Form vor, zum Beispiel «höchstens fünf Stichpunkte».", "patterns": ["stichpunkt", "aufzählung|\\bliste\\b", "höchstens|maximal|max\\.", "\\d+ (sätze|sätzen|zeilen|punkte|punkten|wörter|wörtern)", "(zwei|drei|vier|fünf|sechs) (sätze|sätzen|zeilen|punkte|punkten|stichpunkte|stichpunkten)", "\\bkurz", "tabelle", "absatz|absätze"] },
-        { "id": "inhalt", "label": "Was hinein muss", "hint": "Nenne die Angaben, die nicht fehlen dürfen – zum Beispiel alle offenen Punkte.", "patterns": ["offene punkte", "alle (punkte|angaben|offenen)", "logo", "testlauf", "budget", "übersetzung", "wer (was|zuständig|macht)", "(muss|soll) (rein|hinein|drin)"] },
-        { "id": "luecken", "label": "Umgang mit fehlenden Angaben", "hint": "Sag, was die KI tun soll, wenn etwas fehlt: als offen markieren, nicht erfinden.", "patterns": ["nicht erfind", "nichts erfind", "erfinde (nichts|keine)", "als offen", "markier", "(wenn|falls) .{0,20}fehl", "fehlende (angaben|infos|informationen|daten|termine)", "keine (annahmen|vermutungen)"] }
+        { "id": "adressat", "label": "Who it is for", "hint": "Tell the AI who will read the result: here, your project lead Sarah.", "patterns": ["sarah", "project lead|project manager", "\\bboss\\b|manager", "supervisor", "\\bread", "reader", "recipient", "audience", "\\bfor (my|the|our) "] },
+        { "id": "umfang", "label": "Length and format", "hint": "Set the length and form, for example “at most five bullet points”.", "patterns": ["bullet", "\\blist\\b", "at most|maximum|max\\.|no more than|up to", "\\d+ (sentences|lines|points|words|bullets)", "(two|three|four|five|six) (sentences|lines|points|bullets|bullet points)", "\\bshort|\\bbrief\\b", "table", "paragraph"] },
+        { "id": "inhalt", "label": "What must be in it", "hint": "Name the details that must not be missing, for example all open points.", "patterns": ["open points", "all (points|details|open)", "logo", "test run", "budget", "translation", "who (does what|is responsible|owns)", "(must|should) (include|contain|cover|mention)"] },
+        { "id": "luecken", "label": "Handling missing details", "hint": "Say what the AI should do when something is missing: mark it as open, don't make it up.", "patterns": ["(don't|do not|never|not) (make|invent|guess|add)", "nothing (made up|invented)", "make (nothing|anything) up", "as open", "\\bmark", "(if|when) .{0,30}missing", "missing (details|info|information|data|dates)", "no (assumptions|guesses|guessing)"] }
       ],
       "fallbackReplies": [
-        "Zusammenfassung Projekt Kundenportal:\nDas Projekt Kundenportal macht gute Fortschritte. Lea hat die Texte für die Startseite fertiggestellt, damit ist ein wichtiger Meilenstein erreicht. Das Marketing gibt das Logo bis Ende Woche frei [erfunden]. Daniel organisiert den Testlauf, er findet am 20. Juni statt [erfunden]. Für die Übersetzung sind CHF 3000 budgetiert [erfunden]. Insgesamt ist das Projekt auf Kurs, und das Team ist motiviert [erfunden].\n\nWillst du den Auftrag verbessern?",
-        "Gern, ich halte mich genau an deinen Auftrag. Für wen schreibe ich das? Ohne Angabe schreibe ich wieder allgemein.",
-        "Gut. Wie lang soll es sein, und was darf auf keinen Fall fehlen?",
-        "Noch etwas: In den Notizen fehlt zum Beispiel der Termin für den Testlauf. Soll ich wie vorhin etwas Passendes ergänzen, oder was soll ich tun?",
-        "Hier die neue Fassung für Sarah:\n• Texte Startseite: fertig (Lea)\n• Logo-Freigabe: offen\n• Testlauf: Daniel organisiert, Termin offen\n• Budget Übersetzung: offen, noch nicht besprochen\n\nIch habe nichts ergänzt, was nicht in den Notizen steht. Dein Auftrag ist jetzt klar – du kannst die Lektion abschliessen."
+        "Customer portal project summary:\nThe customer portal project is making good progress. Lea has finished the texts for the home page, so an important milestone has been reached. Marketing will approve the logo by the end of the week [made up]. Daniel is organising the test run, which takes place on 20 June [made up]. CHF 3,000 has been budgeted for the translation [made up]. Overall the project is on track and the team is motivated [made up].\n\nDo you want to improve the brief?",
+        "Sure, I will stick exactly to your brief. Who am I writing this for? Without that, I will write for a general reader again.",
+        "Good. How long should it be, and what must not be missing under any circumstances?",
+        "One more thing: the notes do not include the date for the test run, for example. Should I fill in something suitable like before, or what should I do?",
+        "Here is the new version for Sarah:\n• Home page texts: done (Lea)\n• Logo approval: open\n• Test run: Daniel organises, date open\n• Translation budget: open, not discussed yet\n\nI added nothing that is not in the notes. Your brief is clear now. You can finish the lesson."
       ],
       "minTurns": 3
     }
@@ -47,35 +47,35 @@
     "trackId": "t-inhalte",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Was in einen guten Auftrag gehört",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "What belongs in a good brief",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["adressat", "umfang", "inhalt", "luecken"],
-    "transfer": "Prüf vor dem Absenden deines nächsten KI-Auftrags: Steht drin, für wen, wie lang, was hinein muss und was bei fehlenden Angaben passiert?",
+    "transfer": "Before sending your next AI brief, check: does it say who it is for, how long, what must be in it and what happens with missing details?",
     "source": "prepared",
     "content": {
       "scenes": [
-        { "caption": "Eine KI kennt weder dich noch dein Projekt. Sie hat nur deinen Auftrag und füllt den Rest selbst.", "visual": "steps", "items": ["Dein Auftrag", "KI füllt Lücken", "Ergebnis"], "seconds": 7 },
-        { "caption": "Sag, für wen das Ergebnis ist und wie lang es sein soll. Zum Beispiel: «für meine Projektleiterin, höchstens fünf Stichpunkte».", "visual": "steps", "items": ["Für wen?", "Wie lang?", "Welche Form?"], "seconds": 8 },
-        { "caption": "Nenne, was auf keinen Fall fehlen darf. Zum Beispiel: alle offenen Punkte mit Namen.", "visual": "steps", "items": ["Was muss hinein?", "Offene Punkte", "Namen"], "seconds": 7 },
-        { "caption": "Und sag, was bei fehlenden Angaben passieren soll: «Markiere Fehlendes als offen, erfinde nichts.»", "visual": "steps", "items": ["Angabe fehlt", "Als offen markieren", "Nichts erfinden"], "seconds": 8 }
+        { "caption": "An AI knows neither you nor your project. It only has your brief and fills in the rest itself.", "visual": "steps", "items": ["Your brief", "AI fills gaps", "Result"], "seconds": 7 },
+        { "caption": "Say who the result is for and how long it should be. For example: “for my project lead, at most five bullet points”.", "visual": "steps", "items": ["For whom?", "How long?", "Which form?"], "seconds": 8 },
+        { "caption": "Name what must not be missing under any circumstances. For example: all open points with names.", "visual": "steps", "items": ["What must be in it?", "Open points", "Names"], "seconds": 7 },
+        { "caption": "And say what should happen with missing details: “Mark anything missing as open, make nothing up.”", "visual": "steps", "items": ["Detail missing", "Mark as open", "Make nothing up"], "seconds": 8 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Welcher Auftrag sagt der KI, für wen und wie lang?",
-          "options": ["Fass die Notizen gut verständlich zusammen.", "Für Sarah, in höchstens fünf Stichpunkten.", "Fass alles kurz und übersichtlich zusammen."],
+          "prompt": "Which brief tells the AI who it is for and how long?",
+          "options": ["Summarise the notes so they are clear.", "For Sarah, at most five bullet points.", "Summarise everything briefly and in clear words."],
           "correct": 1,
-          "explanation": "Nur hier stehen Leserin und Umfang. «Kurz» und «verständlich» lassen der KI viel Spielraum.",
+          "explanation": "Only this one names the reader and the length. “Briefly” and “clear” leave the AI a lot of room.",
           "criterion": "adressat"
         },
         {
           "afterScene": 3,
-          "prompt": "In deinen Notizen fehlt ein Termin. Was schreibst du in den Auftrag?",
-          "options": ["Ergänze fehlende Termine einfach passend.", "Lass fehlende Termine einfach weg.", "Markiere fehlende Termine als offen."],
+          "prompt": "A date is missing from your notes. What do you write in the brief?",
+          "options": ["Just fill in missing dates sensibly.", "Just leave out any missing dates.", "Mark any missing dates as open."],
           "correct": 2,
-          "explanation": "So bleibt sichtbar, was noch fehlt. «Ergänzen» lädt die KI zum Erfinden ein, und ohne Termine fehlt Wichtiges.",
+          "explanation": "That keeps visible what is still missing. “Fill in” invites the AI to make things up, and without the dates something important is lost.",
           "criterion": "luecken"
         }
       ]
@@ -86,38 +86,38 @@
     "trackId": "t-inhalte",
     "type": "ai-chat",
     "level": "Mittelstufe",
-    "title": "Das Ergebnis prüfen",
-    "intro": "Prüf die Zusammenfassung der KI gegen deine Vorgaben und sag ihr genau, was sie ändern soll.",
+    "title": "Check the result",
+    "intro": "Check the AI's summary against your instructions and tell it exactly what to change.",
     "durationMin": 4,
     "mode": "ai",
     "targets": ["pruefen", "luecken", "umfang"],
-    "transfer": "Leg beim nächsten KI-Text deine Vorgaben daneben und hak sie einzeln ab, bevor du ihn weitergibst.",
+    "transfer": "With the next AI text, put your instructions next to it and tick them off one by one before you pass it on.",
     "source": "prepared",
     "content": {
       "kind": "prompt-lab",
-      "goal": "Du findest, wo die Zusammenfassung von deinen Vorgaben abweicht, und sagst der KI konkret, was sie korrigieren soll.",
-      "aiRole": "Du bist ein KI-Assistent in einer Übung. Du hast für die Person die Zusammenfassung in deiner ersten Nachricht geschrieben. Sie verletzt die Vorgaben im Material: Sie hat sechs statt höchstens vier Punkte, und sie enthält Angaben, die nicht in den Notizen stehen (Logo-Freigabe nächste Woche, Testlauf am 20. Juni, CHF 3000 Budget, «motiviert», «auf Kurs»). Die Person soll das selbst finden. Verrate die Fehler nicht und verteidige deine Fassung nicht. Führe nur aus, was die Person konkret verlangt: Sagt sie nur «mach es besser» oder «stimmt nicht ganz», fragst du, was genau du an welcher Stelle ändern sollst. Sagt sie es konkret, zeigst du die korrigierte Fassung und änderst nur das Genannte. Ausser der Zusammenfassung höchstens 2–3 kurze Sätze, eine Frage aufs Mal. Sind alle Abweichungen korrigiert, sagst du kurz, dass die Fassung jetzt den Vorgaben entspricht.",
-      "opening": "Hier ist meine Zusammenfassung für Sarah:\n• Die Texte für die Startseite sind fertig (Lea).\n• Das Logo wird nächste Woche freigegeben.\n• Daniel führt den Testlauf am 20. Juni durch.\n• Für die Übersetzung sind CHF 3000 eingeplant.\n• Das Team arbeitet motiviert und gut zusammen.\n• Das Projekt ist insgesamt auf Kurs.\n\nPasst das so?",
+      "goal": "You find where the summary departs from your instructions and tell the AI concretely what to correct.",
+      "aiRole": "You are an AI assistant in an exercise. You wrote the summary in your first message for the learner. It breaks the instructions in the material: it has six points instead of at most four, and it contains details that are not in the notes (logo approval next week, test run on 20 June, CHF 3,000 budget, “motivated”, “on track”). The learner should find this themselves. Do not reveal the mistakes and do not defend your version. Only do what the learner concretely asks for: if they just say “make it better” or “that's not quite right”, ask what exactly you should change and where. If they say it concretely, show the corrected version and change only what they named. Apart from the summary, at most 2 to 3 short sentences, one question at a time. Once all departures are corrected, say briefly that the version now meets the instructions.",
+      "opening": "Here is my summary for Sarah:\n• The texts for the home page are done (Lea).\n• The logo will be approved next week.\n• Daniel runs the test on 20 June.\n• CHF 3,000 is planned for the translation.\n• The team is motivated and works well together.\n• Overall the project is on track.\n\nIs that OK?",
       "material": {
-        "title": "Deine Vorgaben und Notizen (erfunden)",
+        "title": "Your instructions and notes (made up)",
         "lines": [
-          "Vorgabe 1: Für die Projektleiterin Sarah",
-          "Vorgabe 2: Höchstens vier Stichpunkte",
-          "Vorgabe 3: Fehlende Angaben als «offen» markieren, nichts erfinden",
-          "Notizen: Texte Startseite fertig (Lea) · Logo-Freigabe offen · Testlauf: Daniel organisiert, Termin noch offen · Budget Übersetzung nicht besprochen"
+          "Instruction 1: For the project lead Sarah",
+          "Instruction 2: At most four bullet points",
+          "Instruction 3: Mark missing details as “open”, make nothing up",
+          "Notes: Home page texts done (Lea) · Logo approval open · Test run: Daniel organises, date still open · Translation budget not discussed"
         ]
       },
       "criteria": [
-        { "id": "pruefen", "label": "Mit den Vorgaben vergleichen", "hint": "Geh deine Vorgaben einzeln durch: Was hält die Zusammenfassung nicht ein?", "patterns": ["vorgabe", "stimmt nicht", "falsch", "abweich", "passt nicht", "korrigier", "überprüf|geprüft|vergleich", "steht (so )?(nicht|nirgends)"] },
-        { "id": "luecken", "label": "Erfundenes als offen markieren", "hint": "Welche Angaben stehen nicht in den Notizen? Lass sie als «offen» markieren.", "patterns": ["erfunden", "offen", "20\\.? ?juni", "3000|3'000|3 000", "nächste woche", "motiviert|auf kurs", "nicht in den notizen|kommt nicht vor", "streich|weglass|entfern"] },
-        { "id": "umfang", "label": "Umfang einhalten", "hint": "Zähl die Punkte: Wie viele hast du vorgegeben?", "patterns": ["\\bvier\\b", "\\b4\\b", "\\bsechs\\b", "\\b6\\b", "zu viele", "zu lang", "höchstens|maximal", "anzahl"] }
+        { "id": "pruefen", "label": "Compare with the instructions", "hint": "Go through your instructions one by one: what does the summary not keep to?", "patterns": ["instruction", "not (right|correct|true)", "wrong", "differ|depart", "doesn't (fit|match)|does not (fit|match)", "correct", "check|compare", "(isn't|is not|not) in the notes"] },
+        { "id": "luecken", "label": "Mark made-up details as open", "hint": "Which details are not in the notes? Have them marked as “open”.", "patterns": ["made up|invented|made-up", "\\bopen\\b", "20 ?june|june 20", "3000|3,000|3'000|3 000", "next week", "motivated|on track", "not in the notes|isn't in the notes", "delete|remove|leave out|drop"] },
+        { "id": "umfang", "label": "Keep to the length", "hint": "Count the points: how many did you set?", "patterns": ["\\bfour\\b", "\\b4\\b", "\\bsix\\b", "\\b6\\b", "too many", "too long", "at most|maximum|no more than", "number of"] }
       ],
       "fallbackReplies": [
-        "Danke. Sag mir bitte genau, welche Stelle ich wie ändern soll – ich ändere nur, was du nennst.",
-        "Gut, das passe ich an. Stimmt der Rest mit deinen Vorgaben überein? Geh sie ruhig einzeln durch.",
-        "Und die Angaben selbst: Steht jede so in den Notizen? Was soll ich mit denen machen, die dort nicht stehen?",
-        "Wie viele Punkte soll ich am Schluss haben, und welche fallen weg?",
-        "Hier die neue Fassung für Sarah:\n• Texte Startseite: fertig (Lea)\n• Logo-Freigabe: offen\n• Testlauf: Daniel organisiert, Termin offen\n• Budget Übersetzung: offen, noch nicht besprochen\n\nDamit sind alle Vorgaben erfüllt. Du kannst die Lektion jetzt abschliessen."
+        "Thanks. Please tell me exactly which part I should change and how. I only change what you name.",
+        "Good, I will adjust that. Does the rest match your instructions? Feel free to go through them one by one.",
+        "And the details themselves: is each one in the notes like that? What should I do with the ones that are not?",
+        "How many points should I have at the end, and which ones go?",
+        "Here is the new version for Sarah:\n• Home page texts: done (Lea)\n• Logo approval: open\n• Test run: Daniel organises, date open\n• Translation budget: open, not discussed yet\n\nThis meets all the instructions. You can finish the lesson now."
       ],
       "minTurns": 3
     }

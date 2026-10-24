@@ -10,9 +10,9 @@ import { addTracks, mockSiteJson, session, v1Right } from './helpers.ts';
 let app = createApp();
 let calls: ModelRequest[] = [];
 const proposals = () => JSON.stringify({ topics: [
-  { title: 'Linkziele sicher erkennen', reason: 'Vertiefe das Prüfen von Links.', criterion: 'link' },
-  { title: 'Links in Rechnungsmails prüfen', reason: 'Wende dein Wissen an einer Rechnung an.', criterion: 'link' },
-  { title: 'Domains genauer vergleichen', reason: 'Erkunde einen verwandten Schwerpunkt.', criterion: 'adresse' },
+  { title: 'Recognise link targets reliably', reason: 'Go deeper into checking links.', criterion: 'link' },
+  { title: 'Check links in invoice emails', reason: 'Apply what you know to an invoice.', criterion: 'link' },
+  { title: 'Compare domains more closely', reason: 'Explore a related focus.', criterion: 'adresse' },
 ] });
 
 beforeEach(() => {
@@ -65,17 +65,17 @@ describe('Topic previews followed by an explicit format choice', () => {
     setMockHandler(req => {
       calls.push(req);
       return JSON.stringify({
-        title: 'Linkziele verstehen', intro: 'Du prüfst, wohin ein Link führt.', durationMin: 3,
+        title: 'Understand link targets', intro: 'You check where a link goes.', durationMin: 3,
         primarySourceUrl: 'https://www.bacs.admin.ch/de/phishing-de',
         content: format === 'ai-chat' ? {
-          kind: 'tutor', goal: 'Du erkennst fremde Linkziele.', aiRole: 'Stelle Fragen zum Linkziel.',
-          opening: 'Wie prüfst du einen Link vor dem Klick?', minTurns: 2,
-          criteria: [{ id: 'link', label: 'Linkziel', hint: 'Lies die Zieladresse.' }], fallbackReplies: ['Was steht im Linkziel?'],
+          kind: 'tutor', goal: 'You recognise foreign link targets.', aiRole: 'Ask questions about the link target.',
+          opening: 'How do you check a link before you click?', minTurns: 2,
+          criteria: [{ id: 'link', label: 'Link target', hint: 'Read the target address.' }], fallbackReplies: ['What does the link target say?'],
         } : {
-          noteTitle: 'Erfundene Beispielnotiz', note: ['Der Link führt auf eine fremde Domain.', 'Vor dem Klick lässt sich das Ziel anzeigen.'],
+          noteTitle: 'Made-up example note', note: ['The link goes to a foreign domain.', 'You can show the target before you click.'],
           summary: [
-            { id: 's1', text: 'Der Link führt zu einer fremden Domain.', verdict: 'belegt', explanation: 'Das steht in der Notiz.' },
-            { id: 's2', text: 'Der Link führt sicher zur vertrauten Seite.', verdict: 'erfunden', criterion: 'link', explanation: 'Die Notiz nennt eine fremde Domain.' },
+            { id: 's1', text: 'The link goes to a foreign domain.', verdict: 'belegt', explanation: 'The note says this.' },
+            { id: 's2', text: 'The link surely goes to the familiar site.', verdict: 'erfunden', criterion: 'link', explanation: 'The note names a foreign domain.' },
           ],
         },
       });
@@ -89,9 +89,9 @@ describe('Topic previews followed by an explicit format choice', () => {
   it('uses topic-specific format suggestions, excludes unsupported formats and always offers a podcast', async () => {
     const v = await learner();
     setMockHandler(() => JSON.stringify({ topics: [
-      { title: 'Linkziele erklären', reason: 'Verstehe die Zieladresse.', criterion: 'link', formats: ['video', 'ai-chat'] },
-      { title: 'Eine Zusammenfassung prüfen', reason: 'Vergleiche Aussagen mit einer Notiz.', criterion: 'link', formats: ['mark-evidence', 'ai-chat', 'lesetext'] },
-      { title: 'Eine Login-Seite prüfen', reason: 'Übe direkt an einer Beispiel-Seite.', criterion: 'adresse', formats: ['mock-site', 'video', 'podcast'] },
+      { title: 'Explain link targets', reason: 'Understand the target address.', criterion: 'link', formats: ['video', 'ai-chat'] },
+      { title: 'Check a summary', reason: 'Compare statements with a note.', criterion: 'link', formats: ['mark-evidence', 'ai-chat', 'lesetext'] },
+      { title: 'Check a login page', reason: 'Practise directly on an example page.', criterion: 'adresse', formats: ['mock-site', 'video', 'podcast'] },
     ] }));
     const c = await topics(v);
     expect(c.topics[0].formats).toEqual(['video', 'ai-chat', 'podcast']);
@@ -107,7 +107,7 @@ describe('Topic previews followed by an explicit format choice', () => {
     const r = await choose(v, c).expect(201);
     expect(calls.filter(c => c.purpose === 'generate')).toHaveLength(1);
     expect(calls.at(-1)!.messages[0].content).toContain(c.topics[1].title);
-    expect(calls.at(-1)!.messages[0].content).toContain('Lektionsart: mock-site');
+    expect(calls.at(-1)!.messages[0].content).toContain('Lesson type: mock-site');
     expect(r.body.generated).toHaveLength(1);
     expect(r.body.generated[0].type).toBe('mock-site');
     expect(r.body.view.session.nodes).toHaveLength(v.session.nodes.length + 1);
@@ -150,13 +150,13 @@ describe('Topic previews followed by an explicit format choice', () => {
     const plans = calls.filter(c => c.purpose === 'plan').length;
     const peak = await topics(v);
     expect(peak.topics).toHaveLength(1);
-    expect(peak.topics[0]).toMatchObject({ title: 'Gipfelprüfung', exam: true, recommended: true });
+    expect(peak.topics[0]).toMatchObject({ title: 'Summit test', exam: true, recommended: true });
     expect(peak.canSuggestOwn).toBe(false);
     expect(calls.filter(c => c.purpose === 'plan')).toHaveLength(plans);
 
     const id = (await choose(v, peak, 0).expect(201)).body.nodeId;
     const prompt = calls.filter(c => c.purpose === 'generate').at(-1)!.messages[0].content;
-    expect(prompt).toContain('Gipfelprüfung');
+    expect(prompt).toContain('Summit test');
     // Exam coverage must not depend on the one-day spaced review deadline having elapsed.
     const queued = get(v.session.id).session.reviewQueue;
     expect(queued.some(q => q.criterion === 'adresse')).toBe(true);
@@ -239,8 +239,8 @@ describe('Topic previews followed by an explicit format choice', () => {
     const r = await choose(v, c).expect(201);
     expect(r.body.generated).toHaveLength(1);
     expect(drafts).toHaveLength(2);
-    expect(drafts[0].messages[0].content).not.toContain('Dein letzter Entwurf wurde abgelehnt');
-    expect(drafts[1].messages[0].content).toContain('Dein letzter Entwurf wurde abgelehnt');
+    expect(drafts[0].messages[0].content).not.toContain('Your last draft was rejected');
+    expect(drafts[1].messages[0].content).toContain('Your last draft was rejected');
   });
 
   it('does not try again when the model call itself fails', async () => {
@@ -257,14 +257,14 @@ describe('Topic previews followed by an explicit format choice', () => {
     const c = await topics(v);
     setMockHandler(req => {
       calls.push(req);
-      return req.purpose === 'plan' ? JSON.stringify({ criterion: 'link', reason: 'Das passt zum Prüfen von Linkzielen.' }) : mockSiteJson();
+      return req.purpose === 'plan' ? JSON.stringify({ criterion: 'link', reason: 'That fits checking link targets.' }) : mockSiteJson();
     });
-    const custom = await request(app).post(`/api/sessions/${v.session.id}/topics/custom`).send({ choiceSetId: c.id, topic: 'Links in Paket-SMS prüfen' }).expect(200);
-    expect(custom.body.topic.title).toBe('Links in Paket-SMS prüfen');
+    const custom = await request(app).post(`/api/sessions/${v.session.id}/topics/custom`).send({ choiceSetId: c.id, topic: 'Check links in parcel text messages' }).expect(200);
+    expect(custom.body.topic.title).toBe('Check links in parcel text messages');
     expect(calls.filter(c => c.purpose === 'generate')).toHaveLength(0);
     const r = await request(app).post(`/api/sessions/${v.session.id}/topics/choose`).send({ choiceSetId: c.id, topicId: custom.body.topic.id, format: 'mock-site' }).expect(201);
     expect(r.body.generated).toHaveLength(1);
-    expect(calls.at(-1)!.messages[0].content).toContain('Links in Paket-SMS prüfen');
+    expect(calls.at(-1)!.messages[0].content).toContain('Check links in parcel text messages');
   });
 
   it('rejects invalid, unsupported, cross-learner, and stale choices before generation', async () => {
@@ -277,7 +277,7 @@ describe('Topic previews followed by an explicit format choice', () => {
     await request(app).post(`/api/sessions/${v.session.id}/tracks/t-info/topics`).send({}).expect(404);
     const other = await request(app).post('/api/login').send({ name: 'Other learner' }).expect(201);
     await request(app).post(`/api/sessions/${other.body.session.id}/topics/choose`).send({ choiceSetId: c.id, topicId: c.topics[0].id, format: 'video' }).expect(409);
-    await request(app).put(`/api/sessions/${v.session.id}/missions/t-sicherheit`).send({ text: 'Ich möchte Paket-SMS sicher prüfen.' }).expect(200);
+    await request(app).put(`/api/sessions/${v.session.id}/missions/t-sicherheit`).send({ text: 'I want to check parcel text messages reliably.' }).expect(200);
     await choose(v, c).expect(409);
     expect(calls.filter(c => c.purpose === 'generate')).toHaveLength(0);
   });
@@ -285,8 +285,8 @@ describe('Topic previews followed by an explicit format choice', () => {
   it('rejects an out-of-scope custom topic without changing the mission or criteria', async () => {
     const v = await learner();
     const c = await topics(v);
-    setMockHandler(() => JSON.stringify({ error: 'Dafür braucht es einen neuen Bereich.' }));
-    await request(app).post(`/api/sessions/${v.session.id}/topics/custom`).send({ choiceSetId: c.id, topic: 'Italienisch lernen' }).expect(422);
+    setMockHandler(() => JSON.stringify({ error: 'That needs a new area.' }));
+    await request(app).post(`/api/sessions/${v.session.id}/topics/custom`).send({ choiceSetId: c.id, topic: 'Learn Italian' }).expect(422);
     const after = await session(app, v.session.id);
     expect(after.skills).toEqual(v.skills);
     expect(after.workspace.missions).toEqual(v.workspace.missions);
@@ -355,15 +355,15 @@ describe('Topic previews followed by an explicit format choice', () => {
     setMockHandler(req => {
       calls.push(req);
       return JSON.stringify({
-        name: 'Photosynthese', criteria: [
-          { id: 'licht', label: 'Licht als Energie', ruleOfThumb: 'Pflanzen nutzen Licht als Energiequelle.' },
-          { id: 'wasser', label: 'Wasser', ruleOfThumb: 'Pflanzen brauchen Wasser für die Photosynthese.' },
-          { id: 'zucker', label: 'Zucker', ruleOfThumb: 'Pflanzen stellen bei der Photosynthese Zucker her.' },
-        ], sources: [{ title: 'Universität', url: 'https://www.ethz.ch/', note: 'Pflanzenbiologie' }], lessonTypes: ['video', 'ai-chat'],
+        name: 'Photosynthesis', criteria: [
+          { id: 'licht', label: 'Light as energy', ruleOfThumb: 'Plants use light as a source of energy.' },
+          { id: 'wasser', label: 'Water', ruleOfThumb: 'Plants need water for photosynthesis.' },
+          { id: 'zucker', label: 'Sugar', ruleOfThumb: 'Plants make sugar during photosynthesis.' },
+        ], sources: [{ title: 'University', url: 'https://www.ethz.ch/', note: 'Plant biology' }], lessonTypes: ['video', 'ai-chat'],
       });
     });
     const v = await request(app).post('/api/login').send({ name: 'New area' }).expect(201);
-    const r = await request(app).post(`/api/sessions/${v.body.session.id}/own-tracks`).send({ topic: 'Photosynthese', deferLesson: true }).expect(201);
+    const r = await request(app).post(`/api/sessions/${v.body.session.id}/own-tracks`).send({ topic: 'Photosynthesis', deferLesson: true }).expect(201);
     expect(r.body.generated).toEqual([]);
     expect(r.body.view.session.nodes.filter((n: { kind: string }) => n.kind === 'lesson')).toEqual([]);
     const c = await topics(r.body.view, r.body.trackId);

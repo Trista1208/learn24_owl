@@ -14,7 +14,7 @@ const visualsOnly = process.argv.includes('--visuals-only');
 if (existsSync(join(root, 'backend/.env'))) process.loadEnvFile(join(root, 'backend/.env'));
 const provider = process.env.VIDEO_SPEECH_PROVIDER ?? 'local';
 if (provider !== 'local' && provider !== 'elevenlabs') throw new Error('VIDEO_SPEECH_PROVIDER must be local or elevenlabs.');
-const voice = provider === 'local' ? (process.env.VIDEO_LOCAL_VOICE ?? 'Anna') : process.env.ELEVENLABS_VOICE_ID;
+const voice = provider === 'local' ? (process.env.VIDEO_LOCAL_VOICE ?? 'Samantha') : process.env.ELEVENLABS_VOICE_ID;
 if (!visualsOnly && (!voice || (provider === 'elevenlabs' && !process.env.ELEVENLABS_API_KEY))) {
   throw new Error('Set ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID in backend/.env before generating speech.');
 }
@@ -42,7 +42,7 @@ async function speech(text: string, scratch: string, index: string): Promise<Buf
   const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice!)}?output_format=pcm_24000`, {
     method: 'POST', signal: AbortSignal.timeout(120000),
     headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY!, 'content-type': 'application/json' },
-    body: JSON.stringify({ text, model_id: process.env.ELEVENLABS_MODEL_ID ?? 'eleven_multilingual_v2', language_code: 'de' }),
+    body: JSON.stringify({ text, model_id: process.env.ELEVENLABS_MODEL_ID ?? 'eleven_multilingual_v2', language_code: 'en' }),
   });
   if (!response.ok) throw new Error(`Speech generation failed (HTTP ${response.status}). Existing lesson assets have not been replaced.`);
   return Buffer.from(await response.arrayBuffer());
@@ -50,7 +50,7 @@ async function speech(text: string, scratch: string, index: string): Promise<Buf
 
 const rawScript = await readFile(join(root, 'data/videos/derivative.json'), 'utf8');
 const script = JSON.parse(rawScript) as {
-  lessonId: string; title: string; locale: 'de-CH';
+  lessonId: string; title: string; locale: 'en-GB';
   scenes: { id: string; title: string; narration: string[] }[];
 };
 const manifest: NarratedVideoManifest = {

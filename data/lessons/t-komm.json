@@ -4,40 +4,40 @@
     "trackId": "t-komm",
     "type": "ai-chat",
     "level": "Grundstufe",
-    "title": "Übergabe an Petra",
-    "intro": "Übergib Petra dein Projekt so, dass sie ab Montag ohne dich weiterarbeiten kann.",
+    "title": "Handover to Petra",
+    "intro": "Hand your project over to Petra so that she can carry on without you from Monday.",
     "durationMin": 4,
     "mode": "ai",
     "targets": ["stand", "offen", "wer", "wann"],
-    "transfer": "Schreib bei deiner nächsten Übergabe oder Ferienvertretung vier Zeilen: erledigt, offen, wer, wann.",
+    "transfer": "For your next handover or holiday cover, write four lines: done, open, who, when.",
     "source": "prepared",
     "content": {
       "kind": "roleplay",
-      "goal": "Petra weiss am Schluss, was erledigt ist, was offen ist, wer beteiligt ist und welche Termine feststehen.",
-      "aiRole": "Du spielst Petra, eine Arbeitskollegin. Ab Montag übernimmst du das Projekt «Kundenportal» von der Person im Chat. Du kennst das Projekt noch nicht und siehst ihre Notizen nicht. Du weisst nur, was sie dir schreibt. Frag nach, bis du weisst: was erledigt ist und wo es liegt, was noch offen ist, wer bei den offenen Sachen beteiligt ist und welche Termine mit Datum feststehen. Ist eine Antwort vage (zum Beispiel «Daniel macht den Test»), frag gezielt nach: Wann? Was genau? Erfinde keine Angaben und gib keine Tipps, wie eine gute Übergabe aussieht – du bist Kollegin, nicht Coach. Stell immer nur eine Frage aufs Mal und schreib höchstens 2–3 kurze Sätze. Du duzt und bist locker und freundlich. Sind alle vier Punkte geklärt, fasst du die Übergabe in drei kurzen Stichpunkten zusammen und bedankst dich.",
-      "opening": "Hoi! Ich übernehme ab Montag das Kundenportal und habe noch keinen Überblick. Wie steht es um das Projekt?",
+      "goal": "At the end Petra knows what is done, what is open, who is involved and which dates are fixed.",
+      "aiRole": "You play Petra, a colleague. From Monday you take over the “customer portal” project from the person in the chat. You do not know the project yet and you cannot see their notes. You only know what they write to you. Keep asking until you know: what is done and where it is, what is still open, who is involved in the open items and which dates are fixed. If an answer is vague (for example “Daniel does the test”), ask specifically: when? What exactly? Do not make up any details and do not give tips on what a good handover looks like: you are a colleague, not a coach. Always ask only one question at a time and write at most 2 to 3 short sentences. You are relaxed and friendly. Once all four points are clear, sum up the handover in three short bullet points and say thank you.",
+      "opening": "Hi! I'm taking over the customer portal from Monday and don't have an overview yet. How is the project going?",
       "material": {
-        "title": "Deine Notizen zum Projekt (erfunden)",
+        "title": "Your notes on the project (made up)",
         "lines": [
-          "Projekt «Kundenportal»",
-          "Texte für die Startseite: fertig, im Ordner Portal/Texte",
-          "Logo: Freigabe vom Marketing fehlt noch",
-          "Testlauf mit fünf Kundinnen und Kunden am 12. Juni, organisiert von Daniel",
-          "Offene Frage: Braucht es eine englische Version?"
+          "Project “customer portal”",
+          "Texts for the home page: done, in the folder Portal/Texts",
+          "Logo: approval from marketing still missing",
+          "Test run with five customers on 12 June, organised by Daniel",
+          "Open question: do we need an English version?"
         ]
       },
       "criteria": [
-        { "id": "stand", "label": "Was erledigt ist", "hint": "Was ist schon fertig, und wo findet Petra es?", "patterns": ["fertig", "erledigt", "abgeschlossen", "startseite", "texte", "ordner", "abgelegt", "liegt (im|in|unter)"] },
-        { "id": "offen", "label": "Was offen ist", "hint": "Was ist noch nicht erledigt oder nicht entschieden?", "patterns": ["offen", "fehlt", "noch nicht", "freigabe", "englisch", "unklar", "ausstehend", "zu klären"] },
-        { "id": "wer", "label": "Wer beteiligt ist", "hint": "Wer kümmert sich um die offenen Sachen, und wen kann Petra fragen?", "patterns": ["daniel", "marketing", "zuständig", "verantwortlich", "kümmert sich", "organisiert", "ansprechperson|ansprechpartner"] },
-        { "id": "wann", "label": "Termine", "hint": "Welche Termine stehen fest? Nenne sie mit Datum.", "patterns": ["12\\.? ?juni", "12\\.\\s?0?6\\.?", "\\bjuni\\b", "\\d{1,2}\\.\\s?(jan|feb|märz|apr|mai|jun|jul|aug|sep|okt|nov|dez)", "termin", "datum"] }
+        { "id": "stand", "label": "What is done", "hint": "What is already finished, and where can Petra find it?", "patterns": ["finished", "\\bdone\\b", "complete", "home ?page", "texts", "folder", "saved|stored|filed", "(is|are) in (the|a)"] },
+        { "id": "offen", "label": "What is open", "hint": "What is not done or not decided yet?", "patterns": ["\\bopen\\b", "missing", "not yet", "approval", "english", "unclear", "pending|outstanding", "to be (clarified|decided)"] },
+        { "id": "wer", "label": "Who is involved", "hint": "Who takes care of the open items, and whom can Petra ask?", "patterns": ["daniel", "marketing", "responsible", "in charge", "takes care|looking after|handles", "organis|organiz", "contact"] },
+        { "id": "wann", "label": "Dates", "hint": "Which dates are fixed? Give them with the date.", "patterns": ["12(th)? ?june|june 12", "12[./]0?6", "\\bjune\\b", "\\d{1,2}(st|nd|rd|th)? (jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)", "\\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* \\d{1,2}", "appointment|deadline", "\\bdate\\b"] }
       ],
       "fallbackReplies": [
-        "Danke! Was davon ist schon fertig, und wo finde ich es genau?",
-        "Gut zu wissen. Was ist noch offen oder nicht entschieden?",
-        "Und wer kümmert sich um die offenen Sachen? Wen kann ich fragen?",
-        "Gibt es feste Termine, die ich kennen muss? Am liebsten mit Datum.",
-        "Super, jetzt habe ich einen guten Überblick. Danke! Du kannst die Übergabe jetzt abschliessen."
+        "Thanks! Which of that is already finished, and where exactly do I find it?",
+        "Good to know. What is still open or not decided?",
+        "And who takes care of the open items? Whom can I ask?",
+        "Are there fixed dates I need to know? Ideally with the date.",
+        "Great, now I have a good overview. Thanks! You can finish the handover now."
       ],
       "minTurns": 3
     }
@@ -47,35 +47,35 @@
     "trackId": "t-komm",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Was in eine gute Übergabe gehört",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "What belongs in a good handover",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["stand", "offen", "wer", "wann"],
-    "transfer": "Prüf deine nächste Übergabe-Mail an vier Punkten: erledigt, offen, wer, wann.",
+    "transfer": "Check your next handover email against four points: done, open, who, when.",
     "source": "prepared",
     "content": {
       "scenes": [
-        { "caption": "Deine Kollegin übernimmt dein Projekt. Sie kennt nur das, was du ihr aufschreibst.", "visual": "steps", "items": ["Dein Wissen", "Deine Nachricht", "Ihr Wissen"], "seconds": 7 },
-        { "caption": "Nenne zuerst, was erledigt ist und wo es liegt. Dann muss niemand suchen.", "visual": "steps", "items": ["Erledigt", "Wo es liegt"], "seconds": 6 },
-        { "caption": "Dann das Offene. Zu jeder offenen Sache gehört ein Name: Wer kümmert sich darum?", "visual": "steps", "items": ["Offen", "Wer kümmert sich?"], "seconds": 7 },
-        { "caption": "Zum Schluss feste Termine mit Datum. «Bald» hilft niemandem, «am 12. Juni» schon.", "visual": "steps", "items": ["Erledigt", "Offen", "Wer", "Wann"], "seconds": 8 }
+        { "caption": "Your colleague takes over your project. She only knows what you write down for her.", "visual": "steps", "items": ["What you know", "Your message", "What she knows"], "seconds": 7 },
+        { "caption": "First say what is done and where it is. Then nobody has to search.", "visual": "steps", "items": ["Done", "Where it is"], "seconds": 6 },
+        { "caption": "Then what is open. Every open item needs a name: who takes care of it?", "visual": "steps", "items": ["Open", "Who takes care of it?"], "seconds": 7 },
+        { "caption": "Finally, fixed dates with the date. “Soon” helps nobody, “on 12 June” does.", "visual": "steps", "items": ["Done", "Open", "Who", "When"], "seconds": 8 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Was gehört bei «erledigt» unbedingt dazu?",
-          "options": ["Wo die fertige Arbeit liegt", "Wie lange sie gedauert hat", "Wer sie zuerst angeregt hat"],
+          "prompt": "What must you include with “done”?",
+          "options": ["Where the finished work is", "How long the work took", "Who first suggested it"],
           "correct": 0,
-          "explanation": "So findet deine Kollegin die Arbeit, ohne zu suchen oder nachzufragen.",
+          "explanation": "That way your colleague finds the work without searching or asking.",
           "criterion": "stand"
         },
         {
           "afterScene": 3,
-          "prompt": "Welcher Satz hilft bei einer Übergabe am meisten?",
-          "options": ["Daniel kümmert sich bald um den Test.", "Daniel organisiert den Test am 12. Juni.", "Der Test ist gut geplant, keine Sorge."],
+          "prompt": "Which sentence helps most in a handover?",
+          "options": ["Daniel will take care of the test soon.", "Daniel organises the test on 12 June.", "The test is well planned, don't worry."],
           "correct": 1,
-          "explanation": "Nur dieser Satz nennt Person und Datum. «Bald» lässt offen, wann es so weit ist.",
+          "explanation": "Only this sentence names a person and a date. “Soon” leaves open when it will happen.",
           "criterion": "wann"
         }
       ]
@@ -86,40 +86,40 @@
     "trackId": "t-komm",
     "type": "ai-chat",
     "level": "Mittelstufe",
-    "title": "Heikle Mail an eine Kundin",
-    "intro": "Antworte einer verärgerten Kundin, deren Lieferung zu spät ist: sachlich, klar und mit einem nächsten Schritt.",
+    "title": "A delicate email to a customer",
+    "intro": "Reply to an annoyed customer whose delivery is late: factual, clear and with a next step.",
     "durationMin": 5,
     "mode": "ai",
     "targets": ["ton", "wann", "offen"],
-    "transfer": "Nenn in deiner nächsten heiklen Mail das Problem im ersten Satz und biete einen nächsten Schritt mit Datum an.",
+    "transfer": "In your next delicate email, name the problem in the first sentence and offer a next step with a date.",
     "source": "prepared",
     "content": {
       "kind": "roleplay",
-      "goal": "Die Kundin weiss nach deiner Antwort, was los ist, was noch offen ist und was bis wann als Nächstes passiert.",
-      "aiRole": "Du spielst Sandra, Einkäuferin bei einer kleinen Firma. Du hast bei der Firma der Person im Chat 12 Bürostühle bestellt (Bestellung B-2318). Die Lieferung war für den 5. Juni zugesagt. Es ist nichts gekommen, und niemand hat sich gemeldet. Du bist verärgert, aber fair: Du wirst nicht beleidigend, und eine klare, ehrliche Antwort beruhigt dich. Du schreibst per Sie, wie im Geschäftsalltag. Du siehst die internen Infos der Person nicht. Reagiere auf das, was sie schreibt: Bleibt sie vage («bald», «wir kümmern uns»), hakst du nach – wann genau, und kommen alle 12 Stühle? Weicht sie aus oder wird sie unsachlich, wirst du etwas kühler. Gib keine Tipps, wie die Antwort aussehen soll, und schreib sie nicht für die Person. Höchstens 2–3 Sätze pro Nachricht, eine Frage aufs Mal. Hat die Person das Problem klar benannt, das Offene ehrlich gesagt und einen nächsten Schritt mit Datum angeboten, nimmst du das Angebot an und bedankst dich kurz.",
-      "opening": "Guten Tag. Meine 12 Bürostühle waren für den 5. Juni zugesagt. Bis heute ist nichts gekommen, und niemand hat sich gemeldet. Was ist da los?",
+      "goal": "After your reply the customer knows what is going on, what is still open and what happens next by when.",
+      "aiRole": "You play Sandra, a buyer at a small company. You ordered 12 office chairs from the company of the person in the chat (order B-2318). Delivery was promised for 5 June. Nothing has arrived, and nobody has been in touch. You are annoyed but fair: you are not insulting, and a clear, honest answer calms you down. You write politely and formally, as in everyday business. You cannot see the person's internal information. React to what they write: if they stay vague (“soon”, “we're on it”), follow up: when exactly, and will all 12 chairs come? If they dodge or become unprofessional, you become a little cooler. Do not give tips on what the answer should look like, and do not write it for them. At most 2 to 3 sentences per message, one question at a time. Once the person has named the problem clearly, said honestly what is open and offered a next step with a date, accept the offer and say a short thank you.",
+      "opening": "Good afternoon. My 12 office chairs were promised for 5 June. Nothing has arrived so far, and nobody has been in touch. What is going on?",
       "material": {
-        "title": "Interne Infos zur Bestellung (erfunden)",
+        "title": "Internal information on the order (made up)",
         "lines": [
-          "Bestellung B-2318: 12 Bürostühle für Sandra",
-          "Zugesagt war die Lieferung am 5. Juni.",
-          "Grund der Verspätung: Der Hersteller hat zu spät geliefert.",
-          "8 Stühle sind jetzt im Lager und können am 16. Juni ausgeliefert werden.",
-          "Wann die restlichen 4 kommen, ist noch offen.",
-          "Der Hersteller nennt den Termin für die restlichen 4 bis zum 12. Juni."
+          "Order B-2318: 12 office chairs for Sandra",
+          "Delivery was promised for 5 June.",
+          "Reason for the delay: the manufacturer delivered late.",
+          "8 chairs are now in stock and can be delivered on 16 June.",
+          "When the remaining 4 will come is still open.",
+          "The manufacturer will give the date for the remaining 4 by 12 June."
         ]
       },
       "criteria": [
-        { "id": "ton", "label": "Ton und Klarheit", "hint": "Nenn das Problem gleich im ersten Satz und bleib sachlich – ohne Ausreden.", "patterns": ["^[^.!?]*(verspät|verzöger|zu spät|nicht geliefert|nicht angekommen)", "entschuldig", "tut (mir|uns) leid", "leider", "nächste[nr]? schritt", "(ich|wir) (schlage|schlagen|biete|bieten)", "wir (liefern|können|melden)"] },
-        { "id": "wann", "label": "Nächster Schritt mit Datum", "hint": "Biete einen nächsten Schritt mit konkretem Datum an.", "patterns": ["16\\.? ?juni", "12\\.? ?juni", "\\d{1,2}\\.\\s?0?\\d\\.", "\\d{1,2}\\.\\s?(juni|juli|jun|jul)", "\\bbis (zum|am|spätestens) ", "\\bam (montag|dienstag|mittwoch|donnerstag|freitag)", "spätestens"] },
-        { "id": "offen", "label": "Offenes ehrlich nennen", "hint": "Sag ehrlich, was noch nicht feststeht – zum Beispiel die restlichen Stühle.", "patterns": ["offen", "noch nicht (klar|bekannt|fest|sicher)", "restlichen", "\\b4 (stühle|weitere|restliche)|vier (stühle|weitere|restliche)", "fehlen", "sobald", "teillieferung|teilweise|zuerst 8|zuerst acht"] }
+        { "id": "ton", "label": "Tone and clarity", "hint": "Name the problem right in the first sentence and stay factual, without excuses.", "patterns": ["^[^.!?]*(delay|late|not (been )?delivered|not arrived|hasn't arrived|haven't arrived)", "apologi[sz]e", "(i'm|i am|we're|we are) sorry", "unfortunately", "next step", "(i|we) (suggest|propose|offer|can offer)", "we (will deliver|can|will be in touch|will contact)"] },
+        { "id": "wann", "label": "Next step with a date", "hint": "Offer a next step with a concrete date.", "patterns": ["16(th)? ?june|june 16", "12(th)? ?june|june 12", "\\d{1,2}[./]0?\\d", "\\d{1,2}(st|nd|rd|th)? (june|july|jun|jul)", "\\bby (the )?\\d|\\bby (monday|tuesday|wednesday|thursday|friday)", "\\bon (monday|tuesday|wednesday|thursday|friday)", "at the latest"] },
+        { "id": "offen", "label": "Name what is open honestly", "hint": "Say honestly what is not fixed yet, for example the remaining chairs.", "patterns": ["\\bopen\\b", "not yet (clear|known|fixed|certain|confirmed)", "remaining", "\\b4 (chairs|more|remaining)|four (chairs|more|remaining)", "missing", "as soon as", "partial|first 8|first eight"] }
       ],
       "fallbackReplies": [
-        "Gut, dass Sie sich melden. Aber was heisst das konkret: Wann kommen meine Stühle?",
-        "Und kommen alle 12 Stühle auf einmal? Ich brauche sie für neue Mitarbeitende.",
-        "Ich möchte nicht noch einmal warten, ohne etwas zu hören. Wann melden Sie sich wieder bei mir?",
-        "Na gut. Fassen Sie mir das bitte nochmals kurz zusammen: Was kommt wann, und was ist noch offen?",
-        "Danke, das ist klar, so kann ich planen. – Ende des Rollenspiels: Du kannst die Lektion jetzt abschliessen."
+        "Good that you are getting in touch. But what does that mean concretely: when will my chairs arrive?",
+        "And will all 12 chairs come at once? I need them for new staff.",
+        "I don't want to wait again without hearing anything. When will you get back to me?",
+        "All right. Please sum it up for me again briefly: what comes when, and what is still open?",
+        "Thank you, that is clear, now I can plan. End of the role play: you can finish the lesson now."
       ],
       "minTurns": 3
     }

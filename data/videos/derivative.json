@@ -1,38 +1,38 @@
 {
   "lessonId": "math-v1",
-  "title": "Was ist eine Ableitung?",
-  "locale": "de-CH",
+  "title": "What is a derivative?",
+  "locale": "en-GB",
   "scenes": [
     {
       "id": "sekante",
-      "title": "Die Steigung zwischen zwei Punkten",
+      "title": "The slope between two points",
       "narration": [
-        "Wie steil ist eine Kurve an einer bestimmten Stelle? Betrachten wir die Funktion: f von x gleich ein halb mal x Quadrat.",
-        "Zuerst verbinden wir zwei Punkte auf der Kurve. Diese Gerade heisst Sekante. Ihre Steigung ist der Höhenunterschied geteilt durch den waagrechten Abstand."
+        "How steep is a curve at a particular point? Let's look at the function: f of x equals one half times x squared.",
+        "First we connect two points on the curve. This line is called a secant. Its slope is the difference in height divided by the horizontal distance."
       ]
     },
     {
       "id": "grenzwert",
-      "title": "Der zweite Punkt rückt näher",
+      "title": "The second point moves closer",
       "narration": [
-        "Der Punkt A bleibt bei x gleich eins. Jetzt rückt der zweite Punkt B auf der Kurve immer näher an A heran. Dabei dreht sich die Sekante.",
-        "Ihre Steigung nähert sich hier dem Wert eins. Die Sekante nähert sich der Tangente an. Was passiert also mit der Sekante?"
+        "Point A stays at x equals one. Now the second point B moves along the curve, closer and closer to A. As it does, the secant turns.",
+        "Its slope approaches the value one here. The secant approaches the tangent. So what happens to the secant?"
       ]
     },
     {
       "id": "tangente",
-      "title": "Die Ableitung ist eine Steigung",
+      "title": "The derivative is a slope",
       "narration": [
-        "Wenn sich die Sekantensteigungen von beiden Seiten demselben Wert nähern, erhalten wir die Ableitung. Sie ist die Steigung der Tangente an dieser Stelle.",
-        "Bei unserer Funktion ist die Ableitung an der Stelle x gleich eins genau eins. Gehen wir auf der Tangente eine Einheit nach rechts, geht es eine Einheit nach oben."
+        "When the slopes of the secants approach the same value from both sides, we get the derivative. It is the slope of the tangent at this point.",
+        "For our function, the derivative at x equals one is exactly one. If we go one unit to the right along the tangent, we go one unit up."
       ]
     },
     {
       "id": "zoom",
-      "title": "Ganz nah sieht die Kurve fast gerade aus",
+      "title": "Up close, the curve looks almost straight",
       "narration": [
-        "Zoomen wir um den Punkt A hinein. Die Kurve und ihre Tangente liegen immer näher beieinander. In diesem kleinen Ausschnitt sieht die Kurve fast wie eine Gerade aus.",
-        "Die Ableitung beschreibt diese lokale Steigung. Sie beschreibt keine Fläche und auch keinen höchsten Punkt. Was gibt die Ableitung an einer Stelle an?"
+        "Let's zoom in around point A. The curve and its tangent lie closer and closer together. In this small section, the curve looks almost like a straight line.",
+        "The derivative describes this local slope. It does not describe an area, and not a highest point either. What does the derivative at a point tell you?"
       ]
     }
   ]

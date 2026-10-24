@@ -5,8 +5,8 @@ import { useI18n } from '../lib/i18n.tsx';
 type Speaker = 'owl' | 'user';
 interface Bubble { role: Speaker; text: string; ui?: boolean }
 
-const GREETING = 'Hallo! Ich bin Eule, dein Mentor. Ich erkläre, zeige dir den Weg und helfe beim nächsten Schritt.';
-const CHIPS = ['Wo finde ich den nächsten Schritt?', 'Erklär es mir ganz einfach', 'Ich bin unsicher'];
+const GREETING = 'Hi! I’m Owl, your mentor. I explain, show you the way, and help with the next step.';
+const CHIPS = ['Where do I find the next step?', 'Explain it really simply', 'I feel unsure'];
 
 function OwlFace({ look, mood }: { look: { x: number; y: number }; mood: 'idle' | 'think' | 'happy' }) {
   return (
@@ -78,7 +78,7 @@ export function OwlChat() {
       setMessages((cur) => [...cur, { role: 'owl', text: reply.text }]);
       setMood('happy');
     } catch (e) {
-      const message = e instanceof Error ? e.message : 'Eule ist gerade still.';
+      const message = e instanceof Error ? e.message : 'Owl is quiet just now.';
       setMessages((cur) => [...cur, { role: 'owl', text: message, ui: true }]);
       setMood('idle');
     } finally {
@@ -90,18 +90,18 @@ export function OwlChat() {
   return (
     <div className={`owl-chat${open ? ' open' : ''}`} onMouseMove={onMove} onMouseLeave={() => setLook({ x: 0, y: 0 })}>
       {open && (
-        <section className="owl-panel" role="dialog" aria-label={t('Eule')}>
+        <section className="owl-panel" role="dialog" aria-label={t('Owl')}>
           <header>
             <OwlFace look={look} mood={mood} />
             <div>
-              <strong>{t('Eule')}</strong>
-              <span>{t('Dein Mentor')}</span>
+              <strong>{t('Owl')}</strong>
+              <span>{t('Your mentor')}</span>
             </div>
-            <button type="button" className="owl-x" onClick={() => setOpen(false)} aria-label={t('Schliessen')}>×</button>
+            <button type="button" className="owl-x" onClick={() => setOpen(false)} aria-label={t('Close')}>×</button>
           </header>
           <div className="owl-log" ref={scroller}>
             {messages.map((m, i) => <p key={i} className={`owl-bubble ${m.role}`}>{m.ui ? t(m.text) : m.text}</p>)}
-            {busy && <p className="owl-bubble owl typing" aria-label={t('Eule schreibt')}>…</p>}
+            {busy && <p className="owl-bubble owl typing" aria-label={t('Owl is writing')}>…</p>}
           </div>
           <div className="owl-chips">
             {CHIPS.map((c) => <button key={c} type="button" disabled={busy} onClick={() => void send(t(c))}>{t(c)}</button>)}
@@ -110,20 +110,20 @@ export function OwlChat() {
             <input
               value={text}
               maxLength={800}
-              placeholder={t('Frag Eule …')}
-              aria-label={t('Nachricht an Eule')}
+              placeholder={t('Ask Owl …')}
+              aria-label={t('Message to Owl')}
               onChange={(e) => setText(e.target.value)}
             />
-            <button type="submit" disabled={busy || text.trim().length === 0} aria-label={t('Senden')}>↑</button>
+            <button type="submit" disabled={busy || text.trim().length === 0} aria-label={t('Send')}>↑</button>
           </form>
         </section>
       )}
-      {!open && peek && <p className="owl-peek">{t('Psst … frag mich etwas.')}</p>}
+      {!open && peek && <p className="owl-peek">{t('Psst … ask me something.')}</p>}
       <button
         type="button"
         className={`owl-fab mood-${mood}`}
         aria-expanded={open}
-        aria-label={open ? t('Eule schliessen') : t('Mit Eule sprechen')}
+        aria-label={open ? t('Close Owl') : t('Talk to Owl')}
         onClick={() => { setOpen((v) => !v); setPeek(false); sessionStorage.setItem('owl.peek', '1'); }}
       >
         <OwlFace look={look} mood={mood} />

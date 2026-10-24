@@ -4,34 +4,34 @@
     "trackId": "t-sicherheit",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Webadressen richtig lesen",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "Read web addresses properly",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["adresse", "link"],
-    "transfer": "Lies diese Woche bei jedem Login die Adresszeile: Welche Domain steht direkt vor der Endung?",
+    "transfer": "This week, read the address bar at every login: which domain comes right before the ending?",
     "source": "prepared",
     "content": {
       "scenes": [
-        { "caption": "Eine Webadresse hat Teile. Entscheidend ist die Domain: der Teil direkt vor der Endung.", "visual": "url-parts", "items": ["https://", "www.", "musterbank", ".example", "/login"], "seconds": 7 },
-        { "caption": "Hier gehört die Seite zu «konto-check.example». Das «musterbank» davor ist nur ein Unterbereich, den jeder anlegen kann.", "visual": "url-parts", "items": ["https://", "musterbank.", "konto-check", ".example", "/login"], "seconds": 8 },
-        { "caption": "Auch ein Schloss-Symbol schützt nicht vor Betrug. Es zeigt nur, dass die Verbindung verschlüsselt ist – nicht, wem die Seite gehört.", "visual": "steps", "items": ["Schloss = verschlüsselt", "Schloss ≠ echt", "Domain prüfen"], "seconds": 7 }
+        { "caption": "A web address has parts. What counts is the domain: the part right before the ending.", "visual": "url-parts", "items": ["https://", "www.", "samplebank", ".example", "/login"], "seconds": 7 },
+        { "caption": "Here the page belongs to “account-check.example”. The “samplebank” in front is only a subdomain that anyone can create.", "visual": "url-parts", "items": ["https://", "samplebank.", "account-check", ".example", "/login"], "seconds": 8 },
+        { "caption": "A padlock symbol does not protect you from fraud either. It only shows that the connection is encrypted, not who owns the page.", "visual": "steps", "items": ["Padlock = encrypted", "Padlock ≠ genuine", "Check the domain"], "seconds": 7 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Zu welcher Domain gehört «musterbank.konto-check.example»?",
-          "options": ["musterbank.example", "konto-check.example", "musterbank.konto"],
+          "prompt": "Which domain does “samplebank.account-check.example” belong to?",
+          "options": ["samplebank.example", "account-check.example", "samplebank.account"],
           "correct": 1,
-          "explanation": "Entscheidend ist der Teil direkt vor der Endung: «konto-check.example».",
+          "explanation": "What counts is the part right before the ending: “account-check.example”.",
           "criterion": "adresse"
         },
         {
           "afterScene": 2,
-          "prompt": "Was sagt das Schloss-Symbol in der Adresszeile?",
-          "options": ["Die Seite gehört sicher der Bank", "Die Seite wurde vom Bund geprüft", "Die Verbindung zur Seite ist verschlüsselt"],
+          "prompt": "What does the padlock symbol in the address bar tell you?",
+          "options": ["The page surely belongs to the bank", "The page was checked by the government", "The connection to the page is encrypted"],
           "correct": 2,
-          "explanation": "Das Schloss zeigt nur die verschlüsselte Verbindung. Auch Betrüger haben Schlösser.",
+          "explanation": "The padlock only shows the encrypted connection. Fraudsters have padlocks too.",
           "criterion": "link"
         }
       ]
@@ -42,33 +42,33 @@
     "trackId": "t-sicherheit",
     "type": "mock-site",
     "level": "Grundstufe",
-    "title": "Konto gesperrt?",
-    "intro": "Tippe alles an, was dich misstrauisch macht, in der Mail und auf der Webseite dahinter. Entscheide dann: Phishing oder echt?",
+    "title": "Account locked?",
+    "intro": "Tap everything that makes you suspicious, in the email and on the website behind it. Then decide: phishing or genuine?",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["absender", "druck", "anrede", "link", "adresse", "daten"],
-    "transfer": "Prüfe bei der nächsten Mail mit Link vor dem Klick: Absender-Domain und Linkziel.",
+    "transfer": "With the next email that has a link, check before you click: the sender's domain and the link target.",
     "source": "prepared",
     "content": {
-      "disclaimer": "Übungsbeispiel mit erfundener Marke «Musterbank» und reservierten Beispiel-Adressen (.example). Nichts ist echt, nichts wird gesendet. Die echte Adresse der erfundenen Bank wäre musterbank.example.",
+      "disclaimer": "Practice example with the made-up brand “Samplebank” and reserved example addresses (.example). Nothing is real, nothing is sent. The real address of the made-up bank would be samplebank.example.",
       "mail": [
-        { "id": "m-from", "kind": "from", "text": "Musterbank Sicherheit <sicherheit@musterbank-support.example>", "signal": { "criterion": "absender", "explanation": "Die Domain ist «musterbank-support.example», nicht «musterbank.example». Den Anzeigenamen kann jeder frei wählen." } },
-        { "id": "m-subject", "kind": "subject", "text": "DRINGEND: Ihr Konto wird in 24 Stunden gesperrt", "signal": { "criterion": "druck", "explanation": "Zeitdruck und Drohung sollen dich vom Prüfen abhalten." } },
-        { "id": "m-greeting", "kind": "greeting", "text": "Sehr geehrter Kunde,", "signal": { "criterion": "anrede", "explanation": "Deine Bank kennt deinen Namen. Unpersönliche Anrede ist ein Warnzeichen." } },
-        { "id": "m-p1", "kind": "paragraph", "text": "wir haben ungewöhnliche Aktivitäten in Ihrem Konto festgestellt. Bestätigen Sie Ihre Identität.", "harmless": "Allein kein starkes Zeichen – echte Sicherheitsmails klingen ähnlich." },
-        { "id": "m-link", "kind": "link", "text": "Jetzt Konto bestätigen", "linkTarget": "https://musterbank.konto-check.example/login", "signal": { "criterion": "link", "explanation": "Der Link führt zu «konto-check.example». «musterbank» steht nur vorne als Tarnung." } },
-        { "id": "m-signature", "kind": "signature", "text": "Freundliche Grüsse, Ihr Musterbank-Team", "harmless": "Eine Signatur lässt sich beliebig kopieren." }
+        { "id": "m-from", "kind": "from", "text": "Samplebank Security <security@samplebank-support.example>", "signal": { "criterion": "absender", "explanation": "The domain is “samplebank-support.example”, not “samplebank.example”. Anyone can choose any display name." } },
+        { "id": "m-subject", "kind": "subject", "text": "URGENT: Your account will be locked in 24 hours", "signal": { "criterion": "druck", "explanation": "Time pressure and threats are meant to stop you from checking." } },
+        { "id": "m-greeting", "kind": "greeting", "text": "Dear customer,", "signal": { "criterion": "anrede", "explanation": "Your bank knows your name. An impersonal greeting is a warning sign." } },
+        { "id": "m-p1", "kind": "paragraph", "text": "we have detected unusual activity in your account. Please confirm your identity.", "harmless": "Not a strong sign on its own: real security emails sound similar." },
+        { "id": "m-link", "kind": "link", "text": "Confirm account now", "linkTarget": "https://samplebank.account-check.example/login", "signal": { "criterion": "link", "explanation": "The link goes to “account-check.example”. “samplebank” is only at the front as camouflage." } },
+        { "id": "m-signature", "kind": "signature", "text": "Kind regards, your Samplebank team", "harmless": "A signature can be copied freely." }
       ],
       "site": [
-        { "id": "w-url", "kind": "url", "text": "https://musterbank.konto-check.example/login", "signal": { "criterion": "adresse", "explanation": "Entscheidend ist der Teil vor der Endung: «konto-check.example». Das ist nicht die Bank." } },
-        { "id": "w-logo", "kind": "logo", "text": "MUSTERBANK", "harmless": "Logos lassen sich leicht kopieren." },
-        { "id": "w-heading", "kind": "heading", "text": "Identität bestätigen", "harmless": "Die Überschrift allein ist kein Hinweis." },
-        { "id": "w-fields", "kind": "field", "text": "Vertragsnummer · Passwort · Kartennummer · Prüfnummer (CVC)", "signal": { "criterion": "daten", "explanation": "Passwort und vollständige Kartendaten zusammen über einen Link aus einer Mail – das verlangt keine Bank." } },
-        { "id": "w-button", "kind": "button", "text": "Bestätigen", "harmless": "Der Knopf ist hier deaktiviert und allein kein Hinweis." },
-        { "id": "w-footer", "kind": "footer", "text": "© Musterbank · Datenschutz · Impressum", "harmless": "Fusszeilen werden einfach mitkopiert." }
+        { "id": "w-url", "kind": "url", "text": "https://samplebank.account-check.example/login", "signal": { "criterion": "adresse", "explanation": "What counts is the part before the ending: “account-check.example”. That is not the bank." } },
+        { "id": "w-logo", "kind": "logo", "text": "SAMPLEBANK", "harmless": "Logos are easy to copy." },
+        { "id": "w-heading", "kind": "heading", "text": "Confirm your identity", "harmless": "The heading alone is not a clue." },
+        { "id": "w-fields", "kind": "field", "text": "Contract number · Password · Card number · Security code (CVC)", "signal": { "criterion": "daten", "explanation": "Password and full card details together, through a link from an email: no bank asks for that." } },
+        { "id": "w-button", "kind": "button", "text": "Confirm", "harmless": "The button is disabled here and is not a clue on its own." },
+        { "id": "w-footer", "kind": "footer", "text": "© Samplebank · Privacy · Legal notice", "harmless": "Footers are simply copied along." }
       ],
       "correctVerdict": "phishing",
-      "verdictExplanation": "Mehrere starke Hinweise zusammen: fremde Domain beim Absender und bei der Webseite, Zeitdruck und die Abfrage von Passwort und Kartendaten."
+      "verdictExplanation": "Several strong clues together: a foreign domain for the sender and the website, time pressure and a request for password and card details."
     }
   },
   {
@@ -76,31 +76,31 @@
     "trackId": "t-sicherheit",
     "type": "mock-site",
     "level": "Mittelstufe",
-    "title": "Nur CHF 1.95 Gebühr?",
-    "intro": "Ein kleiner Betrag, eine bekannte Marke. Tippe alles Verdächtige an und entscheide.",
+    "title": "Only a CHF 1.95 fee?",
+    "intro": "A small amount, a well-known brand. Tap everything suspicious and decide.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["absender", "link", "adresse", "daten"],
-    "transfer": "Bei Zahlungsaufforderungen per Mail oder SMS: nie über den Link bezahlen, sondern die Sendungsnummer selbst auf der bekannten Seite eingeben.",
+    "transfer": "With payment requests by email or text message: never pay through the link; enter the tracking number yourself on the site you know.",
     "source": "prepared",
     "content": {
-      "disclaimer": "Übungsbeispiel mit erfundener Marke «Paketpost Muster» und Adressen auf .example. Die echte Adresse der erfundenen Post wäre paketpost-muster.example.",
+      "disclaimer": "Practice example with the made-up brand “Sample Parcel Post” and addresses on .example. The real address of the made-up post would be sample-parcelpost.example.",
       "mail": [
-        { "id": "m-from", "kind": "from", "text": "Paketpost Muster <info@paketpost-muster-zustellung.example>", "signal": { "criterion": "absender", "explanation": "Die Domain ist «paketpost-muster-zustellung.example», nicht «paketpost-muster.example»." } },
-        { "id": "m-subject", "kind": "subject", "text": "Ihre Sendung wartet: Zollgebühr offen", "harmless": "Der Betreff klingt normal. Gerade das macht diese Masche wirksam." },
-        { "id": "m-greeting", "kind": "greeting", "text": "Guten Tag,", "harmless": "Eher schwaches Zeichen; viele echte Versandmails grüssen ohne Namen." },
-        { "id": "m-p1", "kind": "paragraph", "text": "für Ihre Sendung ist eine Gebühr von CHF 1.95 offen. Ohne Zahlung wird das Paket an den Absender zurückgeschickt.", "harmless": "Ein kleiner Betrag soll das Prüfen überflüssig erscheinen lassen. Für sich allein aber kein sicheres Zeichen." },
-        { "id": "m-link", "kind": "link", "text": "Gebühr jetzt bezahlen", "linkTarget": "https://paketpost-muster.zahlung-info.example/pay", "signal": { "criterion": "link", "explanation": "Der Link führt zu «zahlung-info.example», nicht zur Post." } }
+        { "id": "m-from", "kind": "from", "text": "Sample Parcel Post <info@sample-parcelpost-delivery.example>", "signal": { "criterion": "absender", "explanation": "The domain is “sample-parcelpost-delivery.example”, not “sample-parcelpost.example”." } },
+        { "id": "m-subject", "kind": "subject", "text": "Your parcel is waiting: customs fee due", "harmless": "The subject sounds normal. That is exactly what makes this scam work." },
+        { "id": "m-greeting", "kind": "greeting", "text": "Hello,", "harmless": "A rather weak sign; many real shipping emails greet you without a name." },
+        { "id": "m-p1", "kind": "paragraph", "text": "a fee of CHF 1.95 is due for your parcel. Without payment, the parcel will be returned to the sender.", "harmless": "A small amount is meant to make checking seem unnecessary. On its own, though, not a sure sign." },
+        { "id": "m-link", "kind": "link", "text": "Pay the fee now", "linkTarget": "https://sample-parcelpost.payment-info.example/pay", "signal": { "criterion": "link", "explanation": "The link goes to “payment-info.example”, not to the post." } }
       ],
       "site": [
-        { "id": "w-url", "kind": "url", "text": "https://paketpost-muster.zahlung-info.example/pay", "signal": { "criterion": "adresse", "explanation": "Die Domain ist «zahlung-info.example»." } },
-        { "id": "w-logo", "kind": "logo", "text": "PAKETPOST MUSTER", "harmless": "Logos lassen sich kopieren." },
-        { "id": "w-heading", "kind": "heading", "text": "Zollgebühr bezahlen: CHF 1.95", "harmless": "Die Überschrift allein ist kein Hinweis." },
-        { "id": "w-fields", "kind": "field", "text": "Kartennummer · Ablaufdatum · Prüfnummer (CVC) · Name", "signal": { "criterion": "daten", "explanation": "Vollständige Kartendaten für CHF 1.95 – danach wird oft ein viel höherer Betrag abgebucht." } },
-        { "id": "w-button", "kind": "button", "text": "Bezahlen", "harmless": "Der Knopf ist hier deaktiviert." }
+        { "id": "w-url", "kind": "url", "text": "https://sample-parcelpost.payment-info.example/pay", "signal": { "criterion": "adresse", "explanation": "The domain is “payment-info.example”." } },
+        { "id": "w-logo", "kind": "logo", "text": "SAMPLE PARCEL POST", "harmless": "Logos can be copied." },
+        { "id": "w-heading", "kind": "heading", "text": "Pay customs fee: CHF 1.95", "harmless": "The heading alone is not a clue." },
+        { "id": "w-fields", "kind": "field", "text": "Card number · Expiry date · Security code (CVC) · Name", "signal": { "criterion": "daten", "explanation": "Full card details for CHF 1.95: afterwards a much larger amount is often charged." } },
+        { "id": "w-button", "kind": "button", "text": "Pay", "harmless": "The button is disabled here." }
       ],
       "correctVerdict": "phishing",
-      "verdictExplanation": "Fremde Domain bei Absender, Link und Webseite und die Abfrage der vollständigen Kartendaten. Der kleine Betrag ist der Köder."
+      "verdictExplanation": "A foreign domain for the sender, link and website, and a request for full card details. The small amount is the bait."
     }
   },
   {
@@ -108,31 +108,31 @@
     "trackId": "t-sicherheit",
     "type": "mock-site",
     "level": "Fortgeschritten",
-    "title": "Echt oder nicht?",
-    "intro": "Nicht jede Mail ist Phishing. Prüfe genau und markiere nur, was wirklich verdächtig ist.",
+    "title": "Real or not?",
+    "intro": "Not every email is phishing. Check carefully and mark only what is really suspicious.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["absender", "link", "adresse"],
-    "transfer": "Wenn du selbst etwas angefordert hast und Absender und Link zur bekannten Domain passen, ist die Mail wahrscheinlich echt. Im Zweifel die Seite selbst aufrufen.",
+    "transfer": "If you requested something yourself and the sender and link match the known domain, the email is probably genuine. If in doubt, open the site yourself.",
     "source": "prepared",
     "content": {
-      "disclaimer": "Übungsbeispiel mit erfundener Firma «Musterbank» und Adressen auf .example. Du hast vor zwei Minuten selbst ein neues Passwort angefordert.",
+      "disclaimer": "Practice example with the made-up company “Samplebank” and addresses on .example. Two minutes ago you requested a new password yourself.",
       "mail": [
-        { "id": "m-from", "kind": "from", "text": "Musterbank <noreply@musterbank.example>", "harmless": "Die Domain ist «musterbank.example» – die echte Adresse der Bank." },
-        { "id": "m-subject", "kind": "subject", "text": "Ihr Link zum Zurücksetzen des Passworts", "harmless": "Passt zu deiner Anfrage von vor zwei Minuten." },
-        { "id": "m-greeting", "kind": "greeting", "text": "Guten Tag Frau Keller,", "harmless": "Persönliche Anrede mit Namen." },
-        { "id": "m-p1", "kind": "paragraph", "text": "Sie haben ein neues Passwort angefordert. Der Link ist 30 Minuten gültig. Falls Sie das nicht waren, ignorieren Sie diese Mail.", "harmless": "Die Frist ist normal für solche Links, und es gibt einen Ausweg ohne Druck." },
-        { "id": "m-link", "kind": "link", "text": "Passwort zurücksetzen", "linkTarget": "https://musterbank.example/reset?t=8f3k2", "harmless": "Der Link führt zur echten Domain «musterbank.example»." }
+        { "id": "m-from", "kind": "from", "text": "Samplebank <noreply@samplebank.example>", "harmless": "The domain is “samplebank.example”, the bank's real address." },
+        { "id": "m-subject", "kind": "subject", "text": "Your link to reset your password", "harmless": "Matches your request from two minutes ago." },
+        { "id": "m-greeting", "kind": "greeting", "text": "Hello Ms Keller,", "harmless": "A personal greeting with your name." },
+        { "id": "m-p1", "kind": "paragraph", "text": "You requested a new password. The link is valid for 30 minutes. If this wasn't you, ignore this email.", "harmless": "The time limit is normal for such links, and there is a way out without pressure." },
+        { "id": "m-link", "kind": "link", "text": "Reset password", "linkTarget": "https://samplebank.example/reset?t=8f3k2", "harmless": "The link goes to the real domain “samplebank.example”." }
       ],
       "site": [
-        { "id": "w-url", "kind": "url", "text": "https://musterbank.example/reset", "harmless": "Die Domain stimmt." },
-        { "id": "w-logo", "kind": "logo", "text": "MUSTERBANK", "harmless": "Allein kein Hinweis." },
-        { "id": "w-heading", "kind": "heading", "text": "Neues Passwort festlegen", "harmless": "Passt zur Anfrage." },
-        { "id": "w-fields", "kind": "field", "text": "Neues Passwort · Passwort wiederholen", "harmless": "Es wird nur ein neues Passwort verlangt, keine Kartendaten." },
-        { "id": "w-button", "kind": "button", "text": "Speichern", "harmless": "Der Knopf ist hier deaktiviert." }
+        { "id": "w-url", "kind": "url", "text": "https://samplebank.example/reset", "harmless": "The domain is right." },
+        { "id": "w-logo", "kind": "logo", "text": "SAMPLEBANK", "harmless": "Not a clue on its own." },
+        { "id": "w-heading", "kind": "heading", "text": "Set a new password", "harmless": "Matches the request." },
+        { "id": "w-fields", "kind": "field", "text": "New password · Repeat password", "harmless": "Only a new password is requested, no card details." },
+        { "id": "w-button", "kind": "button", "text": "Save", "harmless": "The button is disabled here." }
       ],
       "correctVerdict": "echt",
-      "verdictExplanation": "Absender, Link und Webseite gehören zur echten Domain, die Mail passt zu deiner eigenen Anfrage und verlangt keine sensiblen Daten."
+      "verdictExplanation": "Sender, link and website belong to the real domain, the email matches your own request and asks for no sensitive data."
     }
   }
 ]

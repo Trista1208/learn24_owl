@@ -28,22 +28,22 @@ export function checkPlan(st: Stored, plan: Plan, staged: { nodes: MapNode[]; le
   const reachable = reachableIds(st, staged.nodes);
   const node = nodes.find((n) => n.id === plan.nodeId);
 
-  if (!node || node.kind !== 'lesson') e.push(`Knoten ${plan.nodeId} gibt es nicht`);
-  else if (!reachable.has(node.id)) e.push(`Knoten ${plan.nodeId} ist nicht erreichbar (erledigt oder der Schritt davor fehlt)`);
+  if (!node || node.kind !== 'lesson') e.push(`node ${plan.nodeId} does not exist`);
+  else if (!reachable.has(node.id)) e.push(`node ${plan.nodeId} is not reachable (done, or the step before it is missing)`);
   const lesson = node?.lessonId ? lessons.find((l) => l.id === node.lessonId) : undefined;
-  if (node && !lesson) e.push(`Lektion zu ${plan.nodeId} fehlt`);
+  if (node && !lesson) e.push(`lesson for ${plan.nodeId} is missing`);
 
   // An alternative is needed whenever another node is reachable. With one track and one new node there is none.
   if (!plan.alternativeNodeId) {
-    if ([...reachable].some((id) => id !== plan.nodeId)) e.push('Alternative fehlt');
-  } else if (plan.alternativeNodeId === plan.nodeId) e.push('Alternative ist derselbe Knoten');
-  else if (!reachable.has(plan.alternativeNodeId)) e.push(`Alternative ${plan.alternativeNodeId} gibt es nicht oder ist nicht erreichbar`);
+    if ([...reachable].some((id) => id !== plan.nodeId)) e.push('alternative is missing');
+  } else if (plan.alternativeNodeId === plan.nodeId) e.push('alternative is the same node');
+  else if (!reachable.has(plan.alternativeNodeId)) e.push(`alternative ${plan.alternativeNodeId} does not exist or is not reachable`);
 
-  if (!plan.reason?.trim() || plan.reason.length > 400) e.push('Begründung fehlt oder ist zu lang');
+  if (!plan.reason?.trim() || plan.reason.length > 400) e.push('reason is missing or too long');
   const known = new Set([...st.records.map((r) => r.id), ...s.events.map((ev) => ev.id)]);
   const cited = Array.isArray(plan.basedOn) ? plan.basedOn : [];
   const unknown = cited.filter((id) => !known.has(id));
-  if (!cited.some((id) => known.has(id))) e.push('Die Begründung muss mindestens einen Lerneintrag (LR-…) oder ein Ereignis (ev-…) nennen');
-  if (unknown.length) e.push(`unbekannte Belege: ${unknown.join(', ')}`);
+  if (!cited.some((id) => known.has(id))) e.push('the reason must cite at least one learning record (LR-…) or one event (ev-…)');
+  if (unknown.length) e.push(`unknown evidence: ${unknown.join(', ')}`);
   return e;
 }

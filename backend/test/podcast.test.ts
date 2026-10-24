@@ -18,23 +18,23 @@ import { addTracks } from './helpers.ts';
 const sicherheit = content.skills.flatMap(s => s.tracks).find(t => t.id === 't-sicherheit')!;
 const second = Buffer.alloc(24000 * 2, 1);
 const temp = () => mkdtemp(join(tmpdir(), 'l45-podcast-test-'));
-const dialogue = (n: number): PodcastLine[] => Array.from({ length: n }, (_, i) => ({ speaker: i % 2 ? 'b' : 'a', text: `Beitrag ${i + 1}.` }));
+const dialogue = (n: number): PodcastLine[] => Array.from({ length: n }, (_, i) => ({ speaker: i % 2 ? 'b' : 'a', text: `Turn ${i + 1}.` }));
 const speakers = (pcm = async (_text: string) => second): Record<PodcastSpeaker, Speaker> => ({
   a: { config: { provider: 'elevenlabs', voice: 'voice-a', model: 'test' }, pcm: vi.fn(pcm) },
   b: { config: { provider: 'elevenlabs', voice: 'voice-b', model: 'test' }, pcm: vi.fn(pcm) },
 });
 const questions = [
-  { prompt: 'Was prüfst du vor dem Klick?', options: ['Das Linkziel', 'Die Farbe', 'Die Schrift'], correct: 0, explanation: 'Das Ziel zeigt, wohin du kommst.', criterion: 'link' },
-  { prompt: 'Welcher Teil der Adresse zählt?', options: ['Der Pfad', 'Die Domain', 'Das Schema'], correct: 1, explanation: 'Die Domain bestimmt den Besitzer.', criterion: 'adresse' },
+  { prompt: 'What do you check before you click?', options: ['The link target', 'The colour', 'The font'], correct: 0, explanation: 'The target shows where you end up.', criterion: 'link' },
+  { prompt: 'Which part of the address counts?', options: ['The path', 'The domain', 'The scheme'], correct: 1, explanation: 'The domain decides who owns it.', criterion: 'adresse' },
 ];
 const podcastJson = (lines = dialogue(8)) => JSON.stringify({
-  title: 'Linkziele im Gespräch', intro: 'Mira und Jonas sprechen über Linkziele.', durationMin: 3,
-  transfer: 'Prüfe beim nächsten Link das Ziel.', primarySourceUrl: 'https://www.bacs.admin.ch/de/phishing-de',
+  title: 'Talking about link targets', intro: 'Mira and Jonas talk about link targets.', durationMin: 3,
+  transfer: 'Check the target of the next link.', primarySourceUrl: 'https://www.bacs.admin.ch/de/phishing-de',
   content: { lines, questions },
 });
 const lesson = (over: Partial<PodcastLesson['content']> = {}): PodcastLesson => ({
-  id: 'ki-podcast-test', trackId: 't-sicherheit', type: 'podcast', level: 'Grundstufe', title: 'Linkziele im Gespräch',
-  intro: 'Zwei Stimmen sprechen über Linkziele.', durationMin: 3, mode: 'alone', targets: ['link'], source: 'prepared',
+  id: 'ki-podcast-test', trackId: 't-sicherheit', type: 'podcast', level: 'Grundstufe', title: 'Talking about link targets',
+  intro: 'Two voices talk about link targets.', durationMin: 3, mode: 'alone', targets: ['link'], source: 'prepared',
   content: { lines: dialogue(8), questions, ...over },
 });
 
@@ -48,9 +48,9 @@ beforeEach(() => {
     calls.push(req);
     return req.purpose === 'plan'
       ? JSON.stringify({ topics: [
-        { title: 'Linkziele erkennen', reason: 'Vertiefe das Prüfen von Links.', criterion: 'link', formats: ['video'] },
-        { title: 'Domains vergleichen', reason: 'Ein verwandter Schwerpunkt.', criterion: 'adresse', formats: ['ai-chat'] },
-        { title: 'Links im Alltag prüfen', reason: 'Wende es an.', criterion: 'link', formats: ['video'] },
+        { title: 'Recognise link targets', reason: 'Go deeper into checking links.', criterion: 'link', formats: ['video'] },
+        { title: 'Compare domains', reason: 'A related focus.', criterion: 'adresse', formats: ['ai-chat'] },
+        { title: 'Check links in everyday life', reason: 'Apply it.', criterion: 'link', formats: ['video'] },
       ] })
       : podcastJson();
   });
@@ -61,7 +61,7 @@ afterEach(async () => {
   process.env.MODEL_PROVIDER = 'none';
 });
 
-/** A learner who chose a podcast lesson in «Sicherheit». */
+/** A learner who chose a podcast lesson in “Safety”. */
 async function setup(speak = speakers()) {
   const folder = await temp();
   const app = createApp({ podcastService: new PodcastService({ output: folder, speechCache: folder, speakers: speak }) });
@@ -88,11 +88,11 @@ describe('podcast lesson schema', () => {
   });
 
   it('rejects one voice, too much speech and quizzes with the right answer always first', () => {
-    expect(validateLesson(lesson({ lines: dialogue(8).map(l => ({ ...l, speaker: 'a' as const })) }))).toContain('Im Podcast sprechen beide');
-    expect(validateLesson(lesson({ lines: dialogue(4) }))).toContain('Podcast braucht 6 bis 16 Beiträge');
-    expect(validateLesson(lesson({ lines: dialogue(10).map(l => ({ ...l, text: 'x'.repeat(390) })) }))).toContain('Podcast ist länger als 3000 Zeichen');
-    expect(validateLesson(lesson({ questions: [] }))).toContain('Podcast braucht 1 bis 4 Fragen');
-    expect(validateLesson(lesson({ questions: questions.map(q => ({ ...q, options: [q.options[q.correct], ...q.options.filter((_, i) => i !== q.correct)], correct: 0 })) }))).toContain('Die richtige Antwort steht in jeder Frage an derselben Stelle');
+    expect(validateLesson(lesson({ lines: dialogue(8).map(l => ({ ...l, speaker: 'a' as const })) }))).toContain('both hosts speak in the podcast');
+    expect(validateLesson(lesson({ lines: dialogue(4) }))).toContain('podcast needs 6 to 16 turns');
+    expect(validateLesson(lesson({ lines: dialogue(10).map(l => ({ ...l, text: 'x'.repeat(390) })) }))).toContain('podcast is longer than 3000 characters');
+    expect(validateLesson(lesson({ questions: [] }))).toContain('podcast needs 1 to 4 questions');
+    expect(validateLesson(lesson({ questions: questions.map(q => ({ ...q, options: [q.options[q.correct], ...q.options.filter((_, i) => i !== q.correct)], correct: 0 })) }))).toContain('The right answer is in the same place in every question');
   });
 });
 
@@ -101,7 +101,7 @@ describe('podcast lessons', () => {
     const { app, folder, speak, sessionId, nodeId, url } = await setup();
     const generated = calls.filter(c => c.purpose === 'generate');
     expect(generated).toHaveLength(1);
-    expect(generated[0].messages[0].content).toContain('Lektionsart: podcast');
+    expect(generated[0].messages[0].content).toContain('Lesson type: podcast');
 
     const started = await request(app).post(`/api/sessions/${sessionId}/nodes/${nodeId}/start`).send({}).expect(200);
     const served = started.body.lesson as PodcastLesson;
@@ -132,15 +132,15 @@ describe('podcast lessons', () => {
     expect(stored.find(l => l.id === served.id)?.type).toBe('podcast');
     const answers = Object.fromEntries(served.content.questions.map((q, i) => [i, q.options.indexOf(questions[i].options[questions[i].correct])]));
     const result = await request(app).post(`/api/sessions/${sessionId}/nodes/${nodeId}/complete`).send({ answer: { type: 'podcast', answers } }).expect(200);
-    expect(result.body.result).toMatchObject({ allMet: true, summary: '2 von 2 Fragen richtig.' });
+    expect(result.body.result).toMatchObject({ allMet: true, summary: '2 of 2 questions correct.' });
   });
 
   it('keeps the lesson usable when narration fails', async () => {
-    const { app, url } = await setup(speakers(async () => { throw new Error('ElevenLabs-Schlüssel oder Stimme fehlt.'); }));
+    const { app, url } = await setup(speakers(async () => { throw new Error('ElevenLabs key or voice missing.'); }));
     await request(app).post(url).expect(202);
     const done = await settled(app, url);
     expect(done.state).toBe('error');
-    expect(done.message).toMatch(/lesen/);
+    expect(done.message).toMatch(/read the conversation/);
     expect((await request(app).post(url)).status).toBe(503);
   });
 

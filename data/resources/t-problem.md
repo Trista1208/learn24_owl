@@ -1,12 +1,12 @@
-# Problemlösen: Quellen
+# Problem solving: sources
 
-Geprüft am 2026-10-24.
+Checked on 2026-10-24.
 
 ## Knowledge
 
 - [DigComp 2.2: The Digital Competence Framework for Citizens (JRC, 2022)](https://publications.jrc.ec.europa.eu/repository/handle/JRC128415)
-  Bereich 5 «Problem solving»: technische Probleme lösen, Bedürfnisse erkennen und Werkzeuge wählen. Use for: Fehlermeldungen beschreiben, Anforderungen klären.
+  Area 5 “Problem solving”: solving technical problems, identifying needs and choosing tools. Use for: describing error messages, clarifying requirements.
 
 ## Gaps
 
-- Deutschsprachige Anleitung für gute Support-Anfragen (Fehlerbericht).
+- A guide to good support requests (bug reports).

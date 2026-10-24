@@ -8,19 +8,19 @@ import { MapScreen } from './screens/MapScreen.tsx';
 function Routed() {
   const { loading, error, content, view } = useStore();
   const { t } = useI18n();
-  if (loading) return <p className="center muted">{t('Wird geladen …')}</p>;
+  if (loading) return <p className="center muted">{t('Loading …')}</p>;
   if (error && !content) {
     return (
       <div className="center">
         <p className="error">{t(error)}</p>
-        <button className="btn secondary" onClick={() => location.reload()}>{t('Neu laden')}</button>
+        <button className="btn secondary" onClick={() => location.reload()}>{t('Reload')}</button>
       </div>
     );
   }
   return (
     <Routes>
-      <Route path="/" element={view ? <Navigate to="/karte" replace /> : <Login />} />
-      <Route path="/karte" element={<MapScreen />} />
+      <Route path="/" element={view ? <Navigate to="/map" replace /> : <Login />} />
+      <Route path="/map" element={<MapScreen />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

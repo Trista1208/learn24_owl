@@ -18,10 +18,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/owl.svg', 'icons/learn45.png'],
       manifest: {
-        name: 'AIthena für Learn45',
+        name: 'AIthena for Learn45',
         short_name: 'AIthena',
-        description: 'Prototyp: Login mit DCC-Profil, Lernkarte als Mindmap, begründete nächste Schritte.',
-        lang: 'de-CH',
+        description: 'Prototype: sign-in with a DCC profile, a learning map as a mind map, next steps with reasons.',
+        lang: 'en',
         start_url: '/',
         display: 'standalone',
         background_color: '#F7F5F4',

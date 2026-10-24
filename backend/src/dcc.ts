@@ -10,20 +10,20 @@ const dccTracks = () => content.skills.filter((s) => s.dccBased).flatMap((s) => 
 function level(value: unknown): DccLevel | null {
   if (value === null || value === undefined || value === '') return null;
   if (typeof value === 'string' && (DCC_LEVELS as string[]).includes(value)) return value as DccLevel;
-  throw new InputError(`Unbekannte Stufe «${String(value)}». Erlaubt: ${DCC_LEVELS.join(', ')} oder leer.`);
+  throw new InputError(`Unknown level “${String(value)}”. Allowed: ${DCC_LEVELS.join(', ')} or empty.`);
 }
 
-/** Validates a DCC result file (synthetic format, see frontend/public/dcc-beispiele). */
+/** Validates a DCC result file (synthetic format, see frontend/public/dcc-examples). */
 export function profileFromFile(file: unknown, fileName?: string): DccProfile {
   const f = file as { type?: string; areas?: { area?: string; level?: unknown }[]; assessedOn?: string };
   if (!f || f.type !== 'dcc-result' || !Array.isArray(f.areas)) {
-    throw new InputError('Das ist keine DCC-Resultatdatei. Erwartet wird JSON mit "type": "dcc-result" und einer Liste "areas".');
+    throw new InputError('This is not a DCC result file. Expected JSON with "type": "dcc-result" and a list "areas".');
   }
   const levels: Record<string, DccLevel | null> = {};
   for (const t of dccTracks()) levels[t.id] = null;
   for (const a of f.areas) {
     const track = dccTracks().find((t) => t.dccArea === String(a.area));
-    if (!track) throw new InputError(`Unbekannter Kompetenzbereich «${String(a.area)}». Erlaubt: 1 bis 5.`);
+    if (!track) throw new InputError(`Unknown competence area “${String(a.area)}”. Allowed: 1 to 5.`);
     levels[track.id] = level(a.level);
   }
   return Object.freeze({ source: 'file' as const, fileName, assessedOn: typeof f.assessedOn === 'string' ? f.assessedOn : null, levels: Object.freeze(levels) });

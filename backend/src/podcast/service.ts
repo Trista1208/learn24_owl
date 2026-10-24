@@ -51,8 +51,8 @@ export class PodcastService {
         await this.build(lesson, key, (completed, total) => this.jobs.set(key, { state: 'building', completed, total }));
         this.jobs.set(key, this.ready(key));
       } catch (error) {
-        console.warn('Podcast konnte nicht vertont werden:', error instanceof Error ? error.message : 'unbekannter Fehler');
-        this.jobs.set(key, { state: 'error', message: 'Die Vertonung ist gerade nicht möglich. Du kannst das Gespräch hier lesen.' });
+        console.warn('Podcast could not be voiced:', error instanceof Error ? error.message : 'unknown error');
+        this.jobs.set(key, { state: 'error', message: 'The voice-over isn’t possible right now. You can read the conversation here.' });
       }
     });
     return initial;
@@ -63,7 +63,7 @@ export class PodcastService {
     let samples = 0;
     for (const [i, line] of script.entries()) {
       const pcm = await this.speakers[line.speaker].pcm(line.text);
-      if (!pcm.length || pcm.length % 2) throw new Error('Ungültiges Sprachaudio.');
+      if (!pcm.length || pcm.length % 2) throw new Error('Invalid speech audio.');
       const start = samples / AUDIO_RATE;
       chunks.push(pcm); samples += pcm.length / 2;
       lines.push({ ...line, start, end: samples / AUDIO_RATE });
@@ -77,7 +77,7 @@ export class PodcastService {
     const name = `podcast-${hash(audio).slice(0, 12)}.wav`;
     const { a, b } = this.speakers;
     const manifest: PodcastManifest = {
-      schemaVersion: 2, lessonId: lesson.id, title: lesson.title, locale: 'de-CH', hosts: HOSTS,
+      schemaVersion: 2, lessonId: lesson.id, title: lesson.title, locale: 'en-GB', hosts: HOSTS,
       narration: { provider: a.config.provider, voices: { a: a.config.voice, b: b.config.voice }, model: a.config.model },
       duration: samples / AUDIO_RATE, audioUrl: `/podcasts/${key}/${name}`, lines,
     };

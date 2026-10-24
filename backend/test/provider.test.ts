@@ -23,7 +23,7 @@ function setup(provider = 'openai') {
   return { bodies, replies, fetch };
 }
 const text = (value: string) => ({ status: 'completed', output: [{ type: 'message', role: 'assistant', content: [{ type: 'output_text', text: value }] }] });
-const request = { purpose: 'generate' as const, system: 'Write a lesson.', messages: [{ role: 'user' as const, content: 'Photosynthese' }], maxTokens: 3000 };
+const request = { purpose: 'generate' as const, system: 'Write a lesson.', messages: [{ role: 'user' as const, content: 'Photosynthesis' }], maxTokens: 3000 };
 const tool = { name: 'get_learner_state', description: 'Read state', input_schema: { type: 'object', properties: { trackId: { type: 'string' } }, required: ['trackId'] } };
 
 it('routes ordinary calls to Luna and new lessons to Sol with explicit low reasoning and bounded output', async () => {
@@ -101,10 +101,10 @@ it('keeps Anthropic generation and multi-turn planner tools supported with low e
 
 it('gives Anthropic chat calls low effort and room to think, so a reply is never only a thought', async () => {
   const { bodies, replies } = setup('anthropic');
-  const chat = { purpose: 'chat' as const, system: 'Role play', messages: [{ role: 'user' as const, content: 'Hallo' }], maxTokens: 250 };
-  replies.push({ content: [{ type: 'thinking', thinking: '', signature: 'sig' }], stop_reason: 'max_tokens' }, { content: [{ type: 'thinking', thinking: '' }, { type: 'text', text: 'Was ist passiert?' }] });
+  const chat = { purpose: 'chat' as const, system: 'Role play', messages: [{ role: 'user' as const, content: 'Hello' }], maxTokens: 250 };
+  replies.push({ content: [{ type: 'thinking', thinking: '', signature: 'sig' }], stop_reason: 'max_tokens' }, { content: [{ type: 'thinking', thinking: '' }, { type: 'text', text: 'What happened?' }] });
   expect(await callModel(chat)).toMatchObject({ ok: false, error: 'no text in reply (stop_reason max_tokens)' });
-  expect(await callModel(chat)).toMatchObject({ ok: true, text: 'Was ist passiert?' });
+  expect(await callModel(chat)).toMatchObject({ ok: true, text: 'What happened?' });
   expect(bodies.every(b => b.model === 'claude-haiku-5-5' && b.output_config.effort === 'low' && b.max_tokens === 2250)).toBe(true);
 });
 
@@ -131,8 +131,8 @@ const qwenText = (content: string, finish_reason = 'stop') => ({ choices: [{ fin
 
 it('sends Qwen calls to the free OVH endpoint without a key by default', async () => {
   const { calls, replies } = setupQwen();
-  replies.push(qwenText('Hallo!'));
-  expect(await callModel(request)).toMatchObject({ ok: true, text: 'Hallo!' });
+  replies.push(qwenText('Hello!'));
+  expect(await callModel(request)).toMatchObject({ ok: true, text: 'Hello!' });
   expect(calls[0].url).toBe('https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions');
   expect(calls[0].headers.authorization).toBeUndefined();
   expect(calls[0].body).toMatchObject({ model: 'Qwen2.5-VL-72B-Instruct', stream: false, max_tokens: 5000, messages: [{ role: 'system', content: 'Write a lesson.' }, ...request.messages] });
@@ -141,8 +141,8 @@ it('sends Qwen calls to the free OVH endpoint without a key by default', async (
 
 it('works with a local Ollama Qwen and strips its thinking', async () => {
   const { calls, replies } = setupQwen({ QWEN_BASE_URL: 'http://localhost:11434/v1', QWEN_MODEL: 'qwen2.5:7b' });
-  replies.push(qwenText('<think>Ich überlege.</think>\n\nDie Antwort.'));
-  expect(await callModel(request)).toMatchObject({ ok: true, text: 'Die Antwort.' });
+  replies.push(qwenText('<think>Let me think.</think>\n\nThe answer.'));
+  expect(await callModel(request)).toMatchObject({ ok: true, text: 'The answer.' });
   expect(calls[0]).toMatchObject({ url: 'http://localhost:11434/v1/chat/completions', body: { model: 'qwen2.5:7b' } });
 });
 

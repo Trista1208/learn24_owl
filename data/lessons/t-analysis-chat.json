@@ -4,37 +4,37 @@
     "trackId": "t-analysis",
     "type": "ai-chat",
     "level": "Mittelstufe",
-    "title": "Erklär mir die Ableitung",
-    "intro": "Erklär der KI in eigenen Worten, was die Ableitung an einer Stelle bedeutet.",
+    "title": "Explain the derivative to me",
+    "intro": "Explain to the AI in your own words what the derivative at a point means.",
     "durationMin": 5,
     "mode": "ai",
     "targets": ["steigung", "grenzwert"],
-    "transfer": "Wenn du das nächste Mal eine Ableitung ausrechnest, sag dir in einem Satz, welche Steigung du gerade bestimmst.",
+    "transfer": "The next time you calculate a derivative, tell yourself in one sentence which slope you are finding.",
     "source": "prepared",
     "content": {
       "kind": "tutor",
-      "goal": "Du erklärst in eigenen Worten, warum die Ableitung die Steigung der Tangente ist und wie aus der Sekante die Tangente wird.",
-      "aiRole": "Du bist ein Lerncoach für Mathematik. Die Person soll in eigenen Worten erklären, was die Ableitung an einer Stelle ist, am Beispiel f(x) = x² bei x = 1 (siehe Material). Lass sie erklären, statt selbst zu erklären. Mögliche Fragen: Was misst die Steigung der Sekante? Was passiert mit der Sekante, wenn h immer kleiner wird? Gegen welche Zahl gehen die Steigungen? Was ist also die Ableitung bei x = 1? Gib keine fertige Erklärung und nenne die Zahl 2 nicht, bevor die Person sie selbst gefunden hat. Ist eine Antwort unklar oder falsch, frag gezielt nach oder gib einen kleinen Hinweis. Eine Frage aufs Mal, höchstens 2–3 kurze Sätze. Zum Schluss bittest du die Person, die Ableitung in einem Satz zu erklären, mit den Wörtern Sekante und Tangente.",
-      "opening": "Schau dir die Kurve f(x) = x² rechts an. Was sagt die Steigung der Sekante durch P und Q über die Kurve aus?",
+      "goal": "You explain in your own words why the derivative is the slope of the tangent and how the secant becomes the tangent.",
+      "aiRole": "You are a maths learning coach. The learner should explain in their own words what the derivative at a point is, using the example f(x) = x² at x = 1 (see material). Let them explain instead of explaining it yourself. Possible questions: what does the slope of the secant measure? What happens to the secant as h gets smaller and smaller? Which number do the slopes approach? So what is the derivative at x = 1? Do not give a finished explanation and do not name the number 2 before the learner has found it themselves. If an answer is unclear or wrong, ask a specific follow-up question or give a small hint. One question at a time, at most 2 to 3 short sentences. Finally, ask the learner to explain the derivative in one sentence, using the words secant and tangent.",
+      "opening": "Look at the curve f(x) = x² on the right. What does the slope of the secant through P and Q tell you about the curve?",
       "material": {
-        "title": "Beispiel",
+        "title": "Example",
         "lines": [
-          "Kurve: f(x) = x²",
-          "Punkt P = (1 | 1), zweiter Punkt Q bei x = 1 + h",
-          "Steigung der Sekante PQ = (f(1 + h) − f(1)) / h",
-          "h = 1 → 3 · h = 0,1 → 2,1 · h = 0,01 → 2,01"
+          "Curve: f(x) = x²",
+          "Point P = (1, 1), second point Q at x = 1 + h",
+          "Slope of the secant PQ = (f(1 + h) − f(1)) / h",
+          "h = 1 → 3 · h = 0.1 → 2.1 · h = 0.01 → 2.01"
         ]
       },
       "criteria": [
-        { "id": "steigung", "label": "Steigung der Tangente", "hint": "Was gibt die Ableitung bei x = 1 an – und welche Zahl ist es hier?", "patterns": ["steigung", "tangente", "steil", "(=|ist|gleich|genau|gegen) ?2(?![,.]?\\d)", "ableitung (ist|=)", "berühr"] },
-        { "id": "grenzwert", "label": "Sekante wird Tangente", "hint": "Was passiert mit der Sekante, wenn h immer kleiner wird?", "patterns": ["näher", "kleiner", "gegen (0|null)", "grenzwert|limes|\\blim\\b", "h ?(→|->|geht) ?(gegen )?(0|null)", "annäher|nähert", "sekante"] }
+        { "id": "steigung", "label": "Slope of the tangent", "hint": "What does the derivative at x = 1 tell you, and which number is it here?", "patterns": ["slope", "tangent", "steep", "(=|is|equals|exactly|approaches|towards|to) ?2(?![,.]?\\d)", "derivative (is|=)", "touch"] },
+        { "id": "grenzwert", "label": "Secant becomes tangent", "hint": "What happens to the secant as h gets smaller and smaller?", "patterns": ["closer", "smaller", "(approaches|towards|goes to|tends to) (0|zero)", "limit|\\blim\\b", "h ?(→|->|goes to|tends to) ?(0|zero)", "approach", "secant"] }
       ],
       "fallbackReplies": [
-        "Gut. Und was passiert mit der Sekante, wenn h immer kleiner wird? Schau dir die Zahlen unten im Material an.",
-        "Gegen welche Zahl gehen diese Steigungen? Und was ist dann aus der Sekante geworden?",
-        "Was sagt diese Zahl über die Kurve bei x = 1 aus?",
-        "Erklär jetzt in einem Satz, was die Ableitung an einer Stelle ist. Benutze die Wörter Sekante und Tangente.",
-        "Danke, das ist eine Erklärung in deinen eigenen Worten. Du kannst die Lektion jetzt abschliessen."
+        "Good. And what happens to the secant as h gets smaller and smaller? Look at the numbers at the bottom of the material.",
+        "Which number do these slopes approach? And what has the secant become then?",
+        "What does this number tell you about the curve at x = 1?",
+        "Now explain in one sentence what the derivative at a point is. Use the words secant and tangent.",
+        "Thanks, that is an explanation in your own words. You can finish the lesson now."
       ],
       "minTurns": 3
     }

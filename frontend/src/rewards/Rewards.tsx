@@ -10,7 +10,7 @@ const BADGE_ICONS: Record<Achievement['id'], IconName> = {
 
 export function XpBar({ progress, label, from }: { progress: LevelProgress; label: string; from?: number }) {
   return (
-    <span className="xp-bar" role="progressbar" aria-label={label} aria-valuenow={progress.intoLevel} aria-valuemin={0} aria-valuemax={XP_PER_LEVEL} aria-valuetext={`${progress.intoLevel} von ${XP_PER_LEVEL} XP bis Level ${progress.level + 1}`}>
+    <span className="xp-bar" role="progressbar" aria-label={label} aria-valuenow={progress.intoLevel} aria-valuemin={0} aria-valuemax={XP_PER_LEVEL} aria-valuetext={`${progress.intoLevel} of ${XP_PER_LEVEL} XP to level ${progress.level + 1}`}>
       <span className={from === undefined ? '' : 'xp-fill-earned'} style={{ width: `${progress.percent}%`, '--xp-from': `${from ?? 0}%` } as CSSProperties} />
     </span>
   );
@@ -19,22 +19,22 @@ export function XpBar({ progress, label, from }: { progress: LevelProgress; labe
 export function RewardsSummary({ progress, name }: { progress: LearningProgress; name: string }) {
   const { t: ui } = useI18n();
   return (
-    <section className="rewards-hero" aria-label={`Dein Lernfortschritt, Level ${progress.level}`}>
+    <section className="rewards-hero" aria-label={`Your learning progress, level ${progress.level}`}>
       <div className="rewards-main">
         <div className="level-emblem" aria-hidden="true"><Icon name="star" size={23} /><strong>{progress.level}</strong><span>{ui("LEVEL")}</span></div>
         <div className="rewards-intro">
           <p className="eyebrow">{name}</p>
-          <h2>{ui("Dein Fortschritt")}</h2>
+          <h2>{ui("Your progress")}</h2>
         </div>
       </div>
       <div className="hero-progress">
-        <div className="xp-label"><strong><Icon name="sparkle" size={17} />{progress.xp} {ui("XP gesammelt")}</strong><span>{ui("Level")} {progress.level + 1}</span></div>
-        <XpBar progress={progress} label={ui("Dein Gesamtlevel")} />
-        <p>{ui("Noch")} {progress.toNextLevel} {ui("XP bis zum nächsten Level")}</p>
+        <div className="xp-label"><strong><Icon name="sparkle" size={17} />{progress.xp} {ui("XP collected")}</strong><span>{ui("Level")} {progress.level + 1}</span></div>
+        <XpBar progress={progress} label={ui("Your overall level")} />
+        <p>{progress.toNextLevel} {ui("XP to the next level")}</p>
       </div>
       <div className="rewards-stats">
-        <span><Icon name="book" size={18} /><strong>{progress.completedLessons}</strong> {progress.completedLessons === 1 ? ui('Lektion') : ui('Lektionen')}</span>
-        <span><Icon name="trophy" size={18} /><strong>{progress.achievements.filter((a) => a.unlocked).length}</strong> {ui("von")} {progress.achievements.length} {ui("Abzeichen")}</span>
+        <span><Icon name="book" size={18} /><strong>{progress.completedLessons}</strong> {progress.completedLessons === 1 ? ui('Lesson') : ui('lessons')}</span>
+        <span><Icon name="trophy" size={18} /><strong>{progress.achievements.filter((a) => a.unlocked).length}</strong> {ui("of")} {progress.achievements.length} {ui("badges")}</span>
       </div>
     </section>
   );
@@ -42,17 +42,17 @@ export function RewardsSummary({ progress, name }: { progress: LearningProgress;
 
 export function LearningGoals({ progress }: { progress: LearningProgress }) {
   const { t: ui } = useI18n();
-  const days = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
-    <section className="learning-goals" aria-label={ui("Deine Lernziele")}>
+    <section className="learning-goals" aria-label={ui("Your learning goals")}>
       <div className={`daily-goal${progress.todayComplete ? ' goal-done' : ''}`}>
         <span className="goal-icon"><Icon name={progress.todayComplete ? 'check' : 'target'} size={23} /></span>
-        <div><span className="eyebrow">{ui("Dein Tagesziel")}</span><strong>{progress.todayComplete ? ui('Geschafft!') : ui('Eine Lektion abschliessen')}</strong></div>
+        <div><span className="eyebrow">{ui("Your daily goal")}</span><strong>{progress.todayComplete ? ui('Done!') : ui('Finish one lesson')}</strong></div>
       </div>
       <div className="weekly-goal">
-        <div><strong>{ui("Deine Lernwoche")}</strong><span className="small muted">{Math.min(progress.weekActiveDays, 3)} {ui("/ 3 Lerntage")}{progress.weekActiveDays >= 3 ? ui(' · Geschafft!') : ''}</span></div>
-        <ol className="week-days" aria-label={ui("Lerntage dieser Woche")}>
-          {days.map((day, index) => <li key={day} className={progress.weekDays[index] ? 'active' : ''} aria-label={`${day}: ${progress.weekDays[index] ? 'gelernt' : 'noch offen'}`}><span>{day}</span><span className="day-dot">{progress.weekDays[index] && <Icon name="check" size={14} />}</span></li>)}
+        <div><strong>{ui("Your learning week")}</strong><span className="small muted">{Math.min(progress.weekActiveDays, 3)} {ui("/ 3 learning days")}{progress.weekActiveDays >= 3 ? ui(' · Done!') : ''}</span></div>
+        <ol className="week-days" aria-label={ui("Learning days this week")}>
+          {days.map((day, index) => <li key={day} className={progress.weekDays[index] ? 'active' : ''} aria-label={`${day}: ${progress.weekDays[index] ? 'learned' : 'still open'}`}><span>{day}</span><span className="day-dot">{progress.weekDays[index] && <Icon name="check" size={14} />}</span></li>)}
         </ol>
       </div>
     </section>
@@ -63,15 +63,15 @@ export function Achievements({ achievements }: { achievements: Achievement[] }) 
   const { t: ui } = useI18n();
   return (
     <section className="achievements" aria-labelledby="achievements-title">
-      <div className="section-heading"><h2 id="achievements-title">{ui("Deine Meilensteine")}</h2></div>
+      <div className="section-heading"><h2 id="achievements-title">{ui("Your milestones")}</h2></div>
       <ul className="badge-grid">
         {achievements.map((badge) => <li key={badge.id} className={`achievement${badge.unlocked ? ' unlocked' : ''}`}>
           <span className="badge-medal" aria-hidden="true"><Icon name={BADGE_ICONS[badge.id]} size={27} /><span className="badge-state"><Icon name={badge.unlocked ? 'check' : 'lock'} size={12} /></span></span>
           <strong>{ui(badge.name)}</strong><p>{ui(badge.description)}</p>
-          <span className="badge-count">{badge.unlocked ? ui('Verdient!') : `${badge.progress} / ${badge.target}`}</span>
+          <span className="badge-count">{badge.unlocked ? ui('Earned!') : `${badge.progress} / ${badge.target}`}</span>
         </li>)}
       </ul>
-      <details className="xp-explained"><summary>{ui("Wie sammle ich XP?")}</summary><p>{ui("XP sind Erfahrungspunkte. Für eine neue Lektion bekommst du 40 XP, dazu bis zu 60 XP für erreichte Lernziele. Jedes Format zählt gleich viel. Tipps kosten keine Punkte. Bei Wiederholungen gibt es die zusätzlichen XP für ein besseres Ergebnis. Alle 200 XP steigst du ein Level auf, insgesamt und im jeweiligen Thema. Diese Level zeigen deinen Lernweg; dein DCC-Testresultat bleibt separat.")}</p></details>
+      <details className="xp-explained"><summary>{ui("How do I collect XP?")}</summary><p>{ui("XP are experience points. A new lesson gives you 40 XP, plus up to 60 XP for learning goals you reach. Every format counts the same. Hints cost no points. When you repeat a lesson, you get the extra XP for a better result. Every 200 XP you go up a level, overall and in each topic. These levels show your learning path; your DCC test result stays separate.")}</p></details>
     </section>
   );
 }
@@ -88,15 +88,15 @@ export function RewardCelebration({ reward, progress, trackId, trackName }: { re
   const topic = progress.tracks[trackId] ?? levelProgress(0);
   const previous = levelProgress(Math.max(0, topic.xp - reward.xp));
   return (
-    <section className={`reward-celebration${levelUp ? ' level-up' : ''}`} aria-label={ui("Deine Belohnung")}>
+    <section className={`reward-celebration${levelUp ? ' level-up' : ''}`} aria-label={ui("Your reward")}>
       {reward.xp > 0 && <div className="celebration-sparks" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <i key={i} style={{ '--i': i } as CSSProperties} />)}</div>}
       <span className="celebration-medal" aria-hidden="true"><Icon name={levelUp ? 'trophy' : 'star'} size={36} /></span>
-      <p className="eyebrow">{levelUp ? `Level ${reward.levelAfter} erreicht!` : reward.firstCompletion ? ui('Geschafft!') : reward.xp > 0 ? ui('Verbessert!') : ui('Wiederholung abgeschlossen')}</p>
-      <h3 className="xp-earned">{reward.xp > 0 ? `+${reward.xp} XP` : ui('Übung abgeschlossen')}</h3>
-      {reward.xp === 0 && <p>{ui("Weitere XP gibt es für ein besseres Ergebnis.")}</p>}
-      <div className="reward-topic"><div className="xp-label"><strong>{trackName}</strong><span>{ui("Level")} {topic.level}</span></div><XpBar progress={topic} label={`Dein Fortschritt in ${trackName}`} from={topicLevelUp ? 0 : previous.percent} /><span className="small muted">{topicLevelUp ? `Neues Themenlevel: Level ${topic.level}!` : `Noch ${topic.toNextLevel} XP bis Level ${topic.level + 1}`}</span></div>
-      {reward.achievements.map((badge) => <div className="unlocked-reward" key={badge.id}><Icon name={BADGE_ICONS[badge.id]} size={24} /><span><span className="eyebrow">{ui("Neues Abzeichen")}</span><strong>{ui(badge.name)}</strong></span><Icon name="check" size={20} /></div>)}
-      {(reward.dailyGoalReached || reward.weeklyGoalReached) && <p className="goal-reached"><Icon name="check" size={18} />{reward.weeklyGoalReached ? ui('Wochenziel geschafft: an 3 Tagen gelernt!') : ui('Dein Tagesziel ist geschafft!')}</p>}
+      <p className="eyebrow">{levelUp ? `Level ${reward.levelAfter} reached!` : reward.firstCompletion ? ui('Done!') : reward.xp > 0 ? ui('Improved!') : ui('Review finished')}</p>
+      <h3 className="xp-earned">{reward.xp > 0 ? `+${reward.xp} XP` : ui('Exercise finished')}</h3>
+      {reward.xp === 0 && <p>{ui("You get more XP for a better result.")}</p>}
+      <div className="reward-topic"><div className="xp-label"><strong>{trackName}</strong><span>{ui("Level")} {topic.level}</span></div><XpBar progress={topic} label={`Your progress in ${trackName}`} from={topicLevelUp ? 0 : previous.percent} /><span className="small muted">{topicLevelUp ? `New topic level: level ${topic.level}!` : `${topic.toNextLevel} XP to level ${topic.level + 1}`}</span></div>
+      {reward.achievements.map((badge) => <div className="unlocked-reward" key={badge.id}><Icon name={BADGE_ICONS[badge.id]} size={24} /><span><span className="eyebrow">{ui("New badge")}</span><strong>{ui(badge.name)}</strong></span><Icon name="check" size={20} /></div>)}
+      {(reward.dailyGoalReached || reward.weeklyGoalReached) && <p className="goal-reached"><Icon name="check" size={18} />{reward.weeklyGoalReached ? ui('Weekly goal reached: you learned on 3 days!') : ui('You reached your daily goal!')}</p>}
     </section>
   );
 }

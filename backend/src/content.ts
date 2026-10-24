@@ -23,11 +23,11 @@ function load() {
   for (const f of files) {
     for (const l of readJson<Lesson[]>(join('lessons', f))) {
       const track = tracks.get(l.trackId);
-      const errors = track ? validateLesson(l, { track }) : [`unbekannter Track ${l.trackId}`];
-      if (ids.has(l.id)) errors.push('doppelte Lektions-ID');
+      const errors = track ? validateLesson(l, { track }) : [`unknown track ${l.trackId}`];
+      if (ids.has(l.id)) errors.push('duplicate lesson ID');
       if (errors.length) {
         rejectedLessons.push({ id: l.id, file: f, errors });
-        console.warn(`Lektion ${l.id} (${f}) verworfen: ${errors.join('; ')}`);
+        console.warn(`Lesson ${l.id} (${f}) discarded: ${errors.join('; ')}`);
         continue;
       }
       ids.add(l.id);

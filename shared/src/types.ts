@@ -4,6 +4,7 @@ import type { LearningProgress } from './rewards.ts';
 
 export type DccLevel = 'Grundstufe' | 'Mittelstufe' | 'Fortgeschritten';
 export const DCC_LEVELS: DccLevel[] = ['Grundstufe', 'Mittelstufe', 'Fortgeschritten'];
+export const DCC_LEVEL_LABEL: Record<DccLevel, string> = { Grundstufe: 'Foundation', Mittelstufe: 'Intermediate', Fortgeschritten: 'Advanced' };
 
 export type Mode = 'alone' | 'ai' | 'peer';
 /** Where content or a decision came from. Shown as a tag in the UI. */
@@ -18,7 +19,7 @@ export interface DccProfile {
   source: 'file' | 'manual';
   fileName?: string;
   assessedOn: string | null;
-  /** level per track id; null = "nicht erhoben" (never treated as low) */
+  /** level per track id; null = "not assessed" (never treated as low) */
   levels: Record<string, DccLevel | null>;
 }
 
@@ -65,7 +66,7 @@ export interface TrackSource {
 }
 
 export interface CustomTrackInfo {
-  /** What the learner typed, e.g. "Security+ Prüfung bestehen" */
+  /** What the learner typed, e.g. "Pass the Security+ exam" */
   topic: string;
   createdAt: string;
   /** Model that designed the track */
@@ -79,7 +80,7 @@ export interface CustomTrackInfo {
 }
 
 /** Skill that holds the tracks a learner created from own topics */
-export const CUSTOM_SKILL = { id: 'custom', name: 'Eigene Themen', dccBased: false } as const;
+export const CUSTOM_SKILL = { id: 'custom', name: 'Own topics', dccBased: false } as const;
 
 export interface Criterion {
   id: string;
@@ -150,7 +151,7 @@ export interface NarratedVideoManifest {
   schemaVersion: 1;
   lessonId: string;
   title: string;
-  locale: 'de-CH';
+  locale: 'en-GB';
   scriptHash: string;
   narration: { provider: 'local' | 'elevenlabs'; voice: string; model?: string };
   scenes: {
@@ -183,7 +184,7 @@ export interface PodcastManifest {
   schemaVersion: 2;
   lessonId: string;
   title: string;
-  locale: 'de-CH';
+  locale: 'en-GB';
   hosts: Record<PodcastSpeaker, string>;
   narration: { provider: 'local' | 'elevenlabs'; voices: Record<PodcastSpeaker, string>; model?: string };
   duration: number;
@@ -453,7 +454,7 @@ export interface LearningRecord {
   author: 'rule' | 'agent';
 }
 
-/** Merkblatt line: a rule of thumb or a glossary term the learner has demonstrated */
+/** Cheat sheet line: a rule of thumb or a glossary term the learner has demonstrated */
 export interface ReferenceEntry {
   section: 'rule' | 'term';
   title: string;
@@ -648,19 +649,19 @@ export interface ContentBundle {
   lessons: Lesson[];
 }
 
-export const MODE_LABEL: Record<Mode, string> = { alone: 'Alleine', ai: 'Mit KI', peer: 'Mit anderen' };
-export const SOURCE_LABEL: Record<Source, string> = { rule: 'Regel', model: 'KI', prepared: 'Vorbereitet', simulation: 'Simulation' };
+export const MODE_LABEL: Record<Mode, string> = { alone: 'Alone', ai: 'With AI', peer: 'With others' };
+export const SOURCE_LABEL: Record<Source, string> = { rule: 'Rule', model: 'AI', prepared: 'Prepared', simulation: 'Simulation' };
 export const RECORD_KIND_LABEL: Record<RecordKind, string> = {
-  demonstrated: 'Ohne Hilfe gezeigt',
-  'prior-knowledge': 'Vorwissen',
-  misconception: 'Fehlvorstellung korrigiert',
-  'mission-shift': 'Mission geändert',
+  demonstrated: 'Shown without help',
+  'prior-knowledge': 'Prior knowledge',
+  misconception: 'Misconception corrected',
+  'mission-shift': 'Mission changed',
 };
-export const LERNSTAND_LABEL: Record<LernstandState, string> = { unbekannt: 'noch offen', 'am-ueben': 'am Üben', sicher: 'kann ich' };
+export const LERNSTAND_LABEL: Record<LernstandState, string> = { unbekannt: 'still open', 'am-ueben': 'practising', sicher: 'I can do it' };
 export const TYPE_LABEL: Record<LessonType, string> = {
   video: 'Video',
-  'ai-chat': 'Mit der KI',
-  'mock-site': 'Webseite prüfen',
-  'mark-evidence': 'Text prüfen',
+  'ai-chat': 'With the AI',
+  'mock-site': 'Check a website',
+  'mark-evidence': 'Check a text',
   podcast: 'Podcast',
 };

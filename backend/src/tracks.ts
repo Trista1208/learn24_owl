@@ -32,6 +32,6 @@ export const ruleOfThumb = (st: Stored, trackId: string, id: string) => trackIn(
 
 export const defaultMission = (st: Stored, trackId: string) => {
   const t = trackIn(st, trackId);
-  return t?.mission?.default ?? `Ich will in «${t?.name ?? trackId}» sicherer werden.`;
+  return t?.mission?.default ?? `I want to get more confident in “${t?.name ?? trackId}”.`;
 };
 export const missionOf = (st: Stored, trackId: string): Mission | undefined => st.missions.find((m) => m.trackId === trackId);

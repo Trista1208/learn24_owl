@@ -4,35 +4,35 @@
     "trackId": "t-info",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Warum erfindet eine KI Angaben?",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "Why does an AI invent details?",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["quelle"],
-    "transfer": "Markiere in der nächsten KI-Zusammenfassung bei der Arbeit jede konkrete Angabe: Datum, Zahl, Name, Entscheid.",
+    "transfer": "In the next AI summary at work, mark every concrete detail: date, number, name, decision.",
     "source": "prepared",
     "content": {
       "scenes": [
-        { "caption": "Ein Sprachmodell schreibt Wort für Wort. Bei jedem Schritt wählt es ein Wort, das gut zum bisherigen Text passt.", "visual": "next-word", "seconds": 6 },
-        { "caption": "Nach «Das Team trifft sich nächsten …» passt «Montag» sehr gut. Ob das stimmt, prüft das Modell dabei nicht.", "visual": "next-word", "seconds": 7 },
-        { "caption": "Fehlt der Tag in der Notiz, füllt das Modell die Lücke mit etwas Plausiblem. Plausibel heisst aber nicht belegt.", "visual": "invented-detail", "seconds": 7 },
-        { "caption": "Darum prüfst du jede konkrete Angabe an der Quelle: Datum, Zahl, Person, Entscheid.", "visual": "invented-detail", "seconds": 6 }
+        { "caption": "A language model writes word by word. At each step it picks a word that fits the text so far.", "visual": "next-word", "seconds": 6 },
+        { "caption": "After “The team meets next …”, “Monday” fits very well. Whether it is true, the model does not check.", "visual": "next-word", "seconds": 7 },
+        { "caption": "If the day is missing from the note, the model fills the gap with something plausible. But plausible does not mean supported.", "visual": "invented-detail", "seconds": 7 },
+        { "caption": "That is why you check every concrete detail against the source: date, number, person, decision.", "visual": "invented-detail", "seconds": 6 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Warum schreibt die KI «Montag»?",
-          "options": ["Die Notiz nennt ausdrücklich einen Montag", "Das Wort passt gut zum Satzanfang", "Teams treffen sich meistens am Montag"],
+          "prompt": "Why does the AI write “Monday”?",
+          "options": ["The note explicitly names a Monday", "The word fits the start of the sentence", "Teams usually meet on a Monday"],
           "correct": 1,
-          "explanation": "Das Modell wählt, was sprachlich gut passt. Ob die Quelle es deckt, ist eine andere Frage.",
+          "explanation": "The model picks what fits the language well. Whether the source covers it is another question.",
           "criterion": "quelle"
         },
         {
           "afterScene": 3,
-          "prompt": "Was prüfst du in einer KI-Zusammenfassung zuerst?",
-          "options": ["Ob der Text freundlich klingt", "Ob Rechtschreibung und Satzbau stimmen", "Konkrete Angaben: Daten und Namen"],
+          "prompt": "What do you check first in an AI summary?",
+          "options": ["Whether the text sounds friendly", "Whether spelling and grammar are right", "Concrete details such as dates and names"],
           "correct": 2,
-          "explanation": "Konkrete Angaben sind die Stellen, an denen Lücken mit Erfundenem gefüllt werden.",
+          "explanation": "Concrete details are the places where gaps get filled with made-up content.",
           "criterion": "quelle"
         }
       ]
@@ -43,19 +43,19 @@
     "trackId": "t-info",
     "type": "mark-evidence",
     "level": "Grundstufe",
-    "title": "Wann trifft sich das Team?",
-    "intro": "Ist jeder Satz der KI-Zusammenfassung durch die Notiz belegt?",
+    "title": "When does the team meet?",
+    "intro": "Is every sentence of the AI summary supported by the note?",
     "durationMin": 1,
     "mode": "alone",
     "targets": ["zeit"],
-    "transfer": "Prüfe in deiner nächsten Sitzungszusammenfassung jeden Termin: Steht er so in deinen Notizen?",
+    "transfer": "In your next meeting summary, check every date: is it in your notes like that?",
     "source": "prepared",
     "content": {
-      "noteTitle": "Notiz aus der Teamsitzung",
-      "note": ["Das Team trifft sich nächste Woche.", "Der Wochentag ist noch offen.", "Lukas bringt die Unterlagen mit."],
+      "noteTitle": "Note from the team meeting",
+      "note": ["The team meets next week.", "The day of the week is still open.", "Lukas brings the documents."],
       "summary": [
-        { "id": "s1", "text": "Das Team trifft sich nächsten Montag.", "verdict": "erfunden", "criterion": "zeit", "explanation": "Die Notiz nennt nur «nächste Woche». Der Wochentag ist ausdrücklich offen.", "hint": "Woher weiss die KI, dass das Treffen am Montag stattfindet?", "correction": "Das Team trifft sich nächste Woche. Der genaue Tag ist noch offen." },
-        { "id": "s2", "text": "Lukas bringt die Unterlagen mit.", "verdict": "belegt", "explanation": "Steht so in der Notiz." }
+        { "id": "s1", "text": "The team meets next Monday.", "verdict": "erfunden", "criterion": "zeit", "explanation": "The note only says “next week”. The day of the week is explicitly open.", "hint": "How does the AI know the meeting is on Monday?", "correction": "The team meets next week. The exact day is still open." },
+        { "id": "s2", "text": "Lukas brings the documents.", "verdict": "belegt", "explanation": "The note says exactly this." }
       ]
     }
   },
@@ -64,19 +64,19 @@
     "trackId": "t-info",
     "type": "mark-evidence",
     "level": "Grundstufe",
-    "title": "Die neuen Bildschirme",
-    "intro": "Ist jeder Satz der KI-Zusammenfassung durch die Notiz belegt?",
+    "title": "The new screens",
+    "intro": "Is every sentence of the AI summary supported by the note?",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["zeit"],
-    "transfer": "Achte bei KI-Texten auf Termine, die von einer Bedingung abhängen. Bleibt die Bedingung erhalten?",
+    "transfer": "In AI texts, watch for dates that depend on a condition. Is the condition still there?",
     "source": "prepared",
     "content": {
-      "noteTitle": "Notiz der IT",
-      "note": ["Die neuen Bildschirme werden geliefert, sobald der Lieferant bestätigt.", "Eine Bestätigung liegt noch nicht vor.", "Die IT installiert sie danach an einem Nachmittag."],
+      "noteTitle": "Note from IT",
+      "note": ["The new screens will be delivered as soon as the supplier confirms.", "There is no confirmation yet.", "IT will then install them in one afternoon."],
       "summary": [
-        { "id": "s1", "text": "Die IT installiert die Bildschirme an einem Nachmittag.", "verdict": "belegt", "explanation": "Steht so in der Notiz." },
-        { "id": "s2", "text": "Die Bildschirme werden am 14. März geliefert.", "verdict": "erfunden", "criterion": "zeit", "explanation": "Ein Liefertermin steht nirgends. Die Lieferung hängt von einer Bestätigung ab, die noch fehlt.", "hint": "Was muss passieren, bevor ein Liefertermin feststeht?", "correction": "Die Bildschirme werden geliefert, sobald der Lieferant bestätigt. Das ist noch offen." }
+        { "id": "s1", "text": "IT installs the screens in one afternoon.", "verdict": "belegt", "explanation": "The note says exactly this." },
+        { "id": "s2", "text": "The screens will be delivered on 14 March.", "verdict": "erfunden", "criterion": "zeit", "explanation": "No delivery date is given anywhere. The delivery depends on a confirmation that is still missing.", "hint": "What has to happen before a delivery date is fixed?", "correction": "The screens will be delivered as soon as the supplier confirms. That is still open." }
       ]
     }
   },
@@ -85,20 +85,20 @@
     "trackId": "t-info",
     "type": "mark-evidence",
     "level": "Mittelstufe",
-    "title": "Budget und Frist",
-    "intro": "Diesmal kann mehr als ein Satz nicht belegt sein.",
+    "title": "Budget and deadline",
+    "intro": "This time more than one sentence may be unsupported.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["zeit", "status"],
-    "transfer": "Schreibe offene Entscheide in einem KI-Protokoll ausdrücklich als «offen», bevor du es weiterleitest.",
+    "transfer": "Before you forward AI meeting minutes, write open decisions explicitly as “open”.",
     "source": "prepared",
     "content": {
-      "noteTitle": "Notiz aus der Projektsitzung",
-      "note": ["Nora erstellt die Dokumentation.", "Eine Frist wurde nicht vereinbart.", "Ob das Budget freigegeben wird, ist noch offen."],
+      "noteTitle": "Note from the project meeting",
+      "note": ["Nora writes the documentation.", "No deadline was agreed.", "Whether the budget will be approved is still open."],
       "summary": [
-        { "id": "s1", "text": "Nora ist für die Dokumentation zuständig.", "verdict": "belegt", "explanation": "Nora erstellt die Dokumentation – das deckt «zuständig»." },
-        { "id": "s2", "text": "Nora liefert die Dokumentation bis Freitag.", "verdict": "erfunden", "criterion": "zeit", "explanation": "Laut Notiz wurde keine Frist vereinbart.", "hint": "Welche Frist wurde für die Dokumentation vereinbart?", "correction": "Nora erstellt die Dokumentation. Die Frist ist noch offen." },
-        { "id": "s3", "text": "Das Budget ist freigegeben.", "verdict": "erfunden", "criterion": "status", "explanation": "Die Freigabe ist laut Notiz noch offen. Die KI macht aus einer offenen Frage einen Entscheid.", "hint": "Ist über das Budget schon entschieden worden?", "correction": "Über die Budgetfreigabe ist noch nicht entschieden." }
+        { "id": "s1", "text": "Nora is responsible for the documentation.", "verdict": "belegt", "explanation": "Nora writes the documentation, which covers “responsible”." },
+        { "id": "s2", "text": "Nora delivers the documentation by Friday.", "verdict": "erfunden", "criterion": "zeit", "explanation": "According to the note, no deadline was agreed.", "hint": "Which deadline was agreed for the documentation?", "correction": "Nora writes the documentation. The deadline is still open." },
+        { "id": "s3", "text": "The budget has been approved.", "verdict": "erfunden", "criterion": "status", "explanation": "According to the note, the approval is still open. The AI turns an open question into a decision.", "hint": "Has the budget already been decided?", "correction": "The budget approval has not been decided yet." }
       ]
     }
   },
@@ -107,20 +107,20 @@
     "trackId": "t-info",
     "type": "mark-evidence",
     "level": "Mittelstufe",
-    "title": "Wer macht was?",
-    "intro": "Diesmal kann mehr als ein Satz nicht belegt sein.",
+    "title": "Who does what?",
+    "intro": "This time more than one sentence may be unsupported.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["person", "bedingung"],
-    "transfer": "Prüfe in der nächsten KI-Aufgabenliste bei jeder Aufgabe den Namen und jedes «falls».",
+    "transfer": "In the next AI task list, check the name and every “if” for each task.",
     "source": "prepared",
     "content": {
-      "noteTitle": "Notiz aus dem Kundenprojekt",
-      "note": ["Amir bereitet die Präsentation vor.", "Julia prüft die Zahlen, falls Amir bis Mittwoch fertig ist.", "Den Versand an die Kundin übernimmt Amir."],
+      "noteTitle": "Note from the customer project",
+      "note": ["Amir prepares the presentation.", "Julia checks the numbers if Amir is finished by Wednesday.", "Amir sends the documents to the customer."],
       "summary": [
-        { "id": "s1", "text": "Julia bereitet die Präsentation vor.", "verdict": "erfunden", "criterion": "person", "explanation": "Die Präsentation bereitet laut Notiz Amir vor.", "hint": "Wer bereitet laut Notiz die Präsentation vor?", "correction": "Amir bereitet die Präsentation vor." },
-        { "id": "s2", "text": "Julia prüft die Zahlen.", "verdict": "erfunden", "criterion": "bedingung", "explanation": "Die Notiz knüpft das an eine Bedingung: nur falls Amir bis Mittwoch fertig ist.", "hint": "Gilt das in der Notiz ohne Wenn und Aber?", "correction": "Julia prüft die Zahlen, falls Amir bis Mittwoch fertig ist." },
-        { "id": "s3", "text": "Amir verschickt die Unterlagen an die Kundin.", "verdict": "belegt", "explanation": "Den Versand übernimmt laut Notiz Amir." }
+        { "id": "s1", "text": "Julia prepares the presentation.", "verdict": "erfunden", "criterion": "person", "explanation": "According to the note, Amir prepares the presentation.", "hint": "Who prepares the presentation according to the note?", "correction": "Amir prepares the presentation." },
+        { "id": "s2", "text": "Julia checks the numbers.", "verdict": "erfunden", "criterion": "bedingung", "explanation": "The note ties this to a condition: only if Amir is finished by Wednesday.", "hint": "Does the note say this without any ifs or buts?", "correction": "Julia checks the numbers if Amir is finished by Wednesday." },
+        { "id": "s3", "text": "Amir sends the documents to the customer.", "verdict": "belegt", "explanation": "According to the note, Amir does the sending." }
       ]
     }
   },
@@ -129,20 +129,20 @@
     "trackId": "t-info",
     "type": "mark-evidence",
     "level": "Fortgeschritten",
-    "title": "Das Pilotprojekt",
-    "intro": "Mehrere Angaben können verändert sein. Prüfe jeden Satz einzeln.",
+    "title": "The pilot project",
+    "intro": "Several details may have changed. Check each sentence on its own.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["bedingung", "zahl"],
-    "transfer": "Lies eine KI-Zusammenfassung einmal nur auf Zahlen und einmal nur auf «falls» und «sofern».",
+    "transfer": "Read an AI summary once only for numbers, and once only for “if” and “provided that”.",
     "source": "prepared",
     "content": {
-      "noteTitle": "Notiz aus der Geschäftsleitung",
-      "note": ["Das Pilotprojekt startet im zweiten Quartal, sofern der Datenschutz zustimmt.", "Geplant sind drei Standorte.", "Die Kosten werden im Mai geschätzt."],
+      "noteTitle": "Note from the management board",
+      "note": ["The pilot project starts in the second quarter, provided that data protection agrees.", "Three sites are planned.", "The costs will be estimated in May."],
       "summary": [
-        { "id": "s1", "text": "Die Kosten werden im Mai geschätzt.", "verdict": "belegt", "explanation": "Steht so in der Notiz." },
-        { "id": "s2", "text": "Das Pilotprojekt startet im zweiten Quartal.", "verdict": "erfunden", "criterion": "bedingung", "explanation": "Die Bedingung «sofern der Datenschutz zustimmt» fehlt. So klingt der Start beschlossen.", "hint": "Unter welcher Bedingung startet das Projekt?", "correction": "Das Pilotprojekt startet im zweiten Quartal, sofern der Datenschutz zustimmt." },
-        { "id": "s3", "text": "Geplant sind fünf Standorte.", "verdict": "erfunden", "criterion": "zahl", "explanation": "Die Notiz nennt drei Standorte.", "hint": "Wie viele Standorte nennt die Notiz?", "correction": "Geplant sind drei Standorte." }
+        { "id": "s1", "text": "The costs will be estimated in May.", "verdict": "belegt", "explanation": "The note says exactly this." },
+        { "id": "s2", "text": "The pilot project starts in the second quarter.", "verdict": "erfunden", "criterion": "bedingung", "explanation": "The condition “provided that data protection agrees” is missing. This makes the start sound decided.", "hint": "Under which condition does the project start?", "correction": "The pilot project starts in the second quarter, provided that data protection agrees." },
+        { "id": "s3", "text": "Five sites are planned.", "verdict": "erfunden", "criterion": "zahl", "explanation": "The note names three sites.", "hint": "How many sites does the note name?", "correction": "Three sites are planned." }
       ]
     }
   },
@@ -151,31 +151,31 @@
     "trackId": "t-info",
     "type": "ai-chat",
     "level": "Mittelstufe",
-    "title": "Woher stammt diese Zahl?",
-    "intro": "Kläre mit der KI, wie du eine Behauptung aus einem KI-Text überprüfst.",
+    "title": "Where does this number come from?",
+    "intro": "Work out with the AI how to check a claim from an AI text.",
     "durationMin": 4,
     "mode": "ai",
     "targets": ["quelle", "zahl"],
-    "transfer": "Wenn ein KI-Text eine Studie oder Zahl nennt: Such die Originalquelle, bevor du die Zahl weitergibst.",
+    "transfer": "When an AI text names a study or a number: find the original source before you pass the number on.",
     "source": "prepared",
     "content": {
       "kind": "tutor",
-      "goal": "Am Schluss formulierst du eine eigene Prüfregel für Zahlen und Studien in KI-Texten.",
-      "aiRole": "Du bist ein Lerncoach. Die Person soll lernen, eine Zahl oder Studie aus einem KI-Text zu überprüfen. Stelle Rückfragen, statt die Lösung zu verraten: Wer hat die Studie gemacht? Wo findet man sie? Steht die Zahl dort wirklich so? Nach drei Antworten bittest du die Person, ihre eigene Prüfregel in einem Satz zu formulieren.",
-      "opening": "Schau dir den Satz rechts an. Was müsstest du wissen, bevor du diese Zahl in einer Präsentation verwendest?",
+      "goal": "At the end you write your own checking rule for numbers and studies in AI texts.",
+      "aiRole": "You are a learning coach. The learner should learn to check a number or study from an AI text. Ask questions instead of giving away the solution: who did the study? Where can you find it? Does the number really appear there like that? After three answers, ask the learner to put their own checking rule into one sentence.",
+      "opening": "Look at the sentence on the right. What would you need to know before using this number in a presentation?",
       "material": {
-        "title": "Aus einem KI-Chat (erfunden)",
-        "lines": ["«Laut einer Studie der Universität Zürich arbeiten 73 % der Angestellten mit KI produktiver.»"]
+        "title": "From an AI chat (made up)",
+        "lines": ["“According to a study by the University of Zurich, 73% of employees are more productive with AI.”"]
       },
       "criteria": [
-        { "id": "quelle", "label": "Originalquelle suchen", "hint": "Wer hat die Studie gemacht, und wo findest du sie selbst?", "patterns": ["quelle", "original", "studie (suchen|finden|öffnen|lesen|nachschauen)", "link", "veröffentlich", "wer hat"] },
-        { "id": "zahl", "label": "Zahl an der Quelle prüfen", "hint": "Steht die Zahl in der Studie genau so, und was wurde gemessen?", "patterns": ["73", "zahl", "prozent", "gemessen", "stichprobe", "wie viele"] }
+        { "id": "quelle", "label": "Find the original source", "hint": "Who did the study, and where can you find it yourself?", "patterns": ["source", "original", "(find|look up|open|read|search for|check) the study", "link", "publish", "who (did|made|wrote|conducted)"] },
+        { "id": "zahl", "label": "Check the number at the source", "hint": "Does the number appear in the study exactly like that, and what was measured?", "patterns": ["73", "number", "percent", "measured", "sample", "how many"] }
       ],
       "fallbackReplies": [
-        "Gute Frage. Wie könntest du herausfinden, ob es diese Studie wirklich gibt?",
-        "Angenommen, du findest die Studie. Was prüfst du dort als Erstes an der Zahl?",
-        "Fass das jetzt in einer eigenen Prüfregel zusammen: Was tust du, bevor du eine Zahl aus einem KI-Text weitergibst?",
-        "Danke. Behalte diese Regel – du kannst die Lektion jetzt abschliessen."
+        "Good question. How could you find out whether this study really exists?",
+        "Suppose you find the study. What is the first thing you check there about the number?",
+        "Now sum it up in your own checking rule: what do you do before you pass on a number from an AI text?",
+        "Thanks. Keep this rule. You can finish the lesson now."
       ],
       "minTurns": 3
     }

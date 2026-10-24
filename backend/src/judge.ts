@@ -18,10 +18,10 @@ export function partialMarkEvidence(lesson: MarkEvidenceLesson, a: MarkAnswer): 
   const missing = lesson.content.summary.filter((s) => s.verdict === 'erfunden' && a.marks[s.id] !== 'erfunden').length;
   const wrong = lesson.content.summary.filter((s) => s.verdict === 'belegt' && a.marks[s.id] === 'erfunden').length;
   const parts = [
-    missing ? n(missing, 'Eine Angabe ist nicht durch die Notiz gedeckt.', '{n} Angaben sind nicht durch die Notiz gedeckt.') : '',
-    wrong ? n(wrong, 'Ein Satz, den du als erfunden markiert hast, steht so in der Notiz.', '{n} Sätze, die du als erfunden markiert hast, stehen so in der Notiz.') : '',
+    missing ? n(missing, 'One statement is not covered by the note.', '{n} statements are not covered by the note.') : '',
+    wrong ? n(wrong, 'One sentence you marked as made up is in the note as written.', '{n} sentences you marked as made up are in the note as written.') : '',
   ].filter(Boolean);
-  return { complete: !missing && !wrong, message: parts.join(' ') || 'Alles stimmt.' };
+  return { complete: !missing && !wrong, message: parts.join(' ') || 'Everything is correct.' };
 }
 
 export function judgeMarkEvidence(lesson: MarkEvidenceLesson, a: MarkAnswer, track?: Track): LessonResult {
@@ -34,18 +34,18 @@ export function judgeMarkEvidence(lesson: MarkEvidenceLesson, a: MarkAnswer, tra
       const ok = mark === 'erfunden';
       const key = s.criterion ?? 'quelle';
       criteria.push({ key, label: criterionLabel(track, key), status: ok ? 'met' : 'missed' });
-      items.push({ label: s.text, correct: ok, text: `${ok ? 'Richtig erkannt.' : 'Übersehen.'} ${s.explanation}${s.correction ? ` Korrekt wäre: «${s.correction}»` : ''}` });
+      items.push({ label: s.text, correct: ok, text: `${ok ? 'Correctly spotted.' : 'Missed.'} ${s.explanation}${s.correction ? ` Correct would be: “${s.correction}”` : ''}` });
     } else {
       const ok = mark !== 'erfunden';
       if (!ok) falseAlarms++;
-      items.push({ label: s.text, correct: ok, text: `${ok ? 'Richtig: belegt.' : 'Dieser Satz ist belegt.'} ${s.explanation}` });
+      items.push({ label: s.text, correct: ok, text: `${ok ? 'Correct: supported by the note.' : 'This sentence is supported by the note.'} ${s.explanation}` });
     }
   }
   const missed = criteria.filter((c) => c.status === 'missed').length;
   const allMet = missed === 0 && falseAlarms === 0;
   const summary = allMet
-    ? 'Alle erfundenen Angaben gefunden, keine belegte verdächtigt.'
-    : [missed ? n(missed, 'Eine erfundene Angabe übersehen.', '{n} erfundene Angaben übersehen.') : '', falseAlarms ? n(falseAlarms, 'Eine belegte Angabe als erfunden markiert.', '{n} belegte Angaben als erfunden markiert.') : ''].filter(Boolean).join(' ');
+    ? 'Found every made-up statement and suspected none of the supported ones.'
+    : [missed ? n(missed, 'Missed one made-up statement.', 'Missed {n} made-up statements.') : '', falseAlarms ? n(falseAlarms, 'Marked one supported statement as made up.', 'Marked {n} supported statements as made up.') : ''].filter(Boolean).join(' ');
   return { allMet, criteria, items, summary, judgedBy: 'rule' };
 }
 
@@ -58,8 +58,8 @@ export function partialMockSite(lesson: MockSiteLesson, a: MockAnswer): PartialC
   const signals = parts(lesson).filter((p) => p.signal);
   const found = signals.filter((p) => a.marked.includes(p.id)).length;
   const verdictOk = a.verdict === lesson.content.correctVerdict;
-  const msg = signals.length ? `Du hast ${found} von ${signals.length} Warnzeichen gefunden.` : 'Prüfe noch einmal, was wirklich verdächtig ist.';
-  return { complete: found === signals.length && verdictOk, message: verdictOk ? msg : `${msg} Prüfe auch deinen Entscheid noch einmal.` };
+  const msg = signals.length ? `You found ${found} of ${signals.length} warning signs.` : 'Check again what is really suspicious.';
+  return { complete: found === signals.length && verdictOk, message: verdictOk ? msg : `${msg} Check your decision again too.` };
 }
 
 export function judgeMockSite(lesson: MockSiteLesson, a: MockAnswer, track?: Track): LessonResult {
@@ -69,20 +69,20 @@ export function judgeMockSite(lesson: MockSiteLesson, a: MockAnswer, track?: Tra
     const marked = a.marked.includes(p.id);
     if (p.signal) {
       criteria.push({ key: p.signal.criterion, label: criterionLabel(track, p.signal.criterion), status: marked ? 'met' : 'missed' });
-      items.push({ label: p.text, correct: marked, text: `${marked ? 'Gefunden.' : 'Übersehen.'} ${p.signal.explanation}` });
+      items.push({ label: p.text, correct: marked, text: `${marked ? 'Found.' : 'Missed.'} ${p.signal.explanation}` });
     } else if (marked) {
-      items.push({ label: p.text, correct: lesson.content.correctVerdict === 'phishing', text: `Kein starkes Zeichen. ${p.harmless ?? ''}`.trim() });
+      items.push({ label: p.text, correct: lesson.content.correctVerdict === 'phishing', text: `Not a strong sign. ${p.harmless ?? ''}`.trim() });
     }
   }
   const verdictOk = a.verdict === lesson.content.correctVerdict;
-  criteria.push({ key: 'entscheid', label: 'Entscheid Phishing oder echt', status: verdictOk ? 'met' : 'missed' });
+  criteria.push({ key: 'entscheid', label: 'Decision: phishing or genuine', status: verdictOk ? 'met' : 'missed' });
   const overFlagged = lesson.content.correctVerdict === 'echt' && a.marked.length > 1;
   const signalsMissed = criteria.filter((c) => c.status === 'missed').length - (verdictOk ? 0 : 1);
   const total = parts(lesson).filter((p) => p.signal).length;
-  const verdictText = lesson.content.correctVerdict === 'phishing' ? 'Phishing' : 'echt';
+  const verdictText = lesson.content.correctVerdict === 'phishing' ? 'phishing' : 'genuine';
   const summary = [
-    verdictOk ? `Entscheid richtig: ${verdictText}.` : `Entscheid nicht richtig: Die Mail ist ${verdictText}.`,
-    total ? `${total - signalsMissed} von ${total} Warnzeichen gefunden.` : overFlagged ? 'Du hast einiges als verdächtig markiert, das hier harmlos ist.' : '',
+    verdictOk ? `Correct decision: ${verdictText}.` : `Wrong decision: the email is ${verdictText}.`,
+    total ? `Found ${total - signalsMissed} of ${total} warning signs.` : overFlagged ? 'You marked several things as suspicious that are harmless here.' : '',
     lesson.content.verdictExplanation,
   ].filter(Boolean).join(' ');
   return { allMet: verdictOk && signalsMissed === 0 && !overFlagged, criteria, items, summary, judgedBy: 'rule' };
@@ -97,10 +97,10 @@ export function judgeQuiz(lesson: VideoLesson | PodcastLesson, a: { answers: Rec
     const ok = a.answers[i] === q.correct;
     const key = q.criterion ?? lesson.targets[0];
     criteria.push({ key, label: criterionLabel(track, key), status: ok ? 'met' : 'missed' });
-    items.push({ label: q.prompt, correct: ok, text: `${ok ? 'Richtig.' : `Richtig wäre: «${q.options[q.correct]}».`} ${q.explanation}` });
+    items.push({ label: q.prompt, correct: ok, text: `${ok ? 'Correct.' : `The right answer: “${q.options[q.correct]}”.`} ${q.explanation}` });
   });
   const ok = criteria.filter((c) => c.status === 'met').length;
-  return { allMet: ok === criteria.length, criteria, items, summary: `${ok} von ${criteria.length} Fragen richtig.`, judgedBy: 'rule' };
+  return { allMet: ok === criteria.length, criteria, items, summary: `${ok} of ${criteria.length} questions correct.`, judgedBy: 'rule' };
 }
 
 // --- Chat with the AI (keyword fallback; the model judge is in services.ts) ---------------------
@@ -124,7 +124,7 @@ export function chatResult(lesson: AiChatLesson, criteria: CriterionResult[], ju
     return {
       label: c.label,
       correct: c.status === 'met',
-      text: c.status === 'met' ? `Erfüllt.${c.note ? ` ${c.note}` : ''}` : `Fehlt noch.${c.note ? ` ${c.note}` : ''} ${def?.hint ?? ''}${tip ? ` ${tip}` : ''}`.trim(),
+      text: c.status === 'met' ? `Met.${c.note ? ` ${c.note}` : ''}` : `Still missing.${c.note ? ` ${c.note}` : ''} ${def?.hint ?? ''}${tip ? ` ${tip}` : ''}`.trim(),
     };
   });
   const met = criteria.filter((c) => c.status === 'met').length;
@@ -132,7 +132,7 @@ export function chatResult(lesson: AiChatLesson, criteria: CriterionResult[], ju
     allMet: met === criteria.length,
     criteria,
     items,
-    summary: `${met} von ${criteria.length} Punkten erfüllt.${judgedBy === 'keywords' ? ' (Grobe Prüfung über Stichwörter, ohne KI.)' : ''}`,
+    summary: `${met} of ${criteria.length} points met.${judgedBy === 'keywords' ? ' (Rough check by keywords, without AI.)' : ''}`,
     judgedBy,
   };
 }

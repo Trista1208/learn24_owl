@@ -48,7 +48,7 @@ export function get(id: string): Stored {
       st = loaded;
     }
   }
-  if (!st) throw new HttpError(404, 'Sitzung nicht gefunden. Bitte neu anmelden.');
+  if (!st) throw new HttpError(404, 'Session not found. Please sign in again.');
   return st;
 }
 
@@ -65,13 +65,13 @@ export function save(st: Stored) {
 
 function lessonById(s: Session, id: string): Lesson {
   const l = allLessons(s).find((x) => x.id === id);
-  if (!l) throw new HttpError(404, 'Lektion nicht gefunden');
+  if (!l) throw new HttpError(404, 'Lesson not found');
   return l;
 }
 
 function nodeById(s: Session, id: string): MapNode & { lessonId: string } {
   const n = s.nodes.find((x) => x.id === id);
-  if (!n || n.kind !== 'lesson' || !n.lessonId) throw new HttpError(404, 'Knoten nicht gefunden');
+  if (!n || n.kind !== 'lesson' || !n.lessonId) throw new HttpError(404, 'Node not found');
   return n as MapNode & { lessonId: string };
 }
 
@@ -97,7 +97,7 @@ export function login(input: LoginInput): Stored {
   const existing = findByName(name)[0];
   if (existing && input.resume !== 'continue' && input.resume !== 'new') {
     const conflict: LoginConflict = { code: 'learner-exists', name: existing.name, createdAt: existing.createdAt, lessonsDone: readState(existing.id)?.events.length ?? 0 };
-    throw new HttpError(409, `Es gibt schon einen Verlauf für «${existing.name}».`, conflict);
+    throw new HttpError(409, `There is already a history for “${existing.name}”.`, conflict);
   }
   if (existing && input.resume === 'continue') return resume(existing.id, input);
   return createLearner(name, input);
@@ -138,11 +138,11 @@ function createLearner(name: string, input: LoginInput): Stored {
   return st;
 }
 
-/** "Weitermachen": a new session on the existing workspace. Nothing is deleted. */
+/** "Continue": a new session on the existing workspace. Nothing is deleted. */
 function resume(learnerId: string, input: LoginInput): Stored {
   const cached = [...cache.values()].find((x) => x.profile.id === learnerId);
   const st = cached ?? loadLearner(learnerId);
-  if (!st) throw new HttpError(500, 'Verlauf konnte nicht gelesen werden');
+  if (!st) throw new HttpError(500, 'History could not be read');
   for (const [id, x] of cache) if (x === st) cache.delete(id);
 
   if (!sameDcc(st.dcc, input.dcc)) {
@@ -164,7 +164,7 @@ function resume(learnerId: string, input: LoginInput): Stored {
     modelCalls: [],
     planning: false,
   });
-  for (const r of s.plannerRuns) if (r.outcome === 'running') Object.assign(r, { outcome: 'fallback', note: 'Abgebrochen: neue Sitzung', finishedAt: nowIso() });
+  for (const r of s.plannerRuns) if (r.outcome === 'running') Object.assign(r, { outcome: 'fallback', note: 'Cancelled: new session', finishedAt: nowIso() });
   keepOrRecommend(st);
   save(st);
   cache.set(s.id, st);
@@ -304,11 +304,11 @@ function placeTrack(s: Session, track: Track, skill: { id: string; name: string 
 export function addTracks(st: Stored, ids: unknown) {
   const s = st.session;
   const list = Array.isArray(ids) ? [...new Set(ids.map(String))] : [];
-  if (!list.length) throw new HttpError(400, 'Welche Bereiche? trackIds fehlt.');
+  if (!list.length) throw new HttpError(400, 'Which areas? trackIds is missing.');
   for (const id of list) {
     const t = catalogTrack(id);
-    if (!t) throw new HttpError(404, `Den Bereich ${id} gibt es nicht.`);
-    if (trackIn(st, id)) throw new HttpError(409, `«${t.name}» ist schon auf deiner Karte.`);
+    if (!t) throw new HttpError(404, `The area ${id} does not exist.`);
+    if (trackIn(st, id)) throw new HttpError(409, `“${t.name}” is already on your map.`);
   }
   for (const id of list) {
     placeTrack(s, catalogTrack(id)!, content.skills.find((x) => x.tracks.some((t) => t.id === id))!);
@@ -321,29 +321,29 @@ export function addTracks(st: Stored, ids: unknown) {
 const clean = (v: unknown) => String(v ?? '').replace(/ß/g, 'ss').replace(/\s+/g, ' ').trim();
 
 /**
- * Creates a track from an own topic, e.g. "Security+ Prüfung bestehen". The model designs it (designer.ts),
+ * Creates a track from an own topic, e.g. "pass the Security+ exam". The model designs it (designer.ts),
  * New clients defer the first lesson until topic/format selection; legacy clients receive a starter.
  */
 export async function createTrack(st: Stored, body: { topic?: unknown; goal?: unknown; selfLevel?: unknown; lessonType?: unknown; deferLesson?: unknown }): Promise<Track> {
   const s = st.session;
-  if (offline(s)) throw new HttpError(409, 'Eigene Bereiche plant der Agent mit KI. Ohne KI kannst du einen vorbereiteten Bereich wählen.');
+  if (offline(s)) throw new HttpError(409, 'The agent plans your own areas with AI. Without AI you can choose a prepared area.');
   const topic = clean(body.topic);
   const goal = clean(body.goal);
-  if (body.lessonType !== undefined && body.lessonType !== 'video') throw new HttpError(400, 'Als gewünschter Einstieg ist derzeit nur video möglich.');
-  if (topic.length < 3 || topic.length > 120) throw new HttpError(400, 'Das Thema braucht 3 bis 120 Zeichen.');
-  if (goal.length > 300) throw new HttpError(400, 'Wofür: höchstens 300 Zeichen.');
+  if (body.lessonType !== undefined && body.lessonType !== 'video') throw new HttpError(400, 'Only video is possible as the first lesson for now.');
+  if (topic.length < 3 || topic.length > 120) throw new HttpError(400, 'The topic needs 3 to 120 characters.');
+  if (goal.length > 300) throw new HttpError(400, 'What for: at most 300 characters.');
   const selfLevel = (DCC_LEVELS as unknown[]).includes(body.selfLevel) ? (body.selfLevel as DccLevel) : 'Grundstufe';
-  if (st.tracks.length >= MAX_OWN_TRACKS) throw new HttpError(409, `Höchstens ${MAX_OWN_TRACKS} eigene Bereiche.`);
+  if (st.tracks.length >= MAX_OWN_TRACKS) throw new HttpError(409, `At most ${MAX_OWN_TRACKS} own areas.`);
   if (generatedThisSession(s) >= GENERATED_PER_SESSION) {
-    throw new HttpError(429, `In dieser Sitzung hat die KI schon ${GENERATED_PER_SESSION} Lektionen erstellt. In der nächsten Sitzung geht es weiter.`);
+    throw new HttpError(429, `The AI has already created ${GENERATED_PER_SESSION} lessons in this session. It continues in the next session.`);
   }
 
   const design = await designTrack({ topic, goal: goal || undefined, selfLevel, timeoutMs: generateMs() }, (c) => s.modelCalls.push(c));
-  if (!design.ok) throw new HttpError(502, `Der Agent konnte «${topic}» nicht als Bereich planen: ${design.errors.join('; ')}`);
+  if (!design.ok) throw new HttpError(502, `The agent could not plan “${topic}” as an area: ${design.errors.join('; ')}`);
   const { track } = design;
   if (body.lessonType === 'video') track.custom!.lessonTypes = [...new Set(['video' as const, ...track.custom!.lessonTypes])];
   const first = body.deferLesson === true ? undefined : await firstLesson(st, track, goal || undefined, body.lessonType === 'video' ? 'video' : undefined);
-  if (first && !first.ok) throw new HttpError(502, `Der Bereich «${track.name}» ist geplant, aber die erste Lektion war ungültig: ${first.errors.join('; ')}. Versuch es noch einmal.`);
+  if (first && !first.ok) throw new HttpError(502, `The area “${track.name}” is planned, but the first lesson was invalid: ${first.errors.join('; ')}. Try again.`);
 
   st.tracks.push(track);
   writeTrack(st.profile.id, track);
@@ -359,7 +359,7 @@ export async function createTrack(st: Stored, body: { topic?: unknown; goal?: un
     s.topicChoiceFlow = true;
     delete s.topicChoices;
   }
-  // What the learner wrote under "Wofür" is their mission; otherwise it is asked before the first lesson.
+  // What the learner wrote under "What for" is their mission; otherwise it is asked before the first lesson.
   if (goal.length >= 3) setMission(st, track.id, { text: goal });
   else if (body.lessonType === 'video') setMission(st, track.id, { skip: true });
   recommend(st, false, track.id);
@@ -371,12 +371,12 @@ export async function createTrack(st: Stored, body: { topic?: unknown; goal?: un
 export async function nextLesson(st: Stored, trackId: string) {
   const s = st.session;
   const track = trackIn(st, trackId);
-  if (!track) throw new HttpError(404, 'Bereich nicht gefunden');
-  if (!track.custom) throw new HttpError(400, 'Neue Lektionen auf Wunsch gibt es nur in eigenen Bereichen.');
-  if (offline(s)) throw new HttpError(409, 'Neue Lektionen erzeugt der Agent mit KI.');
-  if (s.planning) throw new HttpError(409, 'Der Agent plant gerade deinen nächsten Schritt.');
+  if (!track) throw new HttpError(404, 'Area not found');
+  if (!track.custom) throw new HttpError(400, 'New lessons on request are only available in your own areas.');
+  if (offline(s)) throw new HttpError(409, 'The agent creates new lessons with AI.');
+  if (s.planning) throw new HttpError(409, 'The agent is planning your next step right now.');
   if (!(await ruleLesson(st, trackId))) {
-    throw new HttpError(409, 'Gerade keine neue Lektion: Es ist noch eine offen, die Grenze für diese Sitzung ist erreicht, oder die KI hat keine gültige Lektion erstellt.');
+    throw new HttpError(409, 'No new lesson right now: one is still open, the limit for this session is reached, or the AI did not create a valid lesson.');
   }
   recommend(st, false, trackId);
   save(st);
@@ -390,7 +390,7 @@ export async function nextLesson(st: Stored, trackId: string) {
  */
 export function setMission(st: Stored, trackId: string, body: { text?: unknown; skip?: unknown; confirm?: unknown }): Mission {
   const track = trackIn(st, trackId);
-  if (!track) throw new HttpError(404, 'Bereich nicht gefunden');
+  if (!track) throw new HttpError(404, 'Area not found');
   const existing = missionOf(st, trackId);
   const at = nowIso();
   let mission: Mission;
@@ -399,17 +399,17 @@ export function setMission(st: Stored, trackId: string, body: { text?: unknown; 
     mission = { trackId, text: defaultMission(st, trackId), status: 'default', updatedAt: at };
   } else {
     const text = String(body.text ?? '').replace(/ß/g, 'ss').replace(/\s+/g, ' ').trim();
-    if (text.length < 3 || text.length > 300) throw new HttpError(400, 'Die Mission braucht 3 bis 300 Zeichen.');
+    if (text.length < 3 || text.length > 300) throw new HttpError(400, 'The mission needs 3 to 300 characters.');
     if (existing && existing.text === text) return existing;
-    if (existing && body.confirm !== true) throw new HttpError(409, 'Bitte bestätige die neue Mission.');
+    if (existing && body.confirm !== true) throw new HttpError(409, 'Please confirm the new mission.');
     mission = { trackId, text, status: 'set', updatedAt: at };
     if (existing) {
       const change = { id: newId('mi'), at, trackId, from: existing.text, to: text };
       st.session.missionChanges.push(change);
       addRecord(st, {
         kind: 'mission-shift', trackId, author: 'rule', evidence: [change.id],
-        title: `Mission in «${track.name}» geändert`,
-        body: `Vorher: «${existing.text}». Jetzt: «${text}». Von der Person bestätigt.`,
+        title: `Mission in “${track.name}” changed`,
+        body: `Before: “${existing.text}”. Now: “${text}”. Confirmed by the learner.`,
       });
     }
   }
@@ -452,7 +452,7 @@ export function startNode(st: Stored, nodeId: string): { lesson: Lesson; switche
     // A different topic is a neutral choice in the new flow; preserve legacy API behaviour.
     rec.status = s.topicChoiceFlow ? 'chosen' : 'declined';
     rec.chosenNodeId = nodeId;
-    switched = s.topicChoiceFlow ? 'Du hast eine andere Richtung gewählt. Die übrigen Themen bleiben offen.' : 'Du hast die Alternative gewählt. Der Agent merkt sich das und plant danach neu.';
+    switched = s.topicChoiceFlow ? 'You chose a different direction. The other topics stay open.' : 'You chose the alternative. The agent remembers this and plans again afterwards.';
   }
   delete s.helpUsed[nodeId];
   delete s.checks[nodeId];
@@ -463,22 +463,22 @@ export function startNode(st: Stored, nodeId: string): { lesson: Lesson; switche
 /** Checks one committed response without exposing the other questions or changing the final result. */
 export function answerFeedback(st: Stored, nodeId: string, input: unknown): LessonAnswerFeedback {
   const lesson = lessonById(st.session, nodeById(st.session, nodeId).lessonId);
-  if (!input || typeof input !== 'object') throw new HttpError(400, 'Antwort fehlt');
+  if (!input || typeof input !== 'object') throw new HttpError(400, 'Answer is missing');
   const check = input as Record<string, unknown>;
   if ((lesson.type === 'video' || lesson.type === 'podcast') && check.type === 'quiz') {
     const index = check.questionIndex;
     const option = check.option;
-    if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= lesson.content.questions.length) throw new HttpError(400, 'Frage nicht gefunden');
+    if (typeof index !== 'number' || !Number.isInteger(index) || index < 0 || index >= lesson.content.questions.length) throw new HttpError(400, 'Question not found');
     const question = lesson.content.questions[index];
-    if (typeof option !== 'number' || !Number.isInteger(option) || option < 0 || option >= question.options.length) throw new HttpError(400, 'Ungültige Antwort');
+    if (typeof option !== 'number' || !Number.isInteger(option) || option < 0 || option >= question.options.length) throw new HttpError(400, 'Invalid answer');
     return { correct: option === question.correct, correctOption: question.correct, explanation: question.explanation };
   }
   if (lesson.type === 'mark-evidence' && check.type === 'mark-evidence') {
     const item = lesson.content.summary.find((item) => item.id === check.itemId);
-    if (!item || (check.mark !== 'belegt' && check.mark !== 'erfunden')) throw new HttpError(400, 'Ungültige Antwort');
-    return { correct: check.mark === item.verdict, correctOption: item.verdict === 'belegt' ? 0 : 1, explanation: [item.explanation, item.correction ? `Korrekt wäre: «${item.correction}»` : ''].filter(Boolean).join(' ') };
+    if (!item || (check.mark !== 'belegt' && check.mark !== 'erfunden')) throw new HttpError(400, 'Invalid answer');
+    return { correct: check.mark === item.verdict, correctOption: item.verdict === 'belegt' ? 0 : 1, explanation: [item.explanation, item.correction ? `Correct would be: “${item.correction}”` : ''].filter(Boolean).join(' ') };
   }
-  throw new HttpError(400, 'Diese Antwort passt nicht zur Lektion');
+  throw new HttpError(400, 'This answer does not fit the lesson');
 }
 
 export function partialCheck(st: Stored, nodeId: string, a: Answer): PartialCheck {
@@ -487,7 +487,7 @@ export function partialCheck(st: Stored, nodeId: string, a: Answer): PartialChec
   let c: PartialCheck;
   if (l.type === 'mark-evidence' && a.type === 'mark-evidence') c = partialMarkEvidence(l, a);
   else if (l.type === 'mock-site' && a.type === 'mock-site') c = partialMockSite(l, a);
-  else throw new HttpError(400, 'Zwischenprüfung gibt es nur bei Text- und Webseiten-Aufgaben');
+  else throw new HttpError(400, 'Checking in between is only available for text and website tasks');
   if (!c.complete) s.checks[nodeId] = (s.checks[nodeId] ?? 0) + 1;
   save(st);
   return c;
@@ -500,13 +500,13 @@ export async function hint(st: Stored, nodeId: string, a: Answer): Promise<{ tex
   save(st);
   if (l.type === 'mark-evidence' && a.type === 'mark-evidence') return hintMarkEvidence(l, a.marks, opts(s));
   if (l.type === 'mock-site' && a.type === 'mock-site') return hintMockSite(l, a.marked);
-  return { text: 'Lies die Aufgabe noch einmal und geh Punkt für Punkt vor.', source: 'prepared' };
+  return { text: 'Read the task again and go through it point by point.', source: 'prepared' };
 }
 
 export async function chat(st: Stored, nodeId: string, turns: ChatTurn[]): Promise<{ text: string; source: Source }> {
   const s = st.session;
   const l = lessonById(s, nodeById(s, nodeId).lessonId);
-  if (l.type !== 'ai-chat') throw new HttpError(400, 'Keine Chat-Lektion');
+  if (l.type !== 'ai-chat') throw new HttpError(400, 'Not a chat lesson');
   const reply = await chatReply(l, turns.slice(-20), opts(s));
   save(st);
   return reply;
@@ -522,7 +522,7 @@ export async function complete(st: Stored, nodeId: string, a: Answer, durationMi
   else if (l.type === 'mock-site' && a.type === 'mock-site') result = judgeMockSite(l, a, track);
   else if ((l.type === 'video' && a.type === 'video') || (l.type === 'podcast' && a.type === 'podcast')) result = judgeQuiz(l, a, track);
   else if (l.type === 'ai-chat' && a.type === 'ai-chat') result = await judgeChat(l, a.turns.slice(-30), opts(s), track);
-  else throw new HttpError(400, 'Antwort passt nicht zur Lektion');
+  else throw new HttpError(400, 'Answer does not fit the lesson');
 
   const helpUsed = Boolean(s.helpUsed[nodeId]);
   const attempts = 1 + (s.checks[nodeId] ?? 0);

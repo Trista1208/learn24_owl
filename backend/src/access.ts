@@ -13,7 +13,7 @@ export function parseUsers(raw: string | undefined): Map<string, string> | null 
     const password = entry.slice(i + 1).trim();
     if (i > 0 && name && password) users.set(name, password);
   }
-  if (!users.size) throw new Error('ACCESS_USERS ist gesetzt, enthält aber keinen Eintrag name:passwort');
+  if (!users.size) throw new Error('ACCESS_USERS is set but contains no name:password entry');
   return users;
 }
 
@@ -37,6 +37,6 @@ export function accessGate(raw: string | undefined) {
     const given = credentials(req.headers.authorization);
     const password = given ? users.get(given[0]) : undefined;
     if (given && password !== undefined && same(given[1], password)) return next();
-    res.set('WWW-Authenticate', 'Basic realm="AIthena", charset="UTF-8"').status(401).json({ error: 'Anmeldung erforderlich' });
+    res.set('WWW-Authenticate', 'Basic realm="AIthena", charset="UTF-8"').status(401).json({ error: 'Sign-in required' });
   };
 }

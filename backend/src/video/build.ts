@@ -10,14 +10,14 @@ export interface VideoPlan {
   scenes: { caption: string; visual: string; items: string[]; narration: string[] }[];
 }
 export function videoPlan(lesson: VideoLesson): VideoPlan {
-  if (lesson.type !== 'video' || !lesson.id || !lesson.title || !Array.isArray(lesson.content.scenes) || !lesson.content.scenes.length || lesson.content.scenes.length > 8) throw new Error('Ungültige Video-Lektion.');
+  if (lesson.type !== 'video' || !lesson.id || !lesson.title || !Array.isArray(lesson.content.scenes) || !lesson.content.scenes.length || lesson.content.scenes.length > 8) throw new Error('Invalid video lesson.');
   return {
     lessonId: lesson.id, title: lesson.title, version: VIDEO_TEMPLATE_VERSION,
     scenes: lesson.content.scenes.map((scene, i) => {
-      if (!scene.caption?.trim() || scene.caption.length > 300 || !['steps','url-parts','next-word','invented-detail','falling','secant-tangent','slope-zoom'].includes(scene.visual) || (scene.items?.length ?? 0) > 6 || scene.items?.some(item => typeof item !== 'string' || item.length > 60)) throw new Error('Ungültige Video-Szene.');
-      if ((scene.visual === 'steps' && (scene.items?.length ?? 0) < 2) || (scene.visual === 'url-parts' && scene.items?.length !== 5)) throw new Error('Beschriftungen für das Video fehlen.');
+      if (!scene.caption?.trim() || scene.caption.length > 300 || !['steps','url-parts','next-word','invented-detail','falling','secant-tangent','slope-zoom'].includes(scene.visual) || (scene.items?.length ?? 0) > 6 || scene.items?.some(item => typeof item !== 'string' || item.length > 60)) throw new Error('Invalid video scene.');
+      if ((scene.visual === 'steps' && (scene.items?.length ?? 0) < 2) || (scene.visual === 'url-parts' && scene.items?.length !== 5)) throw new Error('Labels for the video are missing.');
       const prompts = lesson.content.questions.filter(q => q.afterScene === i).map(q => q.prompt);
-      return { caption: scene.caption, visual: scene.visual, items: scene.items ?? [], narration: [scene.caption, ...prompts.map(prompt => `Kurze Denkpause: ${prompt}`)] };
+      return { caption: scene.caption, visual: scene.visual, items: scene.items ?? [], narration: [scene.caption, ...prompts.map(prompt => `A short pause to think: ${prompt}`)] };
     }),
   };
 }
@@ -34,7 +34,7 @@ export async function buildVideo(lesson: VideoLesson, output: string, publicBase
   // Reject unsupported glyphs/layouts before making any paid speech request.
   for (const index of plan.scenes.keys()) validateRenderableScene(await compileSource(videoScene(lesson, index, 30, 20)));
   const manifest: NarratedVideoManifest = {
-    schemaVersion: 1, lessonId: lesson.id, title: lesson.title, locale: 'de-CH', scriptHash: planHash(lesson),
+    schemaVersion: 1, lessonId: lesson.id, title: lesson.title, locale: 'en-GB', scriptHash: planHash(lesson),
     narration: { provider: speaker.config.provider, voice: speaker.config.voice, model: speaker.config.model }, scenes: [],
   };
   const files: { name: string; bytes: Buffer }[] = [];
@@ -43,7 +43,7 @@ export async function buildVideo(lesson: VideoLesson, output: string, publicBase
     let samples = 0;
     for (const text of scene.narration) {
       const pcm = await speaker.pcm(text);
-      if (!pcm.length || pcm.length % 2) throw new Error('Ungültiges Sprachaudio.');
+      if (!pcm.length || pcm.length % 2) throw new Error('Invalid speech audio.');
       const start = samples / AUDIO_RATE;
       chunks.push(pcm); samples += pcm.length / 2;
       captions.push({ start, end: samples / AUDIO_RATE, text });
@@ -53,7 +53,7 @@ export async function buildVideo(lesson: VideoLesson, output: string, publicBase
     const duration = samples / AUDIO_RATE;
     const source = videoScene(lesson, index, duration, captions[0].end);
     const compiled = await compileSource(source);
-    if (Math.abs(compiled.duration - duration) > .000001) throw new Error('Animation und Sprache sind unterschiedlich lang.');
+    if (Math.abs(compiled.duration - duration) > .000001) throw new Error('Animation and speech have different lengths.');
     validateRenderableScene(compiled);
     const audio = wav(Buffer.concat(chunks));
     const name = `scene-${index}-${hash(audio).slice(0, 12)}.wav`;

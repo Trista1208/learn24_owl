@@ -6,7 +6,7 @@
 import type {
   AiChatLesson, DccLevel, DccProfile, LearningEvent, Lesson, MapNode, Observation, RuleId, Skill, Source, Track,
 } from '@l45/shared';
-import { DCC_LEVELS } from '@l45/shared';
+import { DCC_LEVEL_LABEL, DCC_LEVELS } from '@l45/shared';
 
 export interface Decision {
   ruleId: RuleId;
@@ -25,15 +25,15 @@ export interface Decision {
 }
 
 export const RULE_NAME: Record<RuleId, string> = {
-  R0: 'Weiter im Lernweg',
-  R1: 'Wiederholte Schwierigkeit',
-  R2: 'Unterfordert',
-  R3: 'Start nach DCC-Profil',
-  R5: 'Alternative gewählt',
-  R6: 'Hilfe in der Aufgabe',
-  R7: 'Bereich abgeschlossen',
-  R8: 'Bereich gewählt',
-  A1: 'Agent-Plan',
+  R0: 'Next on the learning path',
+  R1: 'Repeated difficulty',
+  R2: 'Not challenged enough',
+  R3: 'Start from the DCC profile',
+  R5: 'Alternative chosen',
+  R6: 'Help in the exercise',
+  R7: 'Area completed',
+  R8: 'Area chosen',
+  A1: 'Agent plan',
 };
 
 // --- Initial plan --------------------------------------------------------------------------
@@ -75,7 +75,7 @@ function trackPriority(input: AgentInput, trackId: string): number {
   const skill = input.skills.find((s) => s.tracks.some((t) => t.id === trackId));
   if (!skill?.dccBased) return 10;
   const level = input.dcc.levels[trackId];
-  // Grundstufe first (largest need according to the DCC), then not assessed (short starter), then higher levels.
+  // Foundation level first (largest need according to the DCC), then not assessed (short starter), then higher levels.
   if (level === 'Grundstufe') return 0;
   if (level === null || level === undefined) return 1;
   return 2 + levelRank(level);
@@ -126,7 +126,7 @@ function newNode(input: AgentInput, lesson: Lesson, parentId: string): MapNode {
 }
 
 export function keywordPatterns(text: string): string[] {
-  const words = text.toLowerCase().replace(/[«».,:;!?()]/g, ' ').split(/\s+/).filter((w) => w.length >= 5);
+  const words = text.toLowerCase().replace(/[«»“”".,:;!?()]/g, ' ').split(/\s+/).filter((w) => w.length >= 5);
   return [...new Set(words)].slice(0, 8).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 }
 
@@ -138,8 +138,8 @@ export function clarifyLesson(track: Track, criterionId: string, n: number): AiC
     trackId: track.id,
     type: 'ai-chat',
     level: 'Grundstufe',
-    title: `Mit KI klären: ${c.label}`,
-    intro: `Du hast «${c.label}» zweimal übersehen. Kläre mit der KI, woran du es erkennst.`,
+    title: `Clear it up with the AI: ${c.label}`,
+    intro: `You missed “${c.label}” twice. Work out with the AI how to recognise it.`,
     durationMin: 3,
     mode: 'ai',
     targets: [criterionId],
@@ -147,15 +147,15 @@ export function clarifyLesson(track: Track, criterionId: string, n: number): AiC
     source: 'prepared',
     content: {
       kind: 'tutor',
-      goal: `Am Schluss sagst du in einem Satz, woran du «${c.label}» erkennst und wie du es prüfst.`,
-      aiRole: `Du bist ein Lerncoach. Die Person hat in Übungen im Bereich «${track.name}» zweimal «${c.label}» übersehen. Hilf ihr mit Rückfragen zu verstehen, woran man das erkennt und wie man es prüft. Ziel ist dieser Merksatz: «${c.ruleOfThumb}». Verrate ihn nicht sofort, lass die Person ihn selbst formulieren.`,
-      opening: `In den letzten Übungen ist dir «${c.label}» zweimal entgangen. Was glaubst du, warum man das leicht übersieht?`,
+      goal: `At the end you say in one sentence how you recognise “${c.label}” and how you check it.`,
+      aiRole: `You are a learning coach. In exercises in the area “${track.name}” the learner missed “${c.label}” twice. Ask follow-up questions that help them understand how to recognise it and how to check it. The goal is this rule of thumb: “${c.ruleOfThumb}”. Do not give it away straight away; let the learner put it into words themselves.`,
+      opening: `In your last exercises you missed “${c.label}” twice. Why do you think it is easy to overlook?`,
       criteria: [{ id: criterionId, label: c.label, hint: c.ruleOfThumb, patterns: keywordPatterns(`${c.label} ${c.ruleOfThumb}`) }],
       fallbackReplies: [
-        'Danke. Woran könntest du beim nächsten Mal schneller merken, dass du hier genau hinschauen musst?',
-        'Gut. Wie würdest du es konkret prüfen, Schritt für Schritt?',
-        `Fass es jetzt in einem eigenen Satz zusammen. Zum Vergleich der Merksatz: «${c.ruleOfThumb}»`,
-        'Danke. Du kannst die Lektion jetzt abschliessen.',
+        'Thanks. Next time, what could tell you sooner that you need to look closely here?',
+        'Good. How exactly would you check it, step by step?',
+        `Now sum it up in a sentence of your own. For comparison, the rule of thumb: “${c.ruleOfThumb}”`,
+        'Thanks. You can finish the lesson now.',
       ],
       minTurns: 3,
     },
@@ -178,11 +178,11 @@ export function decide(input: AgentInput): Decision {
       ruleName: RULE_NAME.R8,
       nodeId: chosen.id,
       alternativeNodeId: other ? frontier(input, other)[0]?.id : undefined,
-      observation: fresh ? `«${t.name}» ist neu auf deiner Karte.` : `Neue Lektion in «${t.name}» angefordert.`,
-      reason: fresh ? `Du hast «${t.name}» eben hinzugefügt. Der Einstieg zeigt, wo du anfängst.` : `Weiter in «${t.name}» mit dem, was als Nächstes dran ist.`,
+      observation: fresh ? `“${t.name}” is new on your map.` : `New lesson requested in “${t.name}”.`,
+      reason: fresh ? `You just added “${t.name}”. The starter shows where you begin.` : `On in “${t.name}” with what comes next.`,
       why: fresh
-        ? 'Ein kurzer Einstieg zeigt, was du schon kannst. Danach passen sich die nächsten Lektionen an dich an.'
-        : 'Diese Lektion übt, was zuletzt noch gefehlt hat, oder etwas Neues.',
+        ? 'A short starter shows what you can already do. After that the next lessons adapt to you.'
+        : 'This lesson practises what was still missing last time, or something new.',
       tags: ['rule'],
     };
   }
@@ -194,9 +194,9 @@ export function decide(input: AgentInput): Decision {
     if (!first) {
       return {
         ...base, ruleId: 'R7', ruleName: RULE_NAME.R7, tags: ['rule'],
-        observation: 'Noch kein Bereich auf der Karte.',
-        reason: 'Füge einen Bereich hinzu: ein eigenes Thema oder einen vorbereiteten Bereich.',
-        why: 'Du bestimmst, welche Themen du lernst.',
+        observation: 'No area on the map yet.',
+        reason: 'Add an area: your own topic or a prepared area.',
+        why: 'You decide which topics you learn.',
       };
     }
     const node = frontier(input, first)[0];
@@ -209,9 +209,9 @@ export function decide(input: AgentInput): Decision {
         ruleName: RULE_NAME.R3,
         nodeId: node.id,
         alternativeNodeId: alt?.id,
-        observation: `«${t.name}» hat keine DCC-Position.`,
-        reason: `Start mit dem Einstieg in «${t.name}».`,
-        why: 'Ein kurzer Einstieg zeigt, was du schon kannst. Danach passen sich die nächsten Lektionen an dich an.',
+        observation: `“${t.name}” has no DCC position.`,
+        reason: `Start with the starter in “${t.name}”.`,
+        why: 'A short starter shows what you can already do. After that the next lessons adapt to you.',
         tags: ['rule'],
       };
     }
@@ -223,11 +223,11 @@ export function decide(input: AgentInput): Decision {
       ruleName: RULE_NAME.R3,
       nodeId: node.id,
       alternativeNodeId: alt?.id,
-      observation: notAssessed ? `Für «${t.name}» gibt es kein DCC-Resultat.` : `DCC-Profil: ${level} in «${t.name}».`,
-      reason: notAssessed ? `Für «${t.name}» fehlt ein DCC-Resultat. Ein kurzer Einstieg zeigt, wo du anfängst.` : `Laut DCC-Profil liegt in «${t.name}» dein grösster Entwicklungsbedarf.`,
+      observation: notAssessed ? `There is no DCC result for “${t.name}”.` : `DCC profile: ${DCC_LEVEL_LABEL[level]} in “${t.name}”.`,
+      reason: notAssessed ? `A DCC result is missing for “${t.name}”. A short starter shows where you begin.` : `According to your DCC profile, “${t.name}” is where you have the most to gain.`,
       why: notAssessed
-        ? 'Ein fehlender Testwert heisst nicht geringe Kompetenz. Deshalb zuerst ein kurzer Einstieg statt eines ganzen Kurses.'
-        : 'Die Lektion passt zu deinem Stand.',
+        ? 'A missing test value does not mean low competence. So first a short starter instead of a whole course.'
+        : 'The lesson fits your level.',
       tags: ['rule'],
     };
   }
@@ -255,8 +255,8 @@ export function decide(input: AgentInput): Decision {
       nodeId: node.id,
       alternativeNodeId: altNode?.id,
       observation: repeated.text,
-      reason: `Du hast «${label(input, T, repeated.criterion)}» ${repeated.count}× übersehen.`,
-      why: 'Wenn derselbe Fehler mehrmals passiert, hilft ein kurzes Gespräch, die Sache zu verstehen. Danach übst du wieder alleine.',
+      reason: `You missed “${label(input, T, repeated.criterion)}” ${repeated.count}×.`,
+      why: 'When the same mistake happens several times, a short conversation helps you understand it. After that you practise on your own again.',
       tags: ['rule', 'model'],
     };
   }
@@ -280,9 +280,9 @@ export function decide(input: AgentInput): Decision {
         ruleName: RULE_NAME.R2,
         nodeId: node.id,
         alternativeNodeId: alt?.id,
-        observation: `Die letzten zwei Lektionen in «${track.name}» ohne Hilfe gelöst.`,
-        reason: `Das klappt schon gut. Der Agent fügt eine anspruchsvollere Lektion (${harder.level}) hinzu.`,
-        why: 'Das war leicht für dich. Etwas Schwierigeres bringt dir mehr.',
+        observation: `Solved the last two lessons in “${track.name}” without help.`,
+        reason: `That already works well. The agent adds a more demanding lesson (${DCC_LEVEL_LABEL[harder.level]}).`,
+        why: 'That was easy for you. Something harder will teach you more.',
         tags: ['rule'],
       };
     }
@@ -309,9 +309,9 @@ export function decide(input: AgentInput): Decision {
         ruleName: RULE_NAME.R0,
         nodeId: node.id,
         alternativeNodeId: altOther?.id,
-        observation: wasHelped ? `«${label(input, T, crit)}» mit Hinweis gefunden.` : `«${label(input, T, crit)}» zuletzt übersehen.`,
-        reason: wasHelped ? `Bei «${label(input, T, crit)}» hast du einen Hinweis gebraucht.` : `«${label(input, T, crit)}» ist dir zuletzt entgangen.`,
-        why: 'Ein weiteres Beispiel zur gleichen Sache zeigt, ob es jetzt alleine klappt.',
+        observation: wasHelped ? `Found “${label(input, T, crit)}” with a hint.` : `Missed “${label(input, T, crit)}” last time.`,
+        reason: wasHelped ? `You needed a hint for “${label(input, T, crit)}”.` : `You missed “${label(input, T, crit)}” last time.`,
+        why: 'Another example of the same thing shows whether it now works on your own.',
         tags: ['rule'],
       };
     }
@@ -325,9 +325,9 @@ export function decide(input: AgentInput): Decision {
       ruleName: RULE_NAME.R0,
       nodeId: next.id,
       alternativeNodeId: altOther?.id,
-      observation: last.result.allMet ? 'Letzte Lektion vollständig gelöst.' : 'Letzte Lektion abgeschlossen.',
-      reason: `Weiter in «${track.name}».`,
-      why: 'Im gleichen Bereich weiterzumachen hilft, das Gelernte zu festigen.',
+      observation: last.result.allMet ? 'Last lesson fully solved.' : 'Last lesson finished.',
+      reason: `On in “${track.name}”.`,
+      why: 'Carrying on in the same area helps to consolidate what you learned.',
       tags: ['rule'],
     };
   }
@@ -341,13 +341,13 @@ export function decide(input: AgentInput): Decision {
       ruleName: RULE_NAME.R7,
       nodeId: altOther.id,
       alternativeNodeId: second ? frontier(input, second)[0]?.id : undefined,
-      observation: `Alle geplanten Lektionen in «${track.name}» erledigt.`,
-      reason: `Weiter mit «${t2.name}», dem nächsten Bereich nach deinem DCC-Profil.`,
-      why: 'Zuerst kommt das Thema, bei dem du am meisten dazulernen kannst.',
+      observation: `All planned lessons in “${track.name}” done.`,
+      reason: `On with “${t2.name}”, the next area according to your DCC profile.`,
+      why: 'The topic where you can learn the most comes first.',
       tags: ['rule'],
     };
   }
-  return { ...base, ruleId: 'R7', ruleName: RULE_NAME.R7, observation: 'Alle geplanten Lektionen erledigt.', reason: 'Du hast alles auf deiner Karte erledigt.', why: 'Wähle ein neues Thema oder lass dir eine weitere Lektion erstellen.', tags: ['rule'] };
+  return { ...base, ruleId: 'R7', ruleName: RULE_NAME.R7, observation: 'All planned lessons done.', reason: 'You have done everything on your map.', why: 'Choose a new topic or have another lesson created.', tags: ['rule'] };
 }
 
 // --- Observations ---------------------------------------------------------------------------
@@ -363,9 +363,9 @@ export function updateObservations(obs: Observation[], ev: LearningEvent, criter
     if (c.status === 'missed') {
       if (active) {
         active.count += 1;
-        active.text = `«${name}» ${active.count}× übersehen`;
+        active.text = `Missed “${name}” ${active.count}×`;
       } else {
-        next.push({ id: makeId(), trackId: ev.trackId, criterion: c.key, text: `«${name}» 1× übersehen`, count: 1, status: 'active', createdAt: ev.at });
+        next.push({ id: makeId(), trackId: ev.trackId, criterion: c.key, text: `Missed “${name}” 1×`, count: 1, status: 'active', createdAt: ev.at });
       }
     } else if (active && !ev.helpUsed && !ev.result.criteria.some((x) => x.key === c.key && x.status === 'missed')) {
       active.status = 'outdated';

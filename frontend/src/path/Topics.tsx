@@ -1,4 +1,4 @@
-// Home: every Bereich with its topics as a plain list. Tapping a topic opens its lessons; a topic the learner has not
+// Home: every area with its topics as a plain list. Tapping a topic opens its lessons; a topic the learner has not
 // started yet is added first. Own topics sit in their own section, with the way to make a new one.
 import { useState, type CSSProperties } from 'react';
 import type { SessionView, Skill } from '@l45/shared';
@@ -51,12 +51,12 @@ export function Topics({ view, onOpen, onOwnTopic, onShowMap, onReview }: {
       <ReviewCard view={view} onStart={onReview} />
       <RewardsSummary progress={view.rewards} name={session.userName} />
       <LearningGoals progress={view.rewards} />
-      <h1 className="home-title">{t('Was möchtest du lernen?')}</h1>
+      <h1 className="home-title">{t('What would you like to learn?')}</h1>
       {lastTrack && (
         <button className="continue-card" style={{ ['--tc' as string]: colors.get(lastTrack.id) } as CSSProperties} onClick={() => onOpen(lastTrack.id)}>
           <span className="continue-icon" aria-hidden="true"><Icon name="play" size={24} /></span>
           <span className="topic-row-text">
-            <span className="eyebrow next">{t('Weiterlernen')}</span>
+            <span className="eyebrow next">{t('Keep learning')}</span>
             <strong>{trackName(lastTrack.id, lastTrack.name)}</strong>
           </span>
           <Icon name="chevron" size={22} />
@@ -82,8 +82,8 @@ export function Topics({ view, onOpen, onOwnTopic, onShowMap, onReview }: {
                     <span className="topic-row-text">
                       <strong>{trackName(tr.id, tr.name)}</strong>
                       {busy === tr.id
-                        ? <span className="small muted">{t('Wird vorbereitet …')}</span>
-                        : mine.has(tr.id) && <span className="small muted">{done === 1 ? t('1 Lektion geschafft') : done ? t('{n} Lektionen geschafft', { n: done }) : ''}</span>}
+                        ? <span className="small muted">{t('Getting ready …')}</span>
+                        : mine.has(tr.id) && <span className="small muted">{done === 1 ? t('1 lesson done') : done ? t('{n} lessons done', { n: done }) : ''}</span>}
                       <TopicLevel progress={view.rewards.tracks[tr.id]} name={trackName(tr.id, tr.name)} />
                     </span>
                     <Icon name="chevron" size={22} />
@@ -96,8 +96,8 @@ export function Topics({ view, onOpen, onOwnTopic, onShowMap, onReview }: {
                 <button className="topic-row new" disabled={Boolean(busy) || !view.canCreateTracks} onClick={onOwnTopic}>
                   <span className="topic-plus" aria-hidden="true"><Icon name="plus" size={20} /></span>
                   <span className="topic-row-text">
-                    <strong>{t('Eigenes Thema anlegen')}</strong>
-                    <span className="small muted">{view.canCreateTracks ? t('Du sagst, was du lernen willst. Die KI plant es für dich.') : t('Geht nur, wenn die KI verbunden ist.')}</span>
+                    <strong>{t('Create your own topic')}</strong>
+                    <span className="small muted">{view.canCreateTracks ? t('You say what you want to learn. The AI plans it for you.') : t('Only works when the AI is connected.')}</span>
                   </span>
                 </button>
               </li>
@@ -107,7 +107,7 @@ export function Topics({ view, onOpen, onOwnTopic, onShowMap, onReview }: {
       ))}
 
       <Achievements achievements={view.rewards.achievements} />
-      <button className="linkbtn path-map" onClick={onShowMap}><Icon name="map" size={18} />{t('Alles als Karte ansehen')}</button>
+      <button className="linkbtn path-map" onClick={onShowMap}><Icon name="map" size={18} />{t('See everything as a map')}</button>
     </div>
   );
 }

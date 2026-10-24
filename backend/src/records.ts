@@ -1,6 +1,6 @@
 // Learning records: decision-grade insights with evidence, not a log. Coverage is not learning.
 // The server checks every record against the events it cites, for records from the rules and from the agent.
-// From the records follow the Lernstand per criterion, the review queue and the Merkblatt.
+// From the records follow the progress per criterion, the review queue and the cheat sheet.
 // None of this touches the DCC profile.
 import type {
   LearningEvent, LearningRecord, LernstandEntry, LernstandState, RecordKind, ReferenceEntry, ReviewItem, Track,
@@ -42,50 +42,50 @@ export function checkRecord(st: Stored, r: RecordInput): string[] {
   const e: string[] = [];
   const s = st.session;
   const track = trackIn(st, r.trackId);
-  if (!track) return [`unbekannter Bereich ${r.trackId}`];
-  if (!RECORD_KINDS.includes(r.kind)) e.push(`unbekannte Art ${String(r.kind)}`);
-  if (!r.title?.trim() || r.title.length > 100) e.push('Titel fehlt oder ist zu lang (100 Zeichen)');
-  if (!r.body?.trim() || r.body.length > 600) e.push('Text fehlt oder ist zu lang (600 Zeichen)');
-  if (!Array.isArray(r.evidence) || r.evidence.length === 0) return [...e, 'Belege fehlen: Event-IDs angeben'];
+  if (!track) return [`unknown area ${r.trackId}`];
+  if (!RECORD_KINDS.includes(r.kind)) e.push(`unknown kind ${String(r.kind)}`);
+  if (!r.title?.trim() || r.title.length > 100) e.push('title is missing or too long (100 characters)');
+  if (!r.body?.trim() || r.body.length > 600) e.push('text is missing or too long (600 characters)');
+  if (!Array.isArray(r.evidence) || r.evidence.length === 0) return [...e, 'evidence is missing: give event ids'];
 
   const needsCriterion = r.kind === 'demonstrated' || r.kind === 'misconception';
-  if (needsCriterion && !r.criterion) e.push('Kriterium fehlt');
-  if (r.criterion && !track.criteria.some((c) => c.id === r.criterion)) e.push(`unbekanntes Kriterium ${r.criterion}`);
+  if (needsCriterion && !r.criterion) e.push('criterion is missing');
+  if (r.criterion && !track.criteria.some((c) => c.id === r.criterion)) e.push(`unknown criterion ${r.criterion}`);
 
   const index = new Map(s.events.map((ev, i) => [ev.id, i]));
   const cited = r.evidence.map((id) => s.events.find((ev) => ev.id === id));
   const missions = r.evidence.map((id) => s.missionChanges.find((m) => m.id === id));
 
   if (r.kind === 'mission-shift') {
-    if (!missions.some((m) => m && m.trackId === r.trackId)) e.push('Eine Mission ändert sich nur, wenn die Person sie bestätigt. Beleg: ID einer Missionsänderung (mi-…)');
+    if (!missions.some((m) => m && m.trackId === r.trackId)) e.push('A mission only changes when the learner confirms it. Evidence: id of a mission change (mi-…)');
   } else {
     r.evidence.forEach((id, i) => {
       const ev = cited[i];
-      if (!ev) e.push(`Beleg ${id} gibt es nicht`);
-      else if (ev.trackId !== r.trackId) e.push(`Beleg ${id} gehört zu einem anderen Bereich`);
+      if (!ev) e.push(`evidence ${id} does not exist`);
+      else if (ev.trackId !== r.trackId) e.push(`evidence ${id} belongs to another area`);
     });
     const evs = cited.filter((ev): ev is LearningEvent => Boolean(ev && ev.trackId === r.trackId));
     if (r.kind === 'demonstrated' && r.criterion) {
       const bad = evs.filter((ev) => !metWithoutHelp(ev, r.criterion!));
       if (!evs.length || bad.length) {
-        e.push(`«demonstrated» braucht Belege, in denen «${r.criterion}» alleine, ohne Hinweis und beim ersten Prüfen erfüllt ist${bad.length ? `; nicht erfüllt in ${bad.map((x) => x.id).join(', ')}` : ''}`);
+        e.push(`"demonstrated" needs evidence in which “${r.criterion}” is met alone, without a hint and at the first check${bad.length ? `; not met in ${bad.map((x) => x.id).join(', ')}` : ''}`);
       }
     }
     if (r.kind === 'misconception' && r.criterion) {
       const misses = evs.filter((ev) => outcome(ev, r.criterion!) === 'missed');
       const fix = evs.find((ev) => outcome(ev, r.criterion!) === 'met' && !ev.helpUsed && misses.some((m) => index.get(m.id)! < index.get(ev.id)!));
-      if (!misses.length || !fix) e.push(`«misconception» braucht einen Beleg, in dem «${r.criterion}» verpasst wurde, und einen späteren ohne Hinweis erfüllten`);
+      if (!misses.length || !fix) e.push(`"misconception" needs evidence in which “${r.criterion}” was missed, and a later one met without a hint`);
     }
   }
 
   if (r.supersedes) {
     const old = st.records.find((x) => x.id === r.supersedes);
-    if (!old) e.push(`${r.supersedes} gibt es nicht`);
-    else if (!isActive(old)) e.push(`${r.supersedes} ist schon ersetzt`);
-    else if (old.trackId !== r.trackId) e.push(`${r.supersedes} gehört zu einem anderen Bereich`);
+    if (!old) e.push(`${r.supersedes} does not exist`);
+    else if (!isActive(old)) e.push(`${r.supersedes} is already replaced`);
+    else if (old.trackId !== r.trackId) e.push(`${r.supersedes} belongs to another area`);
   } else if (r.kind !== 'mission-shift') {
     const dup = st.records.find((x) => isActive(x) && x.trackId === r.trackId && x.kind === r.kind && x.criterion === r.criterion);
-    if (dup) e.push(`Es gibt schon ${dup.id} dazu. Zum Ersetzen supersedes angeben.`);
+    if (dup) e.push(`${dup.id} already covers this. Give supersedes to replace it.`);
   }
   return e;
 }
@@ -156,27 +156,27 @@ export function recordFromEvent(st: Stored, ev: LearningEvent): LearningRecord[]
       if (misses.length && !misc && !demo) {
         out.push(addRecord(st, {
           kind: 'misconception', trackId: ev.trackId, criterion: key, author: 'rule',
-          title: `«${label}» jetzt erkannt`,
-          body: `Zuerst ${misses.length}× verpasst, jetzt ohne Hinweis gelöst. Noch einmal üben, damit es hält. Merksatz: ${ruleOfThumb(st, ev.trackId, key) ?? ''}`,
+          title: `“${label}” now recognised`,
+          body: `Missed ${misses.length}× at first, now solved without a hint. Practise once more so it sticks. Rule of thumb: ${ruleOfThumb(st, ev.trackId, key) ?? ''}`,
           evidence: [misses.at(-1)!.id, ev.id],
         }));
       } else if (ev.mode === 'alone' && (!demo || missedSince(st, demo))) {
         out.push(addRecord(st, {
           kind: 'demonstrated', trackId: ev.trackId, criterion: key, author: 'rule', supersedes: demo?.id,
-          title: `«${label}» ohne Hilfe erkannt`,
-          body: demo ? `Nach einem Fehler wieder ohne Hinweis gelöst. Ersetzt ${demo.id}.` : 'Alleine, ohne Hinweis und beim ersten Prüfen gelöst.',
+          title: `“${label}” recognised without help`,
+          body: demo ? `Solved again without a hint after a mistake. Replaces ${demo.id}.` : 'Solved alone, without a hint and at the first check.',
           evidence: [ev.id],
         }));
       }
     } catch (err) {
       if (!(err instanceof RecordError)) throw err;
-      console.warn(`Lerneintrag nicht geschrieben (${ev.id}, ${key}): ${err.message}`);
+      console.warn(`Learning record not written (${ev.id}, ${key}): ${err.message}`);
     }
   }
   return out;
 }
 
-// --- Lernstand (from the records, never from the DCC) --------------------------------------------------
+// --- Progress per criterion (from the records, never from the DCC) -----------------------------------------------
 
 export function lernstand(st: Stored, trackId: string, criterion: string): LernstandEntry {
   const recs = st.records.filter((r) => isActive(r) && r.trackId === trackId && r.criterion === criterion);
@@ -232,7 +232,7 @@ export function settleReviews(st: Stored, ev: LearningEvent) {
   }
 }
 
-// --- Merkblatt -----------------------------------------------------------------------------------------------
+// --- Cheat sheet ---------------------------------------------------------------------------------------------
 
 export function addReference(st: Stored, trackId: string, entry: ReferenceEntry): boolean {
   const list = st.reference[trackId] ?? (st.reference[trackId] = []);

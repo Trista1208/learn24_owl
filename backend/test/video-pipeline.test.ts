@@ -21,7 +21,7 @@ const temp = () => mkdtemp(join(tmpdir(), 'l45-video-test-'));
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 
 describe('general video pipeline', () => {
-  it('compiles every existing lesson visual and keeps long German labels in frame', async () => {
+  it('compiles every existing lesson visual and keeps long labels in frame', async () => {
     const seen = new Set<string>();
     for (const lesson of lessons) for (const [index, scene] of lesson.content.scenes.entries()) {
       seen.add(scene.visual);
@@ -32,8 +32,8 @@ describe('general video pipeline', () => {
     }
     expect(seen.size).toBe(7);
     const long = structuredClone(lessons.find(l => l.id === 'inh-v1')!);
-    long.title = 'Änderungen und Übergänge mit schwierigen Begriffen verständlich erklären';
-    long.content.scenes = [{ visual: 'steps', seconds: 7, caption: 'Prüfe die Änderungen.', items: Array(6).fill('Änderungen, grössere Übergänge und mögliche Rückfragen prüfen.') }];
+    long.title = 'Explaining changes and transitions with difficult terminology clearly';
+    long.content.scenes = [{ visual: 'steps', seconds: 7, caption: 'Check the changes.', items: Array(6).fill('Check changes, larger transitions and possible follow-up questions.') }];
     const compiled = await compileSource(videoScene(long, 0, 12, 8));
     validateRenderableScene(compiled);
     const frame = evaluateScene(compiled, 12);
@@ -54,7 +54,7 @@ describe('general video pipeline', () => {
     lesson.content.questions.forEach(q => { q.correct = 0; q.options.reverse(); q.explanation = 'SECRET SOLUTION'; });
     expect(planHash(lesson)).toBe(before);
     expect(JSON.stringify(videoPlan(lesson))).not.toContain('SECRET SOLUTION');
-    lesson.content.scenes[0].caption += ' Neu.';
+    lesson.content.scenes[0].caption += ' New.';
     expect(planHash(lesson)).not.toBe(before);
   });
 
@@ -81,14 +81,14 @@ describe('general video pipeline', () => {
     const fetch = vi.fn().mockResolvedValueOnce(new Response(pcm)).mockRejectedValueOnce(new Error('connection lost')).mockResolvedValue(new Response(pcm));
     vi.stubGlobal('fetch', fetch);
     const first = new Speech(config, folder);
-    await Promise.all([first.pcm('Erste Passage.'), first.pcm('Erste Passage.')]);
+    await Promise.all([first.pcm('First passage.'), first.pcm('First passage.')]);
     expect(fetch).toHaveBeenCalledTimes(1);
-    await expect(first.pcm('Zweite Passage.')).rejects.toThrow('connection lost');
+    await expect(first.pcm('Second passage.')).rejects.toThrow('connection lost');
     const restarted = new Speech(config, folder);
-    await restarted.pcm('Erste Passage.');
-    await expect(restarted.pcm('Zweite Passage.')).rejects.toThrow('--retry-failed');
+    await restarted.pcm('First passage.');
+    await expect(restarted.pcm('Second passage.')).rejects.toThrow('--retry-failed');
     expect(fetch).toHaveBeenCalledTimes(2);
-    await new Speech(config, folder, true).pcm('Zweite Passage.');
+    await new Speech(config, folder, true).pcm('Second passage.');
     expect(fetch).toHaveBeenCalledTimes(3);
   });
 
@@ -101,7 +101,7 @@ describe('general video pipeline', () => {
     await request(app).post(`/api/sessions/${login.body.session.id}/tracks`).send({ trackIds: ['t-inhalte'] }).expect(201);
     const st = get(login.body.session.id);
     const lesson = structuredClone(lessons.find(l => l.id === 'inh-v1')!);
-    lesson.id = 'ki-new-topic'; lesson.title = 'Wie funktioniert ein neuer Prozess?'; lesson.source = 'model';
+    lesson.id = 'ki-new-topic'; lesson.title = 'How does a new process work?'; lesson.source = 'model';
     lesson.content.scenes = lesson.content.scenes.slice(0, 2);
     lesson.content.questions[0].afterScene = 0; lesson.content.questions[1].afterScene = 1;
     st.session.generatedLessons.push(lesson);

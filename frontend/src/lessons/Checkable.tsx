@@ -9,7 +9,7 @@ import { LessonProgress, QuestionCard } from './LessonActivity.tsx';
 import { Icon } from '../lib/icons.tsx';
 
 type Mark = 'belegt' | 'erfunden';
-const MARK_LABEL: Record<Mark, string> = { belegt: 'Steht in der Notiz', erfunden: 'Erfunden' };
+const MARK_LABEL: Record<Mark, string> = { belegt: 'In the note', erfunden: 'Invented' };
 
 interface Ctx {
   sessionId: string;
@@ -67,8 +67,8 @@ function HelpBox({ check, hint, onHint, onRetry, busy }: { check: PartialCheck; 
       {!hint ? (
         <>
           <div className="row">
-            <button className="btn secondary" onClick={onHint} disabled={busy}>{ui("Tipp")}</button>
-            <button className="btn quiet" onClick={onRetry}>{ui("Nochmals ansehen")}</button>
+            <button className="btn secondary" onClick={onHint} disabled={busy}>{ui("Hint")}</button>
+            <button className="btn quiet" onClick={onRetry}>{ui("Watch again")}</button>
           </div>
         </>
       ) : (
@@ -87,12 +87,12 @@ export function MarkEvidence({ lesson, ...ctx }: { lesson: MarkEvidenceLesson } 
   const [index, setIndex] = useState(0);
   const item = lesson.content.summary[index];
   return <div className="evidence-activity">
-    <LessonProgress completed={Object.keys(marks).length} total={lesson.content.summary.length} label={ui("Dein Fakten-Check")} />
+    <LessonProgress completed={Object.keys(marks).length} total={lesson.content.summary.length} label={ui("Your fact check")} />
     <div className="evidence-workspace">
       <details className="evidence-source" open><summary><Icon name="book" size={17} />{lesson.content.noteTitle}</summary><ul>{lesson.content.note.map((line, i) => <li key={i}>{line}</li>)}</ul></details>
       <QuestionCard key={item.id} prompt={item.text} options={[MARK_LABEL.belegt, MARK_LABEL.erfunden]} index={index} total={lesson.content.summary.length}
         check={(option) => ({ type: 'mark-evidence', itemId: item.id, mark: option === 0 ? 'belegt' : 'erfunden' })}
-        continueLabel={index + 1 === lesson.content.summary.length ? ui('Lektion abschliessen') : ui('Nächster Satz')} onContinue={async (option) => {
+        continueLabel={index + 1 === lesson.content.summary.length ? ui('Finish lesson') : ui('Next sentence')} onContinue={async (option) => {
           const next: Record<string, Mark> = { ...marks, [item.id]: option === 0 ? 'belegt' : 'erfunden' };
           setMarks(next);
           if (index + 1 === lesson.content.summary.length) await ctx.onComplete({ type: 'mark-evidence', marks: next });
@@ -124,30 +124,30 @@ export function MockSite({ lesson, ...ctx }: { lesson: MockSiteLesson } & Ctx) {
   const hot = (p: MockPart, cls = '', body: ReactNode = p.text) => <button key={p.id} type="button" className={`hot ${cls}`} aria-pressed={marked.includes(p.id)} onClick={() => toggle(p.id)}>{body}{marked.includes(p.id) && <span className="inspection-check" aria-hidden="true"><Icon name="check" size={14} /></span>}</button>;
 
   return <div className="inspection-activity">
-    <LessonProgress completed={step === 'verdict' && verdict ? steps.length : stepIndex} total={steps.length} label={ui("Dein Sicherheits-Check")} detail={`Schritt ${stepIndex + 1} / ${steps.length}`} />
-    <div className="inspection-heading"><h3 ref={heading} tabIndex={-1}>{step === 'mail' ? ui('Was fällt dir in der Mail auf?') : step === 'site' ? ui('Prüfe jetzt die Webseite.') : ui('Wie lautet dein Urteil?')}</h3><span key={marked.length} className="marked-counter" role="status"><Icon name="target" size={15} />{marked.length} {ui("markiert")}</span></div>
-    <div className="inspection-navigation" role="group" aria-label={ui("Schritt auswählen")}>
-      {mail.length > 0 && <button className="btn quiet small" aria-pressed={step === 'mail'} onClick={() => go('mail')}>{ui("1 · E-Mail")}</button>}
-      <button className="btn quiet small" aria-pressed={step === 'site'} onClick={() => go('site')}>{mail.length ? 2 : 1} {ui("· Webseite")}</button>
-      <button className="btn quiet small" aria-pressed={step === 'verdict'} onClick={() => go('verdict')}>{steps.length} {ui("· Urteil")}</button>
+    <LessonProgress completed={step === 'verdict' && verdict ? steps.length : stepIndex} total={steps.length} label={ui("Your security check")} detail={`Step ${stepIndex + 1} / ${steps.length}`} />
+    <div className="inspection-heading"><h3 ref={heading} tabIndex={-1}>{step === 'mail' ? ui('What do you notice in the email?') : step === 'site' ? ui('Now check the website.') : ui('What is your verdict?')}</h3><span key={marked.length} className="marked-counter" role="status"><Icon name="target" size={15} />{marked.length} {ui("marked")}</span></div>
+    <div className="inspection-navigation" role="group" aria-label={ui("Choose a step")}>
+      {mail.length > 0 && <button className="btn quiet small" aria-pressed={step === 'mail'} onClick={() => go('mail')}>{ui("1 · Email")}</button>}
+      <button className="btn quiet small" aria-pressed={step === 'site'} onClick={() => go('site')}>{mail.length ? 2 : 1} {ui("· Website")}</button>
+      <button className="btn quiet small" aria-pressed={step === 'verdict'} onClick={() => go('verdict')}>{steps.length} {ui("· Verdict")}</button>
     </div>
-    {step === 'mail' ? <div className="mock"><div className="mock-bar">{ui("Posteingang")}</div><div className="mock-body">
-      {of(mail, 'from').map((p) => hot(p, '', <>{ui("Von:")} {p.text}</>))}
-      {of(mail, 'subject').map((p) => hot(p, 'subject', <>{ui("Betreff:")} {p.text}</>))}<hr />
+    {step === 'mail' ? <div className="mock"><div className="mock-bar">{ui("Inbox")}</div><div className="mock-body">
+      {of(mail, 'from').map((p) => hot(p, '', <>{ui("From:")} {p.text}</>))}
+      {of(mail, 'subject').map((p) => hot(p, 'subject', <>{ui("Subject:")} {p.text}</>))}<hr />
       {of(mail, 'greeting').map((p) => hot(p))}{of(mail, 'paragraph').map((p) => hot(p))}
-      {of(mail, 'link').map((p) => <div key={p.id}>{hot(p, 'linkpart')}<button type="button" className="linkbtn small" onClick={() => setShowTarget(!showTarget)}><ButtonLabel variants={['Linkziel ausblenden', 'Linkziel ansehen']}>{showTarget ? ui('Linkziel ausblenden') : ui('Linkziel ansehen')}</ButtonLabel></button>{showTarget && <div className="small target">{ui("Der Link führt zu:")} {p.linkTarget}</div>}</div>)}
+      {of(mail, 'link').map((p) => <div key={p.id}>{hot(p, 'linkpart')}<button type="button" className="linkbtn small" onClick={() => setShowTarget(!showTarget)}><ButtonLabel variants={['Hide the link target', 'See where the link goes']}>{showTarget ? ui('Hide the link target') : ui('See where the link goes')}</ButtonLabel></button>{showTarget && <div className="small target">{ui("The link goes to:")} {p.linkTarget}</div>}</div>)}
       {of(mail, 'signature').map((p) => hot(p))}
     </div></div> : step === 'site' ? <div className="mock"><div className="mock-bar"><span aria-hidden="true">🔒</span>{of(site, 'url').map((p) => hot(p, 'url'))}</div><div className="mock-body">
       {of(site, 'logo').map((p) => hot(p, 'logo'))}{of(site, 'heading').map((p) => hot(p, '', <strong>{p.text}</strong>))}
       {of(site, 'field').map((p) => hot(p, '', <span className="fields">{p.text.split(' · ').map((f) => <span key={f}>{f}</span>)}</span>))}
       {of(site, 'button').map((p) => hot(p, '', <span className="mbutton">{p.text}</span>))}{of(site, 'footer').map((p) => hot(p, 'footer'))}
-    </div></div> : <div className="inspection-verdict"><span className="finish-disc"><Icon name="globe" size={28} /></span><div className="choices" role="group" aria-label={ui("Entscheid")}><button className="choice" disabled={flow.busy} aria-pressed={verdict === 'phishing'} onClick={() => { setVerdict('phishing'); void flow.run({ type: 'mock-site', marked, verdict: 'phishing' }); }}>{ui("Betrug (Phishing)")}</button><button className="choice" disabled={flow.busy} aria-pressed={verdict === 'echt'} onClick={() => { setVerdict('echt'); void flow.run({ type: 'mock-site', marked, verdict: 'echt' }); }}>{ui("Echt")}</button></div></div>}
+    </div></div> : <div className="inspection-verdict"><span className="finish-disc"><Icon name="globe" size={28} /></span><div className="choices" role="group" aria-label={ui("Decision")}><button className="choice" disabled={flow.busy} aria-pressed={verdict === 'phishing'} onClick={() => { setVerdict('phishing'); void flow.run({ type: 'mock-site', marked, verdict: 'phishing' }); }}>{ui("Scam (phishing)")}</button><button className="choice" disabled={flow.busy} aria-pressed={verdict === 'echt'} onClick={() => { setVerdict('echt'); void flow.run({ type: 'mock-site', marked, verdict: 'echt' }); }}>{ui("Real")}</button></div></div>}
     {flow.error && <p className="error" role="alert">{ui(flow.error)}</p>}
     {flow.check && step === 'verdict' && <HelpBox check={flow.check} hint={flow.hint} busy={flow.busy} onHint={() => void flow.askHint(answer)} onRetry={() => { flow.dismiss(); go(mail.length ? 'mail' : 'site'); }} />}
-    <div className="activity-actions"><span className="small muted">{step !== 'verdict' && ui('Verdächtige Stellen markieren.')}</span>
-      {step === 'verdict' ? (flow.check || flow.error) && <button className="btn primary" disabled={!verdict || flow.busy} onClick={() => void flow.run(answer)}><ButtonLabel variants={['Weiter zur Webseite', 'Zum Urteil', 'Wird geprüft …', 'Erneut versuchen', 'Abschliessen']}>{flow.busy ? ui('Wird geprüft …') : flow.error ? ui('Erneut versuchen') : ui('Abschliessen')}</ButtonLabel><Icon name="check" size={17} /></button>
-        : <button className="btn primary" onClick={() => go(step === 'mail' ? 'site' : 'verdict')}><ButtonLabel variants={['Weiter zur Webseite', 'Zum Urteil', 'Wird geprüft …', 'Erneut versuchen', 'Abschliessen']}>{step === 'mail' ? ui('Weiter zur Webseite') : ui('Zum Urteil')}</ButtonLabel><Icon name="chevron" size={17} /></button>}
+    <div className="activity-actions"><span className="small muted">{step !== 'verdict' && ui('Mark the suspicious spots.')}</span>
+      {step === 'verdict' ? (flow.check || flow.error) && <button className="btn primary" disabled={!verdict || flow.busy} onClick={() => void flow.run(answer)}><ButtonLabel variants={['On to the website', 'To the verdict', 'Checking …', 'Try again', 'Finish']}>{flow.busy ? ui('Checking …') : flow.error ? ui('Try again') : ui('Finish')}</ButtonLabel><Icon name="check" size={17} /></button>
+        : <button className="btn primary" onClick={() => go(step === 'mail' ? 'site' : 'verdict')}><ButtonLabel variants={['On to the website', 'To the verdict', 'Checking …', 'Try again', 'Finish']}>{step === 'mail' ? ui('On to the website') : ui('To the verdict')}</ButtonLabel><Icon name="chevron" size={17} /></button>}
     </div>
-    <details className="exercise-disclaimer"><summary>{ui("Über dieses Übungsbeispiel")}</summary><p>{lesson.content.disclaimer}</p></details>
+    <details className="exercise-disclaimer"><summary>{ui("About this practice example")}</summary><p>{lesson.content.disclaimer}</p></details>
   </div>;
 }

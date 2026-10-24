@@ -8,13 +8,13 @@ import { finish, levels, login, node, s1Right, v1MissLink, v1Right } from './hel
 
 const now = new Date('2026-10-24T12:00:00Z');
 function result(statuses: ('met' | 'missed')[] = ['met', 'met']): LessonResult {
-  return { allMet: statuses.every((s) => s === 'met'), criteria: statuses.map((status, i) => ({ key: `c${i}`, label: `Ziel ${i}`, status })), items: [], summary: 'Ergebnis', judgedBy: 'rule' };
+  return { allMet: statuses.every((s) => s === 'met'), criteria: statuses.map((status, i) => ({ key: `c${i}`, label: `Goal ${i}`, status })), items: [], summary: 'Result', judgedBy: 'rule' };
 }
 function event(lessonId: string, overrides: Partial<LearningEvent> = {}): LearningEvent {
   return { id: `event-${lessonId}`, at: now.toISOString(), nodeId: `node-${lessonId}`, lessonId, trackId: 'topic', mode: 'alone', helpUsed: false, attempts: 1, durationMin: 3, result: result(), source: 'prepared', ...overrides };
 }
 
-describe('XP und Meilensteine aus dem Lernverlauf', () => {
+describe('XP and milestones from the learning history', () => {
   it('starts at level one and crosses exact level boundaries', () => {
     expect(levelProgress(0)).toMatchObject({ xp: 0, level: 1, intoLevel: 0, toNextLevel: 200 });
     expect(levelProgress(199)).toMatchObject({ level: 1, intoLevel: 199, toNextLevel: 1 });
@@ -98,7 +98,7 @@ describe('XP und Meilensteine aus dem Lernverlauf', () => {
   });
 });
 
-describe('Belohnungen über die API', () => {
+describe('Rewards through the API', () => {
   beforeEach(() => {
     process.env.MODEL_PROVIDER = 'none';
     _reset();

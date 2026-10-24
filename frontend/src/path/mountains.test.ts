@@ -3,8 +3,8 @@ import type { Criterion, Lesson, MapNode } from '@l45/shared';
 import { mountainsOf } from './mountains.ts';
 
 const criteria: Criterion[] = [
-  { id: 'sender', label: 'Absender-Adresse', ruleOfThumb: '' },
-  { id: 'link', label: 'Linkziel', ruleOfThumb: '' },
+  { id: 'sender', label: 'Sender address', ruleOfThumb: '' },
+  { id: 'link', label: 'Link target', ruleOfThumb: '' },
 ];
 
 const done = (n: number) => Array.from({ length: n }, (_, i): MapNode => ({ id: `n${i}`, kind: 'lesson', parentId: null, label: `L${i}`, lessonId: `l${i}`, state: 'done' }));
@@ -28,11 +28,11 @@ describe('mountainsOf', () => {
 
   it('names a topped mountain after the criterion its lessons trained most', () => {
     const m = mountainsOf(done(6), lessons([['sender'], ['link'], ['link', 'sender'], ['link'], [], ['sender', 'link']]), criteria);
-    expect(m[0].name).toBe('Linkziel');
+    expect(m[0].name).toBe('Link target');
   });
 
   it('breaks a tie with the criterion listed first and leaves a mountain without targets unnamed', () => {
-    expect(mountainsOf(done(6), lessons([['link'], ['sender']]), criteria)[0].name).toBe('Absender-Adresse');
+    expect(mountainsOf(done(6), lessons([['link'], ['sender']]), criteria)[0].name).toBe('Sender address');
     expect(mountainsOf(done(6), lessons([]), criteria)[0].name).toBeNull();
   });
 

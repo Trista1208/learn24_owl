@@ -1,127 +1,138 @@
-# AIthena für Learn45
+# AIthena for Learn45
 
-AIthena ist ein Lernagent als PWA, ein Prototyp für den Zentral Hack 2026 (Challenge CoreTeam AG). Die Person sagt, was sie lernen will. Der Agent plant dazu kurze Lektionen: Videos, Podcasts, Übungen und Gespräche mit der KI. Er merkt sich, was die Person schon kann, und schlägt den nächsten Schritt vor.
+AIthena is a learning agent built as a PWA, a prototype for Zentral Hack 2026 (CoreTeam AG challenge). The learner says what they want to learn. The agent plans short lessons for it: videos, podcasts, exercises and conversations with the AI. It remembers what the learner can already do and suggests the next step.
 
-- Läuft auch ohne KI, mit vorbereiteten Inhalten.
-- Mit KI (Anthropic oder OpenAI) entstehen eigene Bereiche und neue Lektionen, die der Server vor der Anzeige prüft.
-- Der Fortschritt liegt pro Person auf der Festplatte und übersteht einen Neustart.
-- Lektionen geben Erfahrungspunkte, Level und Abzeichen, ohne Punkteverlust bei Pausen oder Fehlern.
-- Alle Daten sind synthetisch.
+- Also runs without AI, with prepared content.
+- With AI (Anthropic, OpenAI or Qwen), learners can add their own areas and get new lessons, which the server checks before showing them.
+- Progress is stored on disk per learner and survives a restart.
+- Lessons give experience points, levels and badges, with no points lost for breaks or mistakes.
+- All data is synthetic.
 
-Die Lernenden sind oft wenig vertraut mit Computern. Darum hat jede Ansicht eine klare Hauptaktion mit grossem Knopf, die Texte sind einfach und gross, und Fachbegriffe (DCC, Lernstand, Regeln, Lerneinträge) stehen erst in den Einstellungen.
+The learners are often not very familiar with computers. That is why every view has one clear main action with a big button, the texts are simple and large, and technical terms (DCC, progress, rules, learning records) only appear in the settings.
 
-**Inhalt:** [Starten](#starten) · [Die App](#die-app) · [Fortschritt und Belohnungen](#fortschritt-und-belohnungen) · [Anmeldung und DCC](#anmeldung-und-dcc) · [Bereiche hinzufügen](#bereiche-hinzufügen) · [Nächstes Thema und Format](#nächstes-thema-und-format-wählen) · [Lektionsarten](#lektionsarten) · [Im Lektionsfenster](#im-lektionsfenster) · [Videos und Podcasts erzeugen](#videos-und-podcasts-erzeugen) · [Wie der Agent entscheidet](#wie-der-agent-entscheidet) · [Lernumgebung pro Person](#lernumgebung-pro-person) · [Datenschutz](#datenschutz) · [Aufbau](#aufbau) · [Grenzen](#grenzen)
+The app is in English only: the interface, the lessons, the AI's replies and the narration.
 
-## Starten
+**Contents:** [Getting started](#getting-started) · [The app](#the-app) · [Progress and rewards](#progress-and-rewards) · [Sign-in and DCC](#sign-in-and-dcc) · [Adding areas](#adding-areas) · [Next topic and format](#choosing-the-next-topic-and-format) · [Lesson types](#lesson-types) · [In the lesson window](#in-the-lesson-window) · [Generating videos and podcasts](#generating-videos-and-podcasts) · [How the agent decides](#how-the-agent-decides) · [Workspace per learner](#workspace-per-learner) · [Privacy](#privacy) · [Structure](#structure) · [Limitations](#limitations)
 
-Voraussetzung: Node.js 22.9 oder neuer.
+## Getting started
+
+Requirement: Node.js 22.9 or newer.
 
 ```bash
 npm install
-npm run build     # baut das Frontend
+npm run build     # builds the frontend
 npm start         # http://localhost:8787
 ```
 
-Zum Entwickeln mit Hot Reload:
+For development with hot reload:
 
 ```bash
-npm run dev       # Frontend http://localhost:5173, API auf 8787
+npm run dev       # frontend http://localhost:5173, API on 8787
 ```
 
-Tests und Typprüfung:
+Tests and type checking:
 
 ```bash
 npm test
 npm run typecheck
 ```
 
-### KI-Anbindung (optional)
+### Connecting an AI (optional)
 
-Ohne Schlüssel läuft alles mit vorbereiteten Inhalten. Vorbereitete Antworten und Hinweise sind in der App als «Vorbereitet» gekennzeichnet.
+Without a key, everything runs with prepared content. Prepared replies and hints are labelled “Prepared” in the app.
 
-Für echte KI-Antworten `backend/.env.example` nach `backend/.env` kopieren und ausfüllen. Mit Anthropic (Messages API):
+For real AI replies, copy `backend/.env.example` to `backend/.env` and fill it in. With Anthropic (Messages API):
 
 ```dotenv
 MODEL_PROVIDER=anthropic
 ANTHROPIC_API_KEY=...
-ANTHROPIC_MODEL=claude-haiku-5-5          # Chat, Hinweise, Beurteilung
-ANTHROPIC_PLANNER_MODEL=claude-opus-5-5   # Planung, neue Bereiche, Lektionen
+ANTHROPIC_MODEL=claude-haiku-5-5          # chat, hints, judging
+ANTHROPIC_PLANNER_MODEL=claude-opus-5-5   # planning, new areas, lessons
 ```
 
-Oder mit OpenAI (Responses API; ein reiner Chat-Completions-Endpunkt reicht nicht):
+Or with OpenAI (Responses API; a plain chat completions endpoint is not enough):
 
 ```dotenv
 MODEL_PROVIDER=openai
 OPENAI_API_KEY=...
-OPENAI_MODEL=gpt-6-luna                   # Chat, Hinweise, Beurteilung
-OPENAI_PLANNER_MODEL=gpt-6-sol            # Planung, neue Bereiche, Lektionen
+OPENAI_MODEL=gpt-6-luna                   # chat, hints, judging
+OPENAI_PLANNER_MODEL=gpt-6-sol            # planning, new areas, lessons
 OPENAI_REASONING_EFFORT=low
 OPENAI_PLANNER_REASONING_EFFORT=low
 ```
 
-Ohne `OPENAI_PLANNER_MODEL` nimmt die App `OPENAI_MODEL`. Beide Denkstufen sind standardmässig `low`.
+Without `OPENAI_PLANNER_MODEL` the app uses `OPENAI_MODEL`. Both reasoning efforts default to `low`.
 
-Der Schlüssel bleibt im Backend. Der Browser spricht nie direkt mit einem Modell. Antwortet das Modell nicht innerhalb von 8 Sekunden, nimmt die App die vorbereitete Antwort und kennzeichnet sie. Scheitert ein Plan, übernehmen die Regeln. Was an das Modell geht, steht unter [Datenschutz](#datenschutz).
+Or with Qwen, free and without a key (OpenAI-compatible chat completions):
 
-### Weitere Einstellungen
+```dotenv
+MODEL_PROVIDER=qwen
+MODEL_TIMEOUT_MS=30000
+```
 
-Alle in `backend/.env`, alle optional:
+With all `QWEN_*` values empty, the app uses the free OVHcloud endpoint (Qwen2.5-VL-72B-Instruct) that the owl chat uses. That endpoint does not support tool calls, so the planner agent falls back to the rules. A local Ollama (`QWEN_BASE_URL=http://localhost:11434/v1`, `QWEN_MODEL=qwen2.5:7b`) supports them. Free models are slower, so set a longer timeout.
 
-| Variable | Standard | Wofür |
+The key stays in the backend. The browser never talks to a model directly. If the model does not answer within 8 seconds, the app uses the prepared reply and labels it. If a plan fails, the rules take over. What is sent to the model is described under [Privacy](#privacy).
+
+### More settings
+
+All in `backend/.env`, all optional:
+
+| Variable | Default | What for |
 |---|---|---|
-| `PORT` | `8787` | Port des Servers |
-| `ACCESS_USERS` | leer (keine Anmeldung) | Anmeldung für eine öffentliche Instanz, `name:passwort` durch Kommas getrennt (siehe [Online stellen](#online-stellen)) |
-| `MODEL_TIMEOUT_MS` | `8000` | Wartezeit pro Modellaufruf, danach vorbereitete Inhalte |
-| `PLANNER_TOTAL_MS`, `PLANNER_CALL_MS` | `45000`, `20000` | Zeitgrenzen des Planer-Agenten: ganzer Lauf und pro Aufruf |
-| `LEARNER_DIR` | `backend/var/learners` | Ordner der Lernumgebungen |
-| `VIDEO_SPEECH_PROVIDER` | `local` | `local` (macOS `say` und `ffmpeg`) oder `elevenlabs` |
-| `VIDEO_LOCAL_VOICE`, `VIDEO_LOCAL_SECOND_VOICE` | `Anna`, `Markus` | lokale Stimmen; die zweite für Podcasts |
-| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, `ELEVENLABS_SECOND_VOICE_ID`, `ELEVENLABS_MODEL_ID` | Modell `eleven_multilingual_v2` | Sprache mit ElevenLabs, auf jeder Plattform |
-| `FFMPEG_PATH` | `ffmpeg` im Suchpfad | für die lokale Sprache |
-| `VIDEO_CACHE_DIR`, `VIDEO_SPEECH_CACHE_DIR`, `PODCAST_CACHE_DIR` | unter `backend/var/` | Speicherorte für erzeugte Videos, Sprache und Podcasts |
+| `PORT` | `8787` | server port |
+| `ACCESS_USERS` | empty (no login) | login for a public instance, `name:password` separated by commas (see [Going online](#going-online)) |
+| `MODEL_TIMEOUT_MS` | `8000` | waiting time per model call, then prepared content |
+| `PLANNER_TOTAL_MS`, `PLANNER_CALL_MS` | `45000`, `20000` | time limits of the planner agent: whole run and per call |
+| `LEARNER_DIR` | `backend/var/learners` | folder of the learner workspaces |
+| `VIDEO_SPEECH_PROVIDER` | `local` | `local` (macOS `say` and `ffmpeg`) or `elevenlabs` |
+| `VIDEO_LOCAL_VOICE`, `VIDEO_LOCAL_SECOND_VOICE` | `Samantha`, `Daniel` | local English voices; the second one for podcasts |
+| `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`, `ELEVENLABS_SECOND_VOICE_ID`, `ELEVENLABS_MODEL_ID` | model `eleven_multilingual_v2` | speech with ElevenLabs, on any platform |
+| `FFMPEG_PATH` | `ffmpeg` on the search path | for local speech |
+| `VIDEO_CACHE_DIR`, `VIDEO_SPEECH_CACHE_DIR`, `PODCAST_CACHE_DIR` | under `backend/var/` | where generated videos, speech and podcasts are stored |
 
-Die mitgelieferten Lektionen laufen ohne Sprachdienst. Einen braucht es nur für neue Videos und Podcasts.
+The bundled lessons run without a speech service. You only need one for new videos and podcasts.
 
-### Online stellen
+### Going online
 
-`railway.json` beschreibt den Betrieb auf Railway: `npm run build`, dann `npm start`, mit `/api/health` als Gesundheitsprüfung. Ein Server liefert API und Oberfläche aus.
+`railway.json` describes running on Railway: `npm run build`, then `npm start`, with `/api/health` as the health check. One server delivers the API and the interface.
 
-- **Anmeldung.** Ohne Anmeldung kann jede Person mit dem Link die App nutzen, auf Kosten des eigenen Modellschlüssels. Deshalb `ACCESS_USERS` setzen, etwa `owner:langes-geheimnis,jury:anderes-geheimnis`. Der Browser fragt dann nach Name und Passwort. Offen bleibt nur `/api/health`. Wer einen eigenen Eintrag hat, behält den Zugang, wenn ein anderer Eintrag entfernt wird.
-- **Speicher.** Das Dateisystem von Railway wird bei jedem Deploy geleert. Ein Volume anhängen, etwa unter `/data`, und `LEARNER_DIR=/data/learners`, `VIDEO_CACHE_DIR=/data/videos`, `VIDEO_SPEECH_CACHE_DIR=/data/video-speech` und `PODCAST_CACHE_DIR=/data/podcasts` setzen.
-- **Sprache.** `local` braucht macOS. Für neue Videos und Podcasts `VIDEO_SPEECH_PROVIDER=elevenlabs` mit den ElevenLabs-Schlüsseln setzen.
-- **Zugang entziehen.** Den Eintrag aus `ACCESS_USERS` löschen; Railway startet neu, und das alte Passwort gilt nicht mehr.
+- **Login.** Without a login, anyone with the link can use the app, at the cost of your model key. So set `ACCESS_USERS`, for example `owner:long-secret,jury:other-secret`. The browser then asks for a name and password. Only `/api/health` stays open. Anyone with their own entry keeps access when another entry is removed.
+- **Storage.** Railway's file system is wiped on every deploy. Attach a volume, for example at `/data`, and set `LEARNER_DIR=/data/learners`, `VIDEO_CACHE_DIR=/data/videos`, `VIDEO_SPEECH_CACHE_DIR=/data/video-speech` and `PODCAST_CACHE_DIR=/data/podcasts`.
+- **Speech.** `local` needs macOS. For new videos and podcasts, set `VIDEO_SPEECH_PROVIDER=elevenlabs` with the ElevenLabs keys.
+- **Revoking access.** Delete the entry from `ACCESS_USERS`; Railway restarts, and the old password no longer works.
 
-## Die App
+## The app
 
-**Startseite.** «Was möchtest du lernen?» listet die Bereiche (Digitale Kompetenz, Mathematik, Naturwissenschaften, Eigene Themen) mit ihren Themen, etwa «Kommunikation und Zusammenarbeit». Ein Tipp auf ein Thema öffnet es; ist es noch nicht dabei, kommt es dazu. Oben stehen XP, Level, Tages- und Wochenziel und «Weiterlernen» mit dem zuletzt bearbeiteten Thema, unten die Abzeichen.
+**Home page.** “What would you like to learn?” lists the areas (Digital competence, Mathematics, Science, Own topics) with their topics, for example “Communication and collaboration”. Tapping a topic opens it; if it is not there yet, it gets added. At the top are XP, level, the daily and weekly goal and “Keep learning” with the topic worked on last, at the bottom the badges.
 
-**Ein Thema** ist ein Aufstieg über Berge. Jede geschaffte Lektion ist ein Schritt, sechs Schritte führen auf einen Gipfel, danach beginnt der nächste Berg (`frontend/src/path/mountains.ts`). Die Schritte stehen in der Reihenfolge, in der sie geschafft wurden (`frontend/src/path/order.ts`). Der sechste Schritt ist die Gipfelprüfung (siehe unten). Danach steht der Berg unter «Geschaffte Berge» und heisst nach dem Kriterium, das seine Lektionen am meisten geübt haben; der nächste Berg beginnt leer. Unter den Schritten steht «Wie geht es weiter?» mit der Wahl von Thema und Format (siehe [Nächstes Thema und Format wählen](#nächstes-thema-und-format-wählen)).
+**A topic** is a climb over mountains. Every finished lesson is a step, six steps lead to a summit, then the next mountain begins (`frontend/src/path/mountains.ts`). The steps are in the order in which they were finished (`frontend/src/path/order.ts`). The sixth step is the summit test (see below). Afterwards the mountain is listed under “Mountains climbed” and is named after the criterion its lessons practised most; the next mountain starts empty. Below the steps is “What would you like to learn next?” with the choice of topic and format (see [Choosing the next topic and format](#choosing-the-next-topic-and-format)).
 
-**Lernkarte.** «Alles als Karte ansehen» zeigt alles als Mindmap mit der Person in der Mitte. Sie beginnt leer und wächst mit jedem Bereich und jeder Lektion. Geplante Lektionen sind blass. Ein Tipp auf einen Knoten öffnet den Seitenbereich mit der Lektion, dem Vorschlag des Agenten und seiner Begründung.
+**Learning map.** “See everything as a map” shows everything as a mind map with the learner in the middle. It starts empty and grows with every area and every lesson. Planned lessons are faded. Tapping a node opens the side panel with the lesson, the agent's suggestion and its reasoning.
 
-**Sprachen und Erscheinungsbild.** Die Oberfläche gibt es auf Deutsch, Französisch, Italienisch, Rätoromanisch und Englisch, hell, dunkel oder nach dem System. Deutsch ist die Ausgangssprache; gespeicherte DCC-Stufen bleiben deutsch.
+**Appearance.** Light, dark or following the system.
 
-**Einstellungen.** «Mein Konto» oben rechts öffnet sie, mit vier Reitern:
+**Settings.** “My account” at the top right opens them, with four tabs:
 
-- **Allgemein**: Sprache, Erscheinungsbild, KI-Verbindung für die Demo trennen, Abmelden.
-- **Profil**: DCC-Profil (nur lesen), Lernstand aus dem Lernen, persönliches Ziel (Mission) pro Bereich.
-- **Lernen**: Lerneinträge, Merkblatt, Notizen des Agenten zu den Vorlieben, Lernverlauf, Beobachtungen.
-- **Agent**: Entscheidungen des Agenten und Läufe des Planer-Agenten.
+- **General**: appearance, disconnecting the AI for the demo, signing out.
+- **Profile**: DCC profile (read only), progress from learning, personal goal (mission) per area.
+- **Learning**: learning records, cheat sheet, the agent's notes on preferences, learning history, observations.
+- **Agent**: the agent's decisions and the planner agent's runs.
 
-## Fortschritt und Belohnungen
+## Progress and rewards
 
-Abgeschlossene Lektionen geben Erfahrungspunkte (XP): 40 XP für den ersten Abschluss einer Lektion und bis zu 60 XP für erreichte Lernziele. Jedes Format zählt gleich viel; Tipps und Lerntempo ändern die Punkte nicht. Bei Wiederholungen zählt nur die Verbesserung gegenüber dem bisher besten Ergebnis derselben Lektion. Alle 200 XP steigt das Gesamtlevel und das Level im jeweiligen Thema. Diese Spiellevel sind unabhängig vom DCC-Profil.
+Finished lessons give experience points (XP): 40 XP for finishing a lesson for the first time and up to 60 XP for learning goals reached. Every format counts the same; hints and learning speed do not change the points. When a lesson is repeated, only the improvement over the best previous result for that lesson counts. Every 200 XP the overall level and the level in that topic go up. These game levels are independent of the DCC profile.
 
-Die Startseite zeigt XP, Themenlevel, vier verdienbare Abzeichen, ein Tagesziel (eine Lektion) und ein Wochenziel (an drei Tagen lernen). Tag und Woche folgen dem Schweizer Kalender (`Europe/Zurich`, Wochenbeginn Montag). Wiederholungen zählen als Lerntag, geben aber nur bei Verbesserung zusätzliche XP. Es gibt keinen Punkteverlust bei Pausen oder Fehlern. Beim Abschluss erscheinen die verdienten XP, neue Level und neue Abzeichen.
+The home page shows XP, topic levels, four badges to earn, a daily goal (one lesson) and a weekly goal (learn on three days). Day and week follow the Swiss calendar (`Europe/Zurich`, the week starts on Monday). Reviews count as a learning day but only give extra XP for an improvement. There is no loss of points for breaks or mistakes. When you finish, the XP earned, new levels and new badges appear.
 
-Alles wird aus den gespeicherten Lerneinträgen abgeleitet. Bestehende Lernende erhalten ihren bisherigen Fortschritt automatisch und behalten ihn nach Neustarts und erneutem Anmelden. Die Punkteberechnung liegt in `shared/src/rewards.ts`; der Server liefert sie in `SessionView.rewards` und als `reward` beim Abschluss.
+Everything is derived from the stored learning events. Existing learners get their earlier progress automatically and keep it after restarts and signing in again. The points calculation is in `shared/src/rewards.ts`; the server delivers it in `SessionView.rewards` and as `reward` when a lesson is finished.
 
-## Anmeldung und DCC
+## Sign-in and DCC
 
-Zur Anmeldung reicht ein Name. Das DCC-Profil ist freiwillig. Es bestimmt nur die Stufen der vorbereiteten Bereiche der Digitalen Kompetenz. Zwei Wege:
+A name is enough to sign in. The DCC profile is optional. It only sets the levels of the prepared Digital competence areas. Two ways:
 
-1. **Resultat laden**: eine JSON-Datei im Format unten. Drei Beispiele liegen in `frontend/public/dcc-beispiele/` und lassen sich auf der Anmeldeseite herunterladen.
-2. **Stufen eingeben**: pro Bereich Grundstufe, Mittelstufe, Fortgeschritten oder «nicht erhoben».
+1. **Load a result**: a JSON file in the format below. Three examples are in `frontend/public/dcc-examples/` and can be downloaded on the sign-in page.
+2. **Enter levels**: per area Foundation, Intermediate, Advanced or “not assessed”.
 
 ```json
 {
@@ -130,330 +141,333 @@ Zur Anmeldung reicht ein Name. Das DCC-Profil ist freiwillig. Es bestimmt nur di
   "synthetic": true,
   "assessedOn": "2026-09-14",
   "areas": [
-    { "area": "1", "name": "Informations- und Datenkompetenz", "level": "Grundstufe" },
-    { "area": "2", "name": "Kommunikation und Zusammenarbeit", "level": "Mittelstufe" },
-    { "area": "3", "name": "Erstellung digitaler Inhalte", "level": "Grundstufe" },
-    { "area": "4", "name": "Sicherheit", "level": "Mittelstufe" },
-    { "area": "5", "name": "Problemlösen", "level": null }
+    { "area": "1", "name": "Information and data literacy", "level": "Grundstufe" },
+    { "area": "2", "name": "Communication and collaboration", "level": "Mittelstufe" },
+    { "area": "3", "name": "Digital content creation", "level": "Grundstufe" },
+    { "area": "4", "name": "Safety", "level": "Mittelstufe" },
+    { "area": "5", "name": "Problem solving", "level": null }
   ]
 }
 ```
 
-Das DCC ist die einzige Quelle für Stufen. Lernen in der App ändert das DCC-Profil nie. Ein fehlender Wert heisst «nicht erhoben», nicht «tief».
+In the file, the levels keep their DCC codes: `Grundstufe` (Foundation), `Mittelstufe` (Intermediate) and `Fortgeschritten` (Advanced). The app shows them in English.
 
-## Bereiche hinzufügen
+The DCC is the only source of levels. Learning in the app never changes the DCC profile. A missing value means “not assessed”, not “low”.
 
-Nach der Anmeldung ist die Karte leer. Von der Startseite kommt dazu:
+## Adding areas
 
-- **Vorbereiteter Bereich**: aus `data/skills.json`, mit geprüften Quellen und vorbereiteten Lektionen: die fünf DigComp-Bereiche, Mathematik oder Naturwissenschaften. Das geht auch ohne KI, auch mehrere auf einmal.
-- **Eigenes Thema**, zum Beispiel «Security+ Prüfung bestehen», nur mit KI. Die Person gibt Thema und Vorwissen an. Der Agent plant den Bereich: einen Namen, 3 bis 6 Kriterien mit Faustregeln, drei Missionsvorschläge, die passenden Lektionsarten und 2 bis 5 Quellen. Der Server prüft den Entwurf. Von den Quellen bleiben nur Adressen, die beim Anlegen antworten (404 und 410 fallen weg). Erst ein gültiger Entwurf kommt auf die Karte. Die erste Lektion entsteht, wenn die Person Thema und Format wählt.
+After signing in, the map is empty. From the home page you can add:
 
-Nach der Wahl von Thema und Format öffnet die Lektion direkt. Ein persönliches Ziel (Mission) lässt sich freiwillig unter «Mein Konto» festlegen; ohne eigenes Ziel verwendet der Agent das Standardziel des Bereichs.
+- **A prepared area**: from `data/skills.json`, with checked sources and prepared lessons: the five DigComp areas, Mathematics or Science. This also works without AI, several at once too.
+- **Your own topic**, for example “pass the Security+ exam”, only with AI. The learner gives the topic and their prior knowledge. The agent plans the area: a name, 3 to 6 criteria with rules of thumb, three mission suggestions, the matching lesson types and 2 to 5 sources. The server checks the draft. Of the sources, only addresses that answer when the area is created are kept (404 and 410 are dropped). Only a valid draft goes on the map. The first lesson is created when the learner chooses a topic and format.
 
-Eigene Bereiche haben keine vorbereiteten Lektionen; jede Lektion erzeugt die KI. Ist im Bereich nichts mehr offen, gibt es den Knopf «Neue Lektion in …».
+After choosing a topic and format, the lesson opens directly. A personal goal (mission) can optionally be set under “My account”; without one, the agent uses the area's default goal.
 
-## Nächstes Thema und Format wählen
+Your own areas have no prepared lessons; the AI creates every lesson. When nothing is left open in the area, there is a “New lesson in …” button.
 
-Ein geöffnetes Thema (und auf der Lernkarte der Seitenbereich) bietet unter «Wie geht es weiter?» drei kurze Themenvorschläge, einen davon empfohlen, und «Etwas anderes vorschlagen». Auf der Karte erscheinen sie als mögliche Verzweigungen. Die Vorschläge zielen zuerst auf das zuletzt verpasste Kriterium, dann auf fällige Wiederholungen, dann auf Kriterien, die noch nicht «sicher» sind. Mission und Vorlieben fliessen mit ein.
+## Choosing the next topic and format
 
-Zuerst wird das Thema gewählt, danach eines der Formate, die der Themenplan dafür als passend nennt: Video, Mit der KI, Text prüfen oder Webseite prüfen; mit KI ist immer auch Podcast dabei. Ein Tipp auf das Format startet die Lektion; hat ein Thema nur ein Format, startet es gleich. Bei erzeugten Lektionen gibt es auch Formate, für die der Bereich noch kein vorbereitetes Beispiel hat.
+An open topic (and the side panel on the learning map) offers three short topic suggestions under “What would you like to learn next?”, one of them recommended, plus “Suggest something else”. On the map they appear as possible branches. The suggestions aim first at the criterion missed last, then at due reviews, then at criteria that are not yet “I can do it”. The mission and preferences are taken into account.
 
-**Gipfelprüfung.** Sind fünf Schritte eines Bergs geschafft, bietet «Wie geht es weiter?» nur die Gipfelprüfung an. Sie prüft bis zu drei Kriterien, die die fünf Lektionen dieses Bergs am meisten geübt haben, jedes mit einer eigenen Aufgabe an einem neuen Beispiel. Die Person wählt das Format wie sonst. Technisch ist sie eine gemischte Wiederholung (`reviewOf`), markiert mit `provenance.exam`. Auch mit Lücken ist der Berg danach bestiegen; was gefehlt hat, schlägt der nächste Berg zuerst vor. Ohne KI ist der sechste Schritt eine gewöhnliche vorbereitete Lektion. Eine Feier am Gipfel gibt es noch nicht.
+First you choose the topic, then one of the formats the topic plan names as suitable: Video, With the AI, Check a text or Check a website; with AI, Podcast is always included. Tapping a format starts the lesson; if a topic has only one format, it starts straight away. For generated lessons there are also formats for which the area has no prepared example yet.
 
-Die Vorschläge sind reine Vorschauen. Sie erzeugen weder Lektionsdateien noch dauerhafte Knoten. Erst «Lektion starten» erzeugt genau die gewählte Lektion im gewählten Format oder nimmt eine passende vorhandene. Auch nach einer abgeschlossenen Lektion entsteht keine Folgelektion von selbst.
+**Summit test.** Once five steps of a mountain are done, “What would you like to learn next?” only offers the summit test. It tests up to three criteria that the mountain's five lessons practised most, each with its own task on a new example. The learner chooses the format as usual. Technically it is a mixed review (`reviewOf`), marked with `provenance.exam`. Even with gaps, the mountain counts as climbed afterwards; whatever was missing, the next mountain suggests first. Without AI, the sixth step is an ordinary prepared lesson. There is no celebration at the summit yet.
 
-Das zuletzt gewählte Format wird gespeichert und beim nächsten Mal vorausgewählt, sofern es verfügbar ist, auch nach einem Serverneustart. Ein anderes Thema als das empfohlene zu wählen, wird neutral als «andere Richtung gewählt» vermerkt.
+The suggestions are only previews. They create neither lesson files nor permanent nodes. Only starting the lesson creates exactly the chosen lesson in the chosen format, or uses a matching existing one. No follow-up lesson is created automatically after a lesson is finished either.
 
-Ohne KI stehen nur vorbereitete Lektionen zur Auswahl, gegebenenfalls weniger als drei. Eigene Themenwünsche brauchen eine KI-Verbindung und müssen zu den Lernzielen des Bereichs passen; für andere Ziele lässt sich ein neuer Bereich hinzufügen. Scheitert die Themenplanung, bleiben drei Vorschläge nach Regeln. Lehnt der Validator die erzeugte Lektion ab, bekommt die KI die Fehler und einen zweiten Versuch. Scheitert auch dieser oder antwortet das Modell nicht, bleibt die Auswahl für einen neuen Versuch stehen.
+The format chosen last is saved and preselected next time if it is available, also after a server restart. Choosing a topic other than the recommended one is noted neutrally as “chose a different direction”.
+
+Without AI, only prepared lessons are available, sometimes fewer than three. Your own topic requests need an AI connection and must fit the area's learning goals; for other goals you can add a new area. If topic planning fails, three rule-based suggestions remain. If the validator rejects the generated lesson, the AI gets the errors and a second attempt. If that fails too or the model does not answer, the choice stays available for a new attempt.
 
 API:
 
-| Aufruf | Was er tut |
+| Call | What it does |
 |---|---|
-| `POST /api/sessions/:id/tracks/:track/topics` | liefert und speichert die Vorschauen |
-| `POST /api/sessions/:id/topics/custom` | prüft einen eigenen Themenwunsch |
-| `POST /api/sessions/:id/topics/choose` | erzeugt die gewählte Lektion |
+| `POST /api/sessions/:id/tracks/:track/topics` | delivers and saves the previews |
+| `POST /api/sessions/:id/topics/custom` | checks your own topic request |
+| `POST /api/sessions/:id/topics/choose` | creates the chosen lesson |
 
-Veraltete oder doppelte Auswahlen werden zurückgewiesen.
+Outdated or duplicate choices are rejected.
 
-## Lektionsarten
+## Lesson types
 
-| Art | Beispiel | Bewertung |
+| Type | Example | Judging |
 |---|---|---|
-| Video | «Warum erfindet eine KI Angaben?» | Fragen unterwegs, Regel |
-| Podcast | Gespräch zwischen Mira und Jonas | Fragen danach, Regel |
-| Text prüfen | KI-Zusammenfassung mit der Notiz vergleichen | Regel |
-| Webseite prüfen | Phishing-Mail und gefälschte Login-Seite | Regel |
-| Mit der KI | Tutor, Rollenspiel, Auftrag an die KI formulieren | Modell, sonst Stichworte |
+| Video | “Why does an AI invent details?” | questions along the way, rule |
+| Podcast | conversation between Mira and Jonas | questions afterwards, rule |
+| Check a text | compare an AI summary with the note | rule |
+| Check a website | phishing email and fake login page | rule |
+| With the AI | tutor, role play, writing a brief for the AI | model, otherwise keywords |
 
-Lösungen bleiben im Backend. Der Browser bekommt die Lektionen ohne Lösungen.
+Solutions stay in the backend. The browser gets the lessons without solutions.
 
 ### Video
 
-Sieben vorbereitete Video-Lektionen sind dabei, mit deutscher ElevenLabs-Sprachausgabe, animierten Szenen, zeitlich passenden Untertiteln und Fragen. Die Ableitung (Mathematik → Ableitung) hat eine eigens geprüfte Animation; die übrigen verwenden wiederverwendbare Szenenvorlagen.
+Seven prepared video lessons are included, with narration, animated scenes, timed subtitles and questions. Rebuild their English narration with `npm run videos:build -- --all` and `npm run video:build` (see [Rebuilding prepared videos](#rebuilding-prepared-videos)); until then they play as storyboards. The derivative (Mathematics → Derivative) has a specially checked animation; the others use reusable scene templates.
 
-Abspielen, Pause, Zurückspulen, Ton und Untertitel funktionieren im Lektionsfenster. Fragen pausieren das Video, wenn es sie zum ersten Mal erreicht. Danach bleiben Wiedergabe und Spulen frei; offene Fragen bleiben sichtbar und werden vor dem Abschluss beantwortet. Kann das Video nicht geladen werden, lässt sich auf das Storyboard wechseln. Die Videos sind Animationen, die der Browser mit Ton abspielt, keine MP4-Dateien. Dafür nutzt die App eine eigene, versionierte Kopie der animlib aus OwlYouNeed in `packages/animlib`; das andere Repository wird weder gebraucht noch verändert.
+Play, pause, rewind, sound and subtitles work in the lesson window. Questions pause the video the first time it reaches them. After that, playback and seeking stay free; open questions stay visible and are answered before finishing. If the video cannot be loaded, you can switch to the storyboard. The videos are animations that the browser plays with sound, not MP4 files. For this the app uses its own versioned copy of animlib from OwlYouNeed in `packages/animlib`; the other repository is neither needed nor changed.
 
-Für eigene Themen und erzeugte Lektionen liefert die KI strukturierte Szenen und Beschriftungen, keinen ausführbaren Animationscode. Beim ersten Öffnen erzeugt der Server Sprache und Animation, zeigt den Fortschritt und speichert das Ergebnis. Fragenpausen, Untertitel, Spulen und Bewertung funktionieren gleich.
+For your own topics and generated lessons, the AI delivers structured scenes and captions, not executable animation code. When the lesson is first opened, the server generates speech and animation, shows the progress and saves the result. Question pauses, subtitles, seeking and judging work the same way.
 
 ### Podcast
 
-Wer bei «Wie geht es weiter?» ein Thema wählt, kann es als Podcast lernen (mit KI, für jedes Thema). Die KI schreibt ein kurzes Gespräch zwischen Mira und Jonas über genau dieses Thema, nur aus Kriterium, Faustregel und Quellen des Bereichs, und zwei bis drei Fragen dazu. Der Server prüft Länge (6 bis 16 Beiträge, höchstens 3000 Zeichen), beide Stimmen und die Fragen wie beim Video.
+Anyone who chooses a topic under “What would you like to learn next?” can learn it as a podcast (with AI, for every topic). The AI writes a short conversation between Mira and Jonas about exactly this topic, only from the area's criterion, rule of thumb and sources, plus two to three questions about it. The server checks the length (6 to 16 turns, at most 3000 characters), both voices and the questions as for videos.
 
-Beim ersten Öffnen wird das Gespräch vertont. Die Abschrift lässt sich mitlesen; ein Klick auf einen Beitrag springt an diese Stelle. Danach kommen die Fragen. Fällt die Vertonung aus, bleibt das Gespräch lesbar und die Fragen gehen trotzdem. Der Planer-Agent wählt Podcasts nie von sich aus, nur die Person.
+The conversation is voiced the first time it is opened. The transcript can be read along; clicking a turn jumps to that point. Then come the questions. If voicing fails, the conversation stays readable and the questions still work. The planner agent never chooses podcasts on its own, only the learner does.
 
-### Im Lektionsfenster
+### In the lesson window
 
-Kopfzeile und Abschlussaktion bleiben sichtbar. Ausführliche Aufgabenhinweise, Quellen und die abschliessende Antwortübersicht lassen sich bei Bedarf öffnen.
+The header and the finishing action stay visible. Detailed task hints, sources and the final answer overview can be opened when needed.
 
-- **Video**: Fragen erscheinen neben dem Player, auf schmalen Bildschirmen darunter, auch im Storyboard. Wiedergabe und Zurückspulen bleiben während einer Frage verfügbar.
-- **Antworten**: Ein Klick auf eine Antwort zeigt direkt geprüftes Feedback mit Erklärung, ohne zusätzlichen Prüfen-Knopf. Richtige Antworten bekommen grünes Feedback mit einem kurzen Sterneffekt, Fehler eine freundliche Erklärung und die richtige Antwort. Der gewählte Versuch bleibt danach gesperrt; nur bei einem Verbindungsfehler lässt er sich erneut senden. Bewertet wird der ursprüngliche Versuch, nicht die danach angezeigte Lösung.
-- **Podcasts und Text prüfen** zeigen eine Frage beziehungsweise einen Satz nach dem anderen, mit Fortschrittsanzeige.
-- **Webseite prüfen** führt durch Mail, Webseite und Urteil; die Wahl eines Urteils prüft direkt. Markierungen geben sichtbares Feedback, ohne sie vorzeitig als richtig zu bewerten.
-- **Mit der KI** zeigt die Anzahl eigener Beiträge. Neue Nachrichten scrollen nur das Gespräch.
-- Animationen beachten die Systemeinstellung für reduzierte Bewegung.
+- **Video**: questions appear next to the player, below it on narrow screens, also in the storyboard. Playback and rewinding stay available during a question.
+- **Answers**: clicking an answer shows checked feedback with an explanation right away, without an extra check button. Right answers get green feedback with a short star effect, mistakes a friendly explanation and the right answer. The chosen attempt is then locked; only after a connection error can it be sent again. The original attempt is judged, not the solution shown afterwards.
+- **Podcasts and Check a text** show one question or one sentence at a time, with a progress indicator.
+- **Check a website** leads through the email, the website and the verdict; choosing a verdict checks it right away. Marks give visible feedback without judging them as right too early.
+- **With the AI** shows the number of your own turns. New messages only scroll the conversation.
+- Animations respect the system setting for reduced motion.
 
-`POST /api/sessions/:id/nodes/:node/answer-feedback` prüft eine einzelne Video- oder Podcast-Antwort (`type: quiz`, `questionIndex`, `option`) oder einen Textsatz (`type: mark-evidence`, `itemId`, `mark`). Er ändert weder das Ergebnis noch die XP; beides entsteht erst beim Abschluss der Lektion. Die Endpunkte für Inhalte und Lektionsstart enthalten weiterhin keine Lösungen.
+`POST /api/sessions/:id/nodes/:node/answer-feedback` checks a single video or podcast answer (`type: quiz`, `questionIndex`, `option`) or a text sentence (`type: mark-evidence`, `itemId`, `mark`). It changes neither the result nor the XP; both are only created when the lesson is finished. The endpoints for content and starting a lesson still contain no solutions.
 
-## Videos und Podcasts erzeugen
+## Generating videos and podcasts
 
-Neue Inhalte brauchen ein Textmodell (siehe [KI-Anbindung](#ki-anbindung-optional)). Der Sprachdienst liefert nur die Stimme und ersetzt das Textmodell nicht. Ohne Textmodell bleiben neue Themen gesperrt; die mitgelieferten Lektionen lassen sich trotzdem abspielen.
+New content needs a text model (see [Connecting an AI](#connecting-an-ai-optional)). The speech service only provides the voice and does not replace the text model. Without a text model, new topics stay locked; the bundled lessons can still be played.
 
-Für die Sprache gibt es zwei Wege:
+There are two ways to get speech:
 
-- **Lokal** (Standard, nur macOS): `say` mit den Stimmen Anna und Markus, dazu `ffmpeg` im Suchpfad oder unter `FFMPEG_PATH`.
-- **ElevenLabs** (jede Plattform):
+- **Local** (default, macOS only): `say` with the voices Samantha and Daniel, plus `ffmpeg` on the search path or at `FFMPEG_PATH`.
+- **ElevenLabs** (any platform):
 
   ```dotenv
   VIDEO_SPEECH_PROVIDER=elevenlabs
   ELEVENLABS_API_KEY=...
   ELEVENLABS_VOICE_ID=...
-  ELEVENLABS_SECOND_VOICE_ID=...       # zweite Stimme für Podcasts
+  ELEVENLABS_SECOND_VOICE_ID=...       # second voice for podcasts
   ELEVENLABS_MODEL_ID=eleven_multilingual_v2
   ```
 
-Die Länge jeder erzeugten Sprachpassage bestimmt Untertitel und Animation.
+The length of each generated speech passage sets the subtitles and the animation.
 
-### Vorbereitete Videos neu bauen
+### Rebuilding prepared videos
 
 ```bash
-npm run videos:build -- --all        # alle vorbereiteten Videos
-npm run videos:build -- info-v1      # ein einzelnes
+npm run videos:build -- --all        # all prepared videos
+npm run videos:build -- info-v1      # a single one
 npm run build
 ```
 
-Bereits aktuelle Videos werden ohne Sprachaufruf übersprungen. `--force` baut neu und nimmt vorhandene Sprache aus dem Cache. Die Ableitungsanimation bleibt erhalten; nur `--replace-custom` ersetzt sie durch die allgemeinen Vorlagen.
+Videos that are already up to date are skipped without a speech call. `--force` rebuilds and takes existing speech from the cache. The derivative animation is kept; only `--replace-custom` replaces it with the general templates.
 
-Die Ableitung hat einen eigenen Befehl. Ihr Drehbuch steht in `data/videos/derivative.json`, die Szenen in `scripts/video/derivative-scenes.ts`:
+The derivative has its own command. Its script is in `data/videos/derivative.json`, the scenes in `scripts/video/derivative-scenes.ts`:
 
 ```bash
-npm run video:build                  # mit neuer Sprache
-npm run video:build -- --visuals-only  # nur die Darstellung, ohne Sprachdienst
+npm run video:build                  # with new speech
+npm run video:build -- --visuals-only  # only the visuals, without a speech service
 npm run build
 ```
 
-### Wo die Dateien liegen
+### Where the files are
 
-| Was | Wo |
+| What | Where |
 |---|---|
-| fertige Katalogvideos (WAV und Manifest) | `frontend/public/videos/<lesson-id>/` |
-| neu erzeugte Videos | `backend/var/videos/<content-hash>/` |
-| fertige Sprachpassagen | `backend/var/video-speech/` |
-| vertonte Podcasts | `backend/var/podcasts/<hash>/` |
+| finished catalogue videos (WAV and manifest) | `frontend/public/videos/<lesson-id>/` |
+| newly generated videos | `backend/var/videos/<content-hash>/` |
+| finished speech passages | `backend/var/video-speech/` |
+| voiced podcasts | `backend/var/podcasts/<hash>/` |
 
-Änderungen am Lektionsinhalt ergeben eine neue Version. Fragenlösungen und die zufällige Reihenfolge der Antworten gehören nicht zum Sprachcache. Fertige Sprache wird wiederverwendet: beim erneuten Öffnen, bei gleichzeitigem Öffnen und nach einem Neustart. Die gleichen Podcast-Beiträge mit den gleichen Stimmen werden nur einmal vertont.
+Changes to the lesson content result in a new version. Question solutions and the random order of answers are not part of the speech cache. Finished speech is reused: when opened again, when opened at the same time and after a restart. The same podcast turns with the same voices are only voiced once.
 
-### Kostenpflichtige Aufrufe
+### Paid calls
 
-Ein fehlgeschlagener oder unklar beendeter Sprachaufruf wird nicht automatisch wiederholt. Fertige Passagen bleiben erhalten. Nach Prüfung des Fehlers löst `npm run videos:build -- <lesson-id> --retry-failed` einen gezielten neuen Versuch aus. Ein Manifest wird erst veröffentlicht, wenn alle Szenen vertont, kompiliert und als renderbar geprüft sind. Es enthält keine Lösungen. Schlüssel bleiben lokal; die App enthält nur fertige Audiodateien.
+A failed or unclearly finished speech call is not repeated automatically. Finished passages are kept. After checking the error, `npm run videos:build -- <lesson-id> --retry-failed` starts a targeted new attempt. A manifest is only published once all scenes are voiced, compiled and checked as renderable. It contains no solutions. Keys stay local; the app only contains finished audio files.
 
-`npm test` prüft auch Szenen- und Audiodauer, Renderbarkeit, Fragenpausen, Spulen, Wiederabspielen und die Übergabe an den Lernverlauf. `npm run typecheck` prüft auch den Videogenerator.
+`npm test` also checks scene and audio length, renderability, question pauses, seeking, replaying and the handover to the learning history. `npm run typecheck` also checks the video generator.
 
-## Wie der Agent entscheidet
+## How the agent decides
 
-Mit KI arbeitet der Agent wie eine Lehrperson, nach dem Skill «teach» von mattpocock/skills. Pro Bereich kennt er die Mission, schreibt Lerneinträge mit Belegen und erzeugt kurze Lektionen, die zur Person passen. Regeln prüfen jeden Schritt und springen ein, wenn die KI fehlt oder scheitert.
+With AI, the agent works like a teacher, following the “teach” skill from mattpocock/skills. For each area it knows the mission, writes learning records with evidence and creates short lessons that fit the learner. Rules check every step and step in when the AI is missing or fails.
 
-> **Zwei Abläufe.** Die heutige Oberfläche nutzt immer die [Themenauswahl](#nächstes-thema-und-format-wählen): Die Person wählt, der Agent erzeugt. Lerneinträge, Lernstand und Wiederholung gelten dort wie unten beschrieben. Die Regeln R0 bis R8 und der Planer-Agent (A1), der nach jeder Lektion selbst plant, gelten nur für ältere API-Clients, solange sie die Themenauswahl nie abgerufen haben.
+> **Two flows.** The current interface always uses the [topic choice](#choosing-the-next-topic-and-format): the learner chooses, the agent creates. Learning records, progress and reviews work there as described below. The rules R0 to R8 and the planner agent (A1), which plans on its own after every lesson, only apply to older API clients as long as they have never requested the topic choice.
 
-### Regeln
+### Rules
 
-Die Regeln antworten sofort. Mit KI plant danach der Planer-Agent, und die Regeln prüfen seinen Plan. Ohne KI gelten die Regeln allein, angeschrieben als «Plan nach Regeln».
+The rules answer immediately. With AI, the planner agent then plans, and the rules check its plan. Without AI, the rules apply alone, labelled “Plan by rules”.
 
-| Regel | Wann | Was |
+| Rule | When | What |
 |---|---|---|
-| R8 Bereich gewählt | eben einen Bereich hinzugefügt oder eine neue Lektion verlangt | der Einstieg oder die neue Lektion in diesem Bereich |
-| R3 Start nach DCC-Profil | noch nichts gelernt | zuerst Bereiche in der Grundstufe, dann nicht erhobene (kurzer Einstieg), dann höhere Stufen, dann Bereiche ohne DCC |
-| R0 Weiter im Lernweg | nach jeder Lektion | nächste Lektion im Bereich, zielt auf das, was gefehlt hat |
-| R1 Wiederholte Schwierigkeit | gleiches Kriterium zweimal verpasst | neuer Knoten «Mit KI klären: …» plus eine Alternative zum Alleine-Üben |
-| R2 Unterfordert | die letzten zwei Lektionen im Bereich ohne Hilfe gelöst | neuer Knoten mit einer Lektion eine Stufe höher |
-| R7 Bereich abgeschlossen | Bereich fertig | weiter zum nächsten Bereich; ist nichts mehr offen oder die Karte leer: einen Bereich hinzufügen |
-| A1 Agent-Plan | nach jeder Lektion, wenn der Planer-Agent läuft | Plan des Agenten, von den Regeln geprüft, Tags «KI» und «Regel» |
+| R8 Area chosen | an area was just added or a new lesson requested | the entry lesson or the new lesson in this area |
+| R3 Start from the DCC profile | nothing learned yet | first areas at Foundation level, then not assessed ones (short entry lesson), then higher levels, then areas without DCC |
+| R0 Continue on the path | after every lesson | the next lesson in the area, aimed at what was missing |
+| R1 Repeated difficulty | the same criterion missed twice | new node “Clear it up with the AI: …” plus an alternative for practising alone |
+| R2 Not challenged enough | the last two lessons in the area solved without help | new node with a lesson one level higher |
+| R7 Area finished | area done | on to the next area; if nothing is left open or the map is empty: add an area |
+| A1 Agent plan | after every lesson, when the planner agent runs | the agent's plan, checked by the rules, tags “AI” and “Rule” |
 
-In eigenen Bereichen ohne laufenden Agenten nehmen die Regeln eine gültige Lektion, die der Agent schon erzeugt hat. Gibt es keine, wählen sie das Ziel selbst: das zuletzt verpasste Kriterium, sonst eines ohne Belege. Fällige Wiederholungen werden beigemischt. Nach zwei glatten Lektionen geht es eine Stufe höher.
+In your own areas without a running agent, the rules take a valid lesson the agent has already created. If there is none, they choose the goal themselves: the criterion missed last, otherwise one without evidence. Due reviews are mixed in. After two smooth lessons it goes one level higher.
 
-### Der Planer-Agent (A1)
+### The planner agent (A1)
 
-Nach jeder Lektion zeigt die App sofort den Vorschlag der Regeln, markiert als «vorläufig». Im Hintergrund startet der Agent; das Frontend fragt alle 1,5 Sekunden nach. Ist sein Plan fertig und gültig, ersetzt er den vorläufigen Vorschlag.
+After every lesson the app immediately shows the rules' suggestion, marked as “provisional”. The agent starts in the background; the frontend checks back every 1.5 seconds. When its plan is ready and valid, it replaces the provisional suggestion.
 
-Der Agent arbeitet in einer Schleife mit Werkzeugen, mit Anthropic oder OpenAI: höchstens 6 Schritte, 45 Sekunden gesamt und 20 Sekunden pro Aufruf.
+The agent works in a loop with tools, with Anthropic, OpenAI or Qwen: at most 6 steps, 45 seconds in total and 20 seconds per call.
 
-| Werkzeug | Was es tut |
+| Tool | What it does |
 |---|---|
-| `get_learner_state(trackId)` | Mission, DCC-Stufe nur dieses Bereichs, aktive Lerneinträge, letzte 5 Ergebnisse, fällige Wiederholungen, Karte des Bereichs |
-| `list_pool_lessons(trackId, criterion?)` | vorbereitete und schon erzeugte Lektionen |
-| `generate_lesson({type, trackId, criterion, level, contextHint, reviewOf?})` | erzeugt und prüft eine Lektion; Fehler kommen zurück, ein zweiter Versuch ist erlaubt |
-| `add_to_map(lessonId, parentNodeId)` | neuer Knoten, höchstens 2 pro Lauf |
-| `write_learning_record({...})` | Lerneintrag; der Server prüft die Belege |
-| `update_reference(trackId, entry)` | Merkblatt, nur für ohne Hilfe Gezeigtes |
-| `note_preference(text)` | Vorliebe in `notes.md` |
-| `recommend({nodeId, alternativeNodeId, reason, basedOn})` | beendet die Schleife |
+| `get_learner_state(trackId)` | mission, DCC level of this area only, active learning records, last 5 results, due reviews, map of the area |
+| `list_pool_lessons(trackId, criterion?)` | prepared and already generated lessons |
+| `generate_lesson({type, trackId, criterion, level, contextHint, reviewOf?})` | creates and checks a lesson; errors come back, a second attempt is allowed |
+| `add_to_map(lessonId, parentNodeId)` | new node, at most 2 per run |
+| `write_learning_record({...})` | learning record; the server checks the evidence |
+| `update_reference(trackId, entry)` | cheat sheet, only for what was shown without help |
+| `note_preference(text)` | preference in `notes.md` |
+| `recommend({nodeId, alternativeNodeId, reason, basedOn})` | ends the loop |
 
-Der Systemprompt enthält die Grundsätze aus «teach»: Zone der nächsten Entwicklung, eine Sache pro Lektion, Wissen leicht und Übung fordernd, jede Lektion hängt an der Mission, Abrufen, Abstand und Mischen, kein eigenes Wissen ausserhalb der Quellen.
+The system prompt contains the principles from “teach”: zone of proximal development, one thing per lesson, knowledge light and practice demanding, every lesson tied to the mission, retrieval, spacing and interleaving, no knowledge of its own outside the sources.
 
-Bevor A1 gilt, prüfen die Regeln (`backend/src/guard.ts`):
+Before A1 applies, the rules check (`backend/src/guard.ts`):
 
-- Der Knoten existiert und ist erreichbar.
-- Es gibt eine erreichbare Alternative, sobald ausser der Empfehlung ein anderer Knoten erreichbar ist. Mit nur einem Bereich und einem neuen Knoten bleibt sie leer.
-- Die Begründung nennt mindestens einen Lerneintrag (`LR-…`) oder ein Ereignis (`ev-…`), und alle genannten IDs gibt es.
+- The node exists and is reachable.
+- There is a reachable alternative as soon as a node other than the recommendation is reachable. With only one area and one new node it stays empty.
+- The reason cites at least one learning record (`LR-…`) or one event (`ev-…`), and all cited ids exist.
 
-Fällt eine Prüfung durch, gilt der Plan der Regeln. Das gilt auch, wenn das Modell ausfällt, die Zeit abläuft oder beide Versuche einer Lektion ungültig sind. Der Grund steht in den Einstellungen unter Agent → «Läufe des Planer-Agenten». Hat die Person inzwischen schon eine Lektion gestartet, verwirft die App den Plan.
+If a check fails, the rules' plan applies. The same goes if the model fails, time runs out or both attempts at a lesson are invalid. The reason is shown in the settings under Agent → “Planner agent runs”. If the learner has already started a lesson in the meantime, the app discards the plan.
 
-Grenzen: 1 Lauf pro abgeschlossene Lektion, höchstens 10 erzeugte Lektionen pro Sitzung.
+Limits: 1 run per finished lesson, at most 10 generated lessons per session.
 
-**KI zuerst, vorbereitete Lektionen als Rückfall:**
+**AI first, prepared lessons as a fallback:**
 
-- Mit KI startet jeder vorbereitete Bereich mit einem Einstieg nach DCC-Stufe. Die weiteren Lektionen erzeugt der Agent.
-- Eine vorbereitete Lektion darf der Agent erst anhängen, wenn die Erzeugung gescheitert ist oder die Grenze von 10 erreicht ist.
-- Nimmt der vorläufige Plan der Regeln eine vorbereitete Lektion auf die Karte, verschwindet dieser Knoten wieder, sobald der Plan des Agenten gilt, ausser der Agent hat ihn selbst gewählt.
-- Scheitert der Agent, holen die Regeln die vorbereiteten Lektionen dieses Bereichs auf die Karte und planen damit.
-- Ohne KI zeigt die Karte für jeden vorbereiteten Bereich den ganzen Plan aus vorbereiteten Lektionen.
+- With AI, every prepared area starts with an entry lesson based on the DCC level. The agent creates the further lessons.
+- The agent may only attach a prepared lesson once generation has failed or the limit of 10 is reached.
+- If the rules' provisional plan puts a prepared lesson on the map, that node disappears again as soon as the agent's plan applies, unless the agent chose it itself.
+- If the agent fails, the rules bring this area's prepared lessons onto the map and plan with them.
+- Without AI, the map shows the whole plan of prepared lessons for every prepared area.
 
-Wer statt der Empfehlung die Alternative («Lieber etwas anderes») startet, lehnt sie ab. Das wird im Verlauf festgehalten, und der Agent plant danach neu.
+Anyone who starts the alternative (“Something else instead”) instead of the recommendation declines it. This is recorded in the history, and the agent plans again afterwards.
 
-### Erzeugte Lektionen
+### Generated lessons
 
-Der Agent erfindet keine neuen Lektionsarten, er füllt nur die bestehenden. Jede erzeugte Lektion geht durch denselben Validator wie die Dateien in `data/lessons/` (`backend/src/validate.ts`):
+The agent does not invent new lesson types; it only fills the existing ones. Every generated lesson goes through the same validator as the files in `data/lessons/` (`backend/src/validate.ts`):
 
-- Schema pro Art, höchstens 5 Minuten, Schweizer Schreibweise ohne ß.
-- Text prüfen: mindestens ein erfundener Satz mit einem Kriterium des Bereichs.
-- Webseite prüfen: nur erfundene Marken und `.example`-Adressen. Entscheid und Warnzeichen passen zusammen.
-- Fragen: Die Antworten einer Frage unterscheiden sich um höchstens 2 Wörter, damit die richtige nicht an ihrer Länge auffällt. Der Server setzt die richtige Antwort in jeder Frage an eine andere Stelle; steht sie überall an derselben, lehnt der Validator ab.
-- Videos nur mit den wiederverwendbaren Vorlagen «steps» und «url-parts».
-- Eine Primärquelle aus `data/resources/<trackId>.md`, bei eigenen Bereichen aus den Quellen des Bereichs.
-- Bei eigenen Bereichen nur die Lektionsarten, die der Bereich nennt.
+- Schema per type, at most 5 minutes.
+- Check a text: at least one made-up sentence with a criterion of the area.
+- Check a website: only made-up brands and `.example` addresses. Verdict and warning signs match.
+- Questions: the answers to a question differ by at most 2 words, so the right one does not stand out by its length. The server puts the right answer in a different place in each question; if it is in the same place everywhere, the validator rejects it.
+- Videos only with the reusable templates “steps” and “url-parts”.
+- One primary source from `data/resources/<trackId>.md`, for your own areas from the area's sources.
+- For your own areas, only the lesson types the area names.
 
-Ungültige Lektionen werden verworfen und protokolliert. In der App tragen erzeugte Lektionen die Marken «Von der KI erstellt» und «Beispiel erfunden».
+Invalid lessons are discarded and logged. In the app, generated lessons carry the labels “Made by the AI” and “Invented example”.
 
-`data/resources/<trackId>.md` listet geprüfte Quellen, zum Beispiel BACS, S-U-P-E-R.ch, «eBanking – aber sicher!» und DigComp 2.2. Jeder Link wurde am 24.10.2026 geöffnet. Was sich nicht prüfen liess, steht unter `## Gaps`.
+`data/resources/<trackId>.md` lists checked sources, for example BACS, S-U-P-E-R.ch, “eBanking – but secure!” and DigComp 2.2. Every link was opened on 24 October 2026. Whatever could not be checked is listed under `## Gaps`.
 
-### Lerneinträge, Lernstand und Wiederholung
+### Learning records, progress and reviews
 
-Ein Lerneintrag ist eine Erkenntnis mit Belegen, kein Protokoll. Behandelt ist nicht gelernt. Es gibt vier Arten:
+A learning record is an insight with evidence, not a log. Covered is not learned. There are four kinds:
 
-| Art | Beleg, den der Server verlangt |
+| Kind | Evidence the server requires |
 |---|---|
-| `demonstrated` | In allen genannten Ereignissen ist das Kriterium alleine, ohne Hinweis und beim ersten Prüfen erfüllt |
-| `misconception` | ein Ereignis mit verpasstem Kriterium und ein späteres, in dem es ohne Hinweis erfüllt ist |
-| `prior-knowledge` | ein Ereignis in diesem Bereich |
-| `mission-shift` | eine von der Person bestätigte Missionsänderung (`mi-…`) |
+| `demonstrated` | in all cited events the criterion is met alone, without a hint and at the first check |
+| `misconception` | an event with the criterion missed and a later one in which it is met without a hint |
+| `prior-knowledge` | an event in this area |
+| `mission-shift` | a mission change confirmed by the learner (`mi-…`) |
 
-Einträge haben `status: active` oder `superseded by LR-n`. Die Regeln schreiben `demonstrated` und `misconception` selbst, auch ohne KI. Der Agent kann weitere schreiben.
+Records have `status: active` or `superseded by LR-n`. The rules write `demonstrated` and `misconception` themselves, even without AI. The agent can write more.
 
-Der Lernstand pro Kriterium kommt nur aus den Lerneinträgen und steht getrennt vom DCC unter «Lernstand (aus dem Lernen, kein DCC)»:
+Progress per criterion comes only from the learning records and is shown separately from the DCC under “Learning progress (from learning, not DCC)”:
 
-- «unbekannt»: kein Eintrag.
-- «am Üben»: Fehlvorstellung korrigiert, oder nach «sicher» wieder verpasst.
-- «sicher»: ohne Hilfe gezeigt.
+- “still open”: no record.
+- “practising”: a misconception was corrected, or it was missed again after “I can do it”.
+- “I can do it”: shown without help.
 
-Hilfe innerhalb einer Lektion (Hinweis nach dem Prüfen) wird vermerkt. Eine Beobachtung wie «Termine und Fristen 2× übersehen» gilt erst als erledigt, wenn das Kriterium ohne Hilfe gelöst wurde.
+Help within a lesson (a hint after checking) is noted. An observation like “Missed Dates and deadlines 2×” only counts as resolved once the criterion was solved without help.
 
-### Kurz wiederholen
+### Quick reviews
 
-Fällige Wiederholungen stehen auf der Startseite ganz oben, vor «Weiterlernen» und neuen Lektionen. Zuletzt verpasste Kriterien haben Vorrang, danach kommen die mit den meisten Fehlern und die ältesten fälligen Fragen. Auch im Thema und in der Kopfzeile lassen sich Wiederholungen öffnen. Eine Runde enthält höchstens fünf Fragen; übrige und abgebrochene Fragen bleiben fällig.
+Due reviews are at the very top of the home page, before “Keep learning” and new lessons. Criteria missed last come first, then those with the most mistakes and the oldest due questions. Reviews can also be opened in the topic and in the header. A round contains at most five questions; remaining and cancelled questions stay due.
 
-Nach einer abgeschlossenen Lektion kommen die geprüften Kriterien in einen dauerhaften Wiederholungsplan. Die erste Frage kommt nach einem Tag. Richtig beantwortete Fragen kommen nach 3, 7, 14, 30 und schliesslich jeweils 60 Tagen wieder. Eine falsche Antwort setzt den Abstand auf 10 Minuten zurück. Nach dem erfolgreichen Wiederholen beginnt der Aufbau wieder bei einem Tag, dann 3, 7 usw. Fehler in normalen Lektionen verkürzen den Abstand ebenfalls. Neue Anmeldungen setzen die Fristen nicht zurück.
+After a lesson is finished, the checked criteria go into a permanent review plan. The first question comes after one day. Questions answered correctly come back after 3, 7, 14, 30 and then every 60 days. A wrong answer resets the interval to 10 minutes. After a successful review, the build-up starts again at one day, then 3, 7 and so on. Mistakes in normal lessons also shorten the interval. New sign-ins do not reset the due dates.
 
-Wiederholungen enthalten nur kurze Fragen, keine Videos, Podcasts oder erneuten Erklärungen. Vorhandene Quizfragen kommen ausschliesslich aus schon abgeschlossenen Lektionen. Bei Textprüfungen wird nur die nötige Notiz mit einer Aussage gezeigt; für weitere Kriterien gibt es eine Auswahl zur bereits gelernten Faustregel. Antworten werden gemischt, Lösungen bleiben bis zur Abgabe im Backend. Nach einem Fehler erscheint eine kurze Korrektur. Ein wiederholter Sendeversuch zählt nur einmal. Die Antworten verändern weder DCC noch XP oder die Anzahl abgeschlossener Lektionen; der Lernstand berücksichtigt das letzte Abrufen.
+Reviews only contain short questions, no videos, podcasts or repeated explanations. Existing quiz questions come only from lessons already finished. For text checks, only the necessary note with one statement is shown; for further criteria there is a choice about the rule of thumb already learned. Answers are shuffled, and solutions stay in the backend until the answer is submitted. After a mistake, a short correction appears. A repeated attempt to send counts only once. The answers change neither the DCC nor XP nor the number of finished lessons; progress takes the last retrieval into account.
 
-Pro Kriterium rotieren alle passenden Fragen aus sämtlichen abgeschlossenen Lektionen, unabhängig davon, ob sie ursprünglich richtig oder falsch beantwortet wurden. Noch nicht wiederholte Fragen kommen zuerst, danach die am längsten nicht beantworteten. Video- und Podcastfragen, belegte und erfundene Textaussagen sowie Warnzeichen aus Webseitenprüfungen werden berücksichtigt. Mehrfach abgeschlossene Lektionen erzeugen keine doppelten Fragen. Neue abgeschlossene Lektionen ergänzen die Rotation. Erst eine gültig abgegebene Antwort rückt die Rotation weiter; Öffnen, Abbrechen und erneutes Senden derselben Antwort verbrauchen keine weitere Frage. Die Rotation ist unabhängig von Erfolgsserien und Fehlern; bei einem Fehler kommt das Kriterium nach 10 Minuten wieder, mit der nächsten Frage der Rotation.
+For each criterion, all matching questions from all finished lessons rotate, regardless of whether they were originally answered right or wrong. Questions not yet reviewed come first, then those not answered for the longest time. Video and podcast questions, supported and made-up text statements and warning signs from website checks are included. Lessons finished several times do not create duplicate questions. Newly finished lessons are added to the rotation. Only a validly submitted answer moves the rotation on; opening, cancelling and resending the same answer do not use up another question. The rotation is independent of streaks and mistakes; after a mistake the criterion comes back after 10 minutes, with the next question in the rotation.
 
-Fristen, Fehlerzähler, Fragenrotation und laufende Fragen bleiben in `state.json` erhalten. Bestehende Warteschlangen einschliesslich früher als erledigt markierter Wiederholungen werden beim Öffnen übernommen. Die Startseite aktualisiert fällige Fragen spätestens nach einer Minute und beim Zurückkehren zum Browserfenster. Der Agent kann fällige Kriterien weiterhin in zusätzliche Übungen aufnehmen (`reviewOf`).
+Due dates, mistake counters, question rotation and open questions are kept in `state.json`. Existing queues, including reviews marked as done earlier, are taken over when opened. The home page updates due questions after one minute at the latest and when you return to the browser window. The agent can still include due criteria in additional exercises (`reviewOf`).
 
-API: `POST /api/sessions/:id/reviews/:review/start` öffnet eine fällige Frage ohne Lösung; `POST /api/sessions/:id/reviews/:review/answer` nimmt `{ challengeId, option }` entgegen, bewertet und plant den nächsten Termin. `SessionView.reviews` enthält die priorisierten fälligen und die kommenden Wiederholungen. Interne Fragen und Lösungen sind aus der öffentlichen Sitzung ausgeschlossen.
+API: `POST /api/sessions/:id/reviews/:review/start` opens a due question without the solution; `POST /api/sessions/:id/reviews/:review/answer` takes `{ challengeId, option }`, judges it and schedules the next date. `SessionView.reviews` contains the prioritised due and the upcoming reviews. Internal questions and solutions are excluded from the public session.
 
-## Lernumgebung pro Person
+## Workspace per learner
 
-Jede Person hat einen Ordner unter `backend/var/learners/<learnerId>/` (nicht in git). Jede Datei wird zuerst als Temp-Datei geschrieben und dann umbenannt.
-
-```
-profile.json                       Name, Erstellt am, DCC-Stände (Datum, Quelle)
-state.json                         Karte, Ereignisse, Empfehlungen, Beobachtungen, Wiederholung, Läufe des Agenten
-tracks/<trackId>.json              eigene Bereiche: Kriterien, Missionsvorschläge, Quellen, Lektionsarten, Thema, Vorwissen
-missions/<trackId>.md              Mission pro Bereich
-learning-records/0001-<slug>.md    Lerneinträge mit Frontmatter (track, criterion, kind, status, evidence)
-lessons/0001-<slug>.json           erzeugte Lektionen mit Herkunft (Modell, Zeit, basedOn, Quelle)
-reference/<trackId>.md             Merkblatt pro Bereich
-notes.md                           Vorlieben, zum Beispiel «mag kurze Lektionen»
-```
-
-- **Anmelden mit einem bekannten Namen** (Gross- und Kleinschreibung egal): «Weitermachen» setzt die bestehende Person fort, «Neu beginnen» legt eine neue an. Nichts wird gelöscht.
-- **Neues DCC-Resultat**: Es kommt als neuer Stand dazu, wenn es sich vom letzten unterscheidet. Lerneinträge bleiben. Bereiche ohne erledigte Lektion bekommen einen neuen Plan.
-- **Mission**: Ein persönliches Ziel lässt sich freiwillig unter «Mein Konto» festlegen, mit drei Vorschlägen oder eigenen Worten. Ohne eigenes Ziel gilt das Standardziel. Die Änderung eines gespeicherten Ziels braucht eine Bestätigung und wird als `mission-shift` festgehalten.
-
-## Datenschutz
-
-- Das Modell bekommt nie den Namen und nie die ID der Person.
-- Der Agent bekommt nur die DCC-Stufe des Bereichs, den er plant, nie das ganze Profil. Knoten anderer Bereiche sieht er nur als ID, ohne Titel.
-- An die KI gehen: die Übung, die Antworten der Person, die Mission und die Vorlieben aus `notes.md`, bei einem eigenen Bereich ausserdem Thema und Vorwissen. Die App sagt das bei der Mission, in den Einstellungen und beim Anlegen.
-- Eigene Bereiche gehören nur der Person, die sie angelegt hat. Andere Sitzungen können sie nicht ansprechen.
-- Kein Werkzeug und kein Code ändert DCC-Stufen. Lernen, Transfer und DCC bleiben getrennt.
-- Schlüssel liegen nur in `backend/.env`, nie im Frontend oder im Repo.
-
-Jede Empfehlung sagt in einem Satz, warum sie jetzt hilft. Im Seitenbereich steht ausserdem, was der Agent gesehen hat, sein Vorschlag, worauf er sich stützt und die Regel.
-
-## Aufbau
+Each learner has a folder under `backend/var/learners/<learnerId>/` (not in git). Every file is first written as a temp file and then renamed.
 
 ```
-shared/            gemeinsame Typen und Punkteberechnung (rewards.ts)
-backend/           Express-API, Agent, Bewertung, Modell-Anbindung
-  src/app.ts         HTTP-API
-  src/content.ts     Inhalte aus data/ laden und prüfen
-  src/sessions.ts    Anmelden, Lektionen, Missionen
-  src/nextTopics.ts  «Wie geht es weiter?»: Themenvorschläge und gewählte Lektion
-  src/agent.ts       Plan aus dem DCC, Regeln R0 bis R8, neue Knoten
-  src/planner.ts     Planer-Agent (A1): Werkzeuge, Schleife, Rückfall
-  src/guard.ts       Prüfung des Agenten-Plans durch die Regeln
-  src/tracks.ts      Bereiche einer Person: vorbereitete und eigene
-  src/designer.ts    eigenen Bereich mit der KI planen, Entwurf und Quellen prüfen
-  src/ownlessons.ts  Lektionen für eigene Bereiche: Einstieg und Ziel nach Regeln
-  src/generator.ts   Lektionen erzeugen, Fragen mischen
-  src/validate.ts    Validator für alle Lektionen
-  src/resources.ts   geprüfte Quellen pro Bereich
-  src/records.ts     Lerneinträge, Belege, Lernstand, Wiederholung, Merkblatt
-  src/workspace.ts   Ordner pro Person auf der Festplatte
-  src/dcc.ts         DCC-Datei und Eingabe prüfen
-  src/judge.ts       Bewertung nach Regeln
-  src/services.ts    Chat, Hinweise, Bewertung mit Modell oder Rückfall
-  src/provider.ts    Anthropic, OpenAI, Mock oder keine; Werkzeuge für den Agenten
-  src/video/         Videos vertonen, kompilieren und speichern
-  src/podcast/       Podcasts vertonen und speichern
-  test/              Tests mit Mock-Modell
-data/              Bereiche, Kriterien, Missionsvorschläge, Lektionen (JSON), Quellen (resources/*.md), Drehbücher
-frontend/          React-PWA: Anmeldung, Startseite mit Belohnungen, Berge, Lernkarte, Lektionen, Übersetzungen
-packages/animlib/  Animationsbibliothek für die Videos (Kopie aus OwlYouNeed)
-scripts/           Videos bauen
+profile.json                       name, created at, DCC records (date, source)
+state.json                         map, events, recommendations, observations, reviews, agent runs
+tracks/<trackId>.json              own areas: criteria, mission suggestions, sources, lesson types, topic, prior knowledge
+missions/<trackId>.md              mission per area
+learning-records/0001-<slug>.md    learning records with frontmatter (track, criterion, kind, status, evidence)
+lessons/0001-<slug>.json           generated lessons with provenance (model, time, basedOn, source)
+reference/<trackId>.md             cheat sheet per area
+notes.md                           preferences, for example “likes short lessons”
 ```
 
-Neue vorbereitete Lektionen kommen als JSON nach `data/lessons/`. Beim Start prüft das Backend alle Dateien mit demselben Validator wie erzeugte Lektionen. Ungültige werden verworfen und protokolliert.
+- **Signing in with a known name** (case does not matter): “Continue” carries on with the existing learner, “Start over” creates a new one. Nothing is deleted.
+- **New DCC result**: it is added as a new record if it differs from the last one. Learning records stay. Areas without a finished lesson get a new plan.
+- **Mission**: a personal goal can optionally be set under “My account”, with three suggestions or in your own words. Without one, the default goal applies. Changing a saved goal needs a confirmation and is recorded as `mission-shift`.
 
-## Grenzen
+## Privacy
 
-- Keine echte Anmeldung: Name und DCC-Resultat reichen. Wer den Namen kennt, kann weitermachen.
-- Eigene Bereiche nur mit KI. Ihre Quellen schlägt die KI vor. Geprüft wird nur, ob die Adresse antwortet, nicht der Inhalt. Die App sagt das bei jeder Lektion und im Bereich.
-- Höchstens 8 eigene Bereiche. Bereiche lassen sich noch nicht entfernen.
-- Kein Lernen mit anderen Personen. Die Modi sind «Alleine» und «Mit KI». Der Teil «Wisdom/Community» aus «teach» kommt mit diesem Modus.
-- Erzeugte Videos verwenden wiederverwendbare Animationen, keine frei erfundenen Animationsprogramme.
-- Lokale Sprache nur unter macOS. Auf anderen Systemen braucht es ElevenLabs für neue Videos und Podcasts.
-- Der Speicher ist ein Ordner pro Person, ohne Datenbank und ohne Sperren für mehrere Server.
-- Ein neues DCC-Resultat plant nur Bereiche neu, in denen noch nichts erledigt ist.
-- Die Liste echter Marken im Validator ist nicht vollständig. Der Hauptschutz sind die `.example`-Adressen.
+- The model never gets the learner's name or id.
+- The agent only gets the DCC level of the area it is planning, never the whole profile. It only sees nodes of other areas as ids, without titles.
+- Sent to the AI: the exercise, the learner's answers, the mission and the preferences from `notes.md`, and for your own area also the topic and prior knowledge. The app says so at the mission, in the settings and when creating an area.
+- Your own areas belong only to the learner who created them. Other sessions cannot access them.
+- No tool and no code changes DCC levels. Learning, transfer and DCC stay separate.
+- Keys are only in `backend/.env`, never in the frontend or in the repo.
+
+Every recommendation says in one sentence why it helps now. The side panel also shows what the agent saw, its suggestion, what it is based on and the rule.
+
+## Structure
+
+```
+shared/            shared types and points calculation (rewards.ts)
+backend/           Express API, agent, judging, model connection
+  src/app.ts         HTTP API
+  src/content.ts     load and check content from data/
+  src/sessions.ts    sign-in, lessons, missions
+  src/nextTopics.ts  “What would you like to learn next?”: topic suggestions and the chosen lesson
+  src/agent.ts       plan from the DCC, rules R0 to R8, new nodes
+  src/planner.ts     planner agent (A1): tools, loop, fallback
+  src/guard.ts       the rules' check of the agent's plan
+  src/tracks.ts      a learner's areas: prepared and own
+  src/designer.ts    plan your own area with the AI, check the draft and sources
+  src/ownlessons.ts  lessons for your own areas: entry lesson and goal by rules
+  src/generator.ts   generate lessons, shuffle questions
+  src/validate.ts    validator for all lessons
+  src/resources.ts   checked sources per area
+  src/records.ts     learning records, evidence, progress, reviews, cheat sheet
+  src/workspace.ts   folder per learner on disk
+  src/dcc.ts         check the DCC file and input
+  src/judge.ts       judging by rules
+  src/services.ts    chat, hints, judging with a model or fallback
+  src/owlChat.ts     the owl chat
+  src/provider.ts    Anthropic, OpenAI, Qwen, mock or none; tools for the agent
+  src/video/         voice, compile and store videos
+  src/podcast/       voice and store podcasts
+  test/              tests with a mock model
+data/              areas, criteria, mission suggestions, lessons (JSON), sources (resources/*.md), video scripts
+frontend/          React PWA: sign-in, home page with rewards, mountains, learning map, lessons
+packages/animlib/  animation library for the videos (copy from OwlYouNeed)
+scripts/           build videos
+```
+
+New prepared lessons go into `data/lessons/` as JSON. At startup the backend checks all files with the same validator as generated lessons. Invalid ones are discarded and logged.
+
+## Limitations
+
+- No real login: a name and a DCC result are enough. Anyone who knows the name can continue.
+- Your own areas only with AI. The AI suggests their sources. Only whether the address answers is checked, not the content. The app says so for every lesson and in the area.
+- At most 8 own areas. Areas cannot be removed yet.
+- No learning with other people. The modes are “Alone” and “With the AI”. The “Wisdom/Community” part of “teach” comes with that mode.
+- Generated videos use reusable animations, not freely invented animation programs.
+- Local speech only on macOS. On other systems you need ElevenLabs for new videos and podcasts.
+- Storage is one folder per learner, without a database and without locks for several servers.
+- A new DCC result only replans areas in which nothing is done yet.
+- The validator's list of real brands is not complete. The main protection is the `.example` addresses.

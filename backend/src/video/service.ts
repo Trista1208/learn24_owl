@@ -45,8 +45,8 @@ export class VideoService {
           (completed, total) => this.jobs.set(key, { state: 'building', completed, total }));
         this.jobs.set(key, { state: 'ready', manifestUrl: `/videos/${key}/manifest.json` });
       } catch (error) {
-        console.warn('Erklärvideo konnte nicht erzeugt werden:', error instanceof Error ? error.message : 'unbekannter Fehler');
-        this.jobs.set(key, { state: 'error', message: 'Die Vertonung ist gerade nicht möglich. Du kannst die Lektion als Storyboard ansehen.' });
+        console.warn('Explainer video could not be created:', error instanceof Error ? error.message : 'unknown error');
+        this.jobs.set(key, { state: 'error', message: 'The voice-over isn’t possible right now. You can view the lesson as a storyboard.' });
       }
     });
     return initial;

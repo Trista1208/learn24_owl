@@ -11,10 +11,10 @@ const root = new URL('../../', import.meta.url);
 const manifest = JSON.parse(readFileSync(new URL('frontend/public/videos/math-v1/manifest.json', root), 'utf8')) as NarratedVideoManifest;
 const app = createApp();
 
-describe('Was ist eine Ableitung?', () => {
+describe('What is a derivative?', () => {
   it('publishes four renderable scenes with matching narration and caption timing', async () => {
     expect(manifest.lessonId).toBe('math-v1');
-    expect(manifest.locale).toBe('de-CH');
+    expect(manifest.locale).toBe('en-GB');
     expect(manifest.scenes).toHaveLength(4);
     for (const scene of manifest.scenes) {
       const audio = readFileSync(new URL(`frontend/public${scene.audioUrl}`, root));

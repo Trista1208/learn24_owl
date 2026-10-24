@@ -66,25 +66,25 @@ export function LessonOverlay({ nodeId, onClose }: { nodeId: string; onClose: (s
   const missed = result?.criteria.filter((c) => c.status === 'missed').map((c) => track?.criteria.find((x) => x.id === c.key)).filter(Boolean) ?? [];
 
   return (
-    <div className="overlay lesson-overlay" role="dialog" aria-modal="true" aria-label={lesson ? lessonTitle(lesson.id, lesson.title) : ui('Lektion')}>
+    <div className="overlay lesson-overlay" role="dialog" aria-modal="true" aria-label={lesson ? lessonTitle(lesson.id, lesson.title) : ui('Lesson')}>
       <div className="overlay-panel lesson-shell" ref={ref} tabIndex={-1}>
         <header className="overlay-head">
           <div>
             {lesson && (
               <p className="meta">
                 <span className="pill">{ui(TYPE_LABEL[lesson.type])}</span>
-                {!result && <span className="pill xp-preview"><Icon name="star" size={14} />{previousXp === 0 ? ui('Bis zu 100 XP') : previousXp < 100 ? `Noch ${100 - previousXp} XP möglich` : ui('Zum Festigen')}</span>}
-                <span>{ui("etwa")} {lesson.durationMin} {lesson.durationMin === 1 ? ui('Minute') : ui('Minuten')}</span>
+                {!result && <span className="pill xp-preview"><Icon name="star" size={14} />{previousXp === 0 ? ui('Up to 100 XP') : previousXp < 100 ? `${100 - previousXp} more XP possible` : ui('To consolidate')}</span>}
+                <span>{ui("about")} {lesson.durationMin} {lesson.durationMin === 1 ? ui('minute') : ui('minutes')}</span>
               </p>
             )}
-            <h2>{lesson ? lessonTitle(lesson.id, lesson.title) : ui('Lektion wird geladen …')}</h2>
+            <h2>{lesson ? lessonTitle(lesson.id, lesson.title) : ui('Loading the lesson …')}</h2>
 
           </div>
-          <button className="btn quiet small lesson-close" aria-label={ui("Schliessen")} onClick={() => onClose(Boolean(result))}><Icon name="close" size={18} /><span>{ui("Schliessen")}</span></button>
+          <button className="btn quiet small lesson-close" aria-label={ui("Close")} onClick={() => onClose(Boolean(result))}><Icon name="close" size={18} /><span>{ui("Close")}</span></button>
         </header>
 
         <div className="lesson-content" ref={contentRef}>
-        {lesson && !result && <details className="lesson-brief"><summary>{ui("Hinweise")}</summary><p>{lesson.intro}</p>{lang !== 'de' && <p>{ui('Die Aufgabe bleibt auf Deutsch. Die Prüfung erkennt die deutschen Formulierungen.')}</p>}<LessonSource lesson={lesson} /></details>}
+        {lesson && !result && <details className="lesson-brief"><summary>{ui("Notes")}</summary><p>{lesson.intro}</p><LessonSource lesson={lesson} /></details>}
         {error && <p className="error" role="alert">{ui(error)}</p>}
         {notice && !result && <p className="note">{ui(notice)}</p>}
 
@@ -101,12 +101,12 @@ export function LessonOverlay({ nodeId, onClose }: { nodeId: string; onClose: (s
 
         {result && lesson && (
           <div className="feedback" aria-live="polite">
-            {reward && view && <RewardCelebration reward={reward} progress={view.rewards} trackId={lesson.trackId} trackName={track ? trackName(track.id, track.name) : ui("Dein Thema")} />}
+            {reward && view && <RewardCelebration reward={reward} progress={view.rewards} trackId={lesson.trackId} trackName={track ? trackName(track.id, track.name) : ui("Your topic")} />}
             <div className={`result ${result.allMet ? 'ok' : 'gap'}`}>
-              <h3>{result.allMet ? ui('Geschafft!') : ui('Noch nicht ganz.')}</h3>
+              <h3>{result.allMet ? ui('Done!') : ui('Not quite yet.')}</h3>
               <p>{result.summary}</p>
             </div>
-            <details className="result-review"><summary>{ui("Antworten (")}{result.items.filter((item) => item.correct).length}/{result.items.length} {ui("richtig)")}</summary><ul className="items">
+            <details className="result-review"><summary>{ui("Answers (")}{result.items.filter((item) => item.correct).length}/{result.items.length} {ui("correct)")}</summary><ul className="items">
               {result.items.map((it, i) => (
                 <li key={i} className={it.correct ? 'ok' : 'no'}>
                   {it.label && <strong>{it.label}</strong>}
@@ -115,14 +115,14 @@ export function LessonOverlay({ nodeId, onClose }: { nodeId: string; onClose: (s
               ))}
             </ul></details>
             {missed.length > 0 && (
-              <div className="note"><strong>{ui("Merke dir:")}</strong> {missed.map((m) => m!.ruleOfThumb).join(' ')}</div>
+              <div className="note"><strong>{ui("Remember:")}</strong> {missed.map((m) => m!.ruleOfThumb).join(' ')}</div>
             )}
-            {lesson.transfer && <div className="transfer"><strong>{ui("Im Alltag:")}</strong> {lesson.transfer}</div>}
+            {lesson.transfer && <div className="transfer"><strong>{ui("In everyday life:")}</strong> {lesson.transfer}</div>}
 
           </div>
         )}
         </div>
-        {result && <footer className="lesson-result-actions"><button className="btn primary" onClick={() => onClose(true)}>{ui("Weiterlernen")}<Icon name="chevron" size={18} /></button></footer>}
+        {result && <footer className="lesson-result-actions"><button className="btn primary" onClick={() => onClose(true)}>{ui("Keep learning")}<Icon name="chevron" size={18} /></button></footer>}
       </div>
     </div>
   );

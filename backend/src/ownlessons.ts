@@ -26,7 +26,7 @@ interface Want {
 /** Tries the preferred lesson type, then one other type of the track. */
 async function generate(st: Stored, track: Track, types: LessonType[], want: Want): Promise<GenerateResult> {
   const s = st.session;
-  let last: GenerateResult = { ok: false, errors: ['keine passende Lektionsart'] };
+  let last: GenerateResult = { ok: false, errors: ['no suitable lesson type'] };
   for (const type of types.slice(0, 2)) {
     last = await generateLesson({ ...want, type, track, preferences: st.notes, sessionNo: s.sessionNo, timeoutMs: CALL_MS() }, (c) => s.modelCalls.push(c));
     if (last.ok) return last;
@@ -40,7 +40,7 @@ export function firstLesson(st: Stored, track: Track, goal?: string, requestedTy
   return generate(st, track, requestedType ? [requestedType] : [...types.filter((t) => t === 'video'), ...types.filter((t) => t !== 'video')], {
     criterion: track.criteria[0].id,
     level: track.custom!.selfLevel,
-    contextHint: `Einstieg in «${track.name}». ${requestedType === 'video' ? 'Die Person wünscht ausdrücklich ein Erklärvideo mit Fragen zu ihrem Thema.' : 'Zeigt, was die Person schon weiss.'}`,
+    contextHint: `Starter for “${track.name}”. ${requestedType === 'video' ? 'The learner explicitly wants an explainer video with questions on their topic.' : 'Shows what the learner already knows.'}`,
     mission: goal ?? track.mission?.default ?? track.custom!.topic,
     basedOn: [],
   });
@@ -94,7 +94,7 @@ export async function ruleLesson(st: Stored, trackId: string, ready: Lesson[] = 
     criterion,
     reviewOf: reviewOf.length ? reviewOf : undefined,
     level,
-    contextHint: missed ? 'Ein neues Beispiel zu dem, was zuletzt gefehlt hat.' : 'Der nächste Schritt im Bereich.',
+    contextHint: missed ? 'A new example for what was missing last time.' : 'The next step in the area.',
     mission: missionOf(st, trackId)?.text ?? defaultMission(st, trackId),
     basedOn: [
       ...st.records.filter((x) => x.trackId === trackId && x.status === 'active' && targets.includes(x.criterion ?? '')).map((x) => x.id),
@@ -102,7 +102,7 @@ export async function ruleLesson(st: Stored, trackId: string, ready: Lesson[] = 
     ],
   });
   if (!r.ok) {
-    console.warn(`Regel-Lektion für ${trackId} nicht erzeugt: ${r.errors.join('; ')}`);
+    console.warn(`Rule lesson for ${trackId} not created: ${r.errors.join('; ')}`);
     return null;
   }
   storeLesson(st, r.lesson);

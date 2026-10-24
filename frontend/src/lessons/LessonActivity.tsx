@@ -14,7 +14,7 @@ export function LessonActivityProvider({ sessionId, nodeId, children }: { sessio
 export function LessonProgress({ completed, total, label, detail }: { completed: number; total: number; label: string; detail?: string }) {
   const done = Math.min(completed, total);
   return <div className="lesson-progress">
-    <div className="lesson-progress-label"><strong><Icon name={done === total && total > 0 ? 'check' : 'sparkle'} size={16} />{label}</strong><span>{detail ?? `${done} von ${total} geschafft`}</span></div>
+    <div className="lesson-progress-label"><strong><Icon name={done === total && total > 0 ? 'check' : 'sparkle'} size={16} />{label}</strong><span>{detail ?? `${done} of ${total} done`}</span></div>
     <div className="lesson-progress-track" role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={Math.max(1, total)} aria-valuenow={done}>
       {Array.from({ length: total }, (_, index) => <span key={index} className={index < done ? 'complete' : index === done ? 'current' : ''} />)}
     </div>
@@ -22,7 +22,7 @@ export function LessonProgress({ completed, total, label, detail }: { completed:
 }
 
 /** A click commits the answer and requests feedback; the original response stays locked. */
-export function QuestionCard({ prompt, options, index, total, check, onContinue, continueLabel = 'Weiter', onFeedback }: {
+export function QuestionCard({ prompt, options, index, total, check, onContinue, continueLabel = 'Continue', onFeedback }: {
   prompt: string; options: string[]; index: number; total: number;
   check: (option: number) => LessonAnswerCheck;
   onContinue: (option: number) => void | Promise<void>;
@@ -67,14 +67,14 @@ export function QuestionCard({ prompt, options, index, total, check, onContinue,
     finally { pending.current = false; setBusy(false); }
   };
 
-  return <section className={`question-card${feedback ? feedback.correct ? ' answer-correct' : ' answer-learning' : ''}`} aria-label={`Wissens-Check ${index + 1} von ${total}`} aria-busy={busy && !feedback}>
-    <div className="question-kicker"><span><Icon name="sparkle" size={15} />{ui("Frage")}</span><span>{index + 1} / {total}</span></div>
+  return <section className={`question-card${feedback ? feedback.correct ? ' answer-correct' : ' answer-learning' : ''}`} aria-label={`Knowledge check ${index + 1} of ${total}`} aria-busy={busy && !feedback}>
+    <div className="question-kicker"><span><Icon name="sparkle" size={15} />{ui("Question")}</span><span>{index + 1} / {total}</span></div>
     <h3 ref={heading} tabIndex={-1}>{prompt}</h3>
-    <div className="question-options" role="group" aria-label={ui("Antwort auswählen")}>
+    <div className="question-options" role="group" aria-label={ui("Choose an answer")}>
       {options.map((option, i) => {
         const correct = feedback?.correctOption === i;
         const wrong = Boolean(feedback && selected === i && !correct);
-        return <button key={i} className={`question-option${correct ? ' is-correct' : wrong ? ' is-missed' : ''}`} disabled={busy || Boolean(feedback)} aria-label={feedback ? `${correct ? 'Richtige Antwort: ' : selected === i ? 'Deine Antwort: ' : ''}${option}` : undefined} aria-pressed={selected === i} onClick={() => void submit(i)}>
+        return <button key={i} className={`question-option${correct ? ' is-correct' : wrong ? ' is-missed' : ''}`} disabled={busy || Boolean(feedback)} aria-label={feedback ? `${correct ? 'Correct answer: ' : selected === i ? 'Your answer: ' : ''}${option}` : undefined} aria-pressed={selected === i} onClick={() => void submit(i)}>
           <span className="option-letter" aria-hidden="true">{correct || selected === i && !feedback ? <Icon name="check" size={17} /> : wrong ? <Icon name="back" size={16} /> : String.fromCharCode(65 + i)}</span>
           <span>{option}</span>
         </button>;
@@ -83,15 +83,15 @@ export function QuestionCard({ prompt, options, index, total, check, onContinue,
     <div className="question-response" tabIndex={feedback || error ? 0 : undefined}>
     {feedback && <div className={`answer-feedback ${feedback.correct ? 'correct' : 'learning'}`} role="status">
       <span className="answer-feedback-icon"><Icon name={feedback.correct ? 'star' : 'book'} size={23} /></span>
-      <div><strong>{feedback.correct ? ui('Richtig!') : ui('Richtige Antwort')}</strong>{(feedback.explanation || !feedback.correct) && <p>{feedback.explanation || options[feedback.correctOption]}</p>}</div>
+      <div><strong>{feedback.correct ? ui('Correct!') : ui('Correct answer')}</strong>{(feedback.explanation || !feedback.correct) && <p>{feedback.explanation || options[feedback.correctOption]}</p>}</div>
       {feedback.correct && <span className="answer-spark" aria-hidden="true"><Icon name="sparkle" size={22} /></span>}
     </div>}
     {error && <p className="error small" role="alert">{ui(error)}</p>}
-    {busy && !feedback && <p className="answer-pending small muted" role="status">{ui("Wird geprüft …")}</p>}
+    {busy && !feedback && <p className="answer-pending small muted" role="status">{ui("Checking …")}</p>}
     </div>
     <div className="question-actions">
-      {error && !feedback && selected !== null ? <button className="btn secondary" disabled={busy} onClick={() => void submit(selected)}>{ui("Erneut versuchen")}</button>
-        : <button ref={continueButton} className={`btn primary${feedback ? '' : ' is-placeholder'}`} aria-hidden={!feedback} tabIndex={feedback ? undefined : -1} disabled={busy || !feedback} onClick={() => void next()}><ButtonLabel variants={['Weiter', 'Nächste Frage', 'Nächster Satz', 'Lektion abschliessen', 'Einen Moment …', continueLabel]}>{busy ? ui('Einen Moment …') : continueLabel}</ButtonLabel><Icon name="chevron" size={17} /></button>}
+      {error && !feedback && selected !== null ? <button className="btn secondary" disabled={busy} onClick={() => void submit(selected)}>{ui("Try again")}</button>
+        : <button ref={continueButton} className={`btn primary${feedback ? '' : ' is-placeholder'}`} aria-hidden={!feedback} tabIndex={feedback ? undefined : -1} disabled={busy || !feedback} onClick={() => void next()}><ButtonLabel variants={['Continue', 'Next question', 'Next sentence', 'Finish lesson', 'One moment …', continueLabel]}>{busy ? ui('One moment …') : continueLabel}</ButtonLabel><Icon name="chevron" size={17} /></button>}
     </div>
   </section>;
 }

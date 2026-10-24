@@ -37,7 +37,7 @@ export class VideoPlayback {
   private run(operation: () => Promise<void>) {
     this.operations = this.operations.then(async () => { if (!this.disposed) await operation(); }).catch(() => {
       this.wantsPlay = false;
-      this.update({ playing: false, error: 'Wiedergabe nicht möglich. Bitte versuche es nochmals.' });
+      this.update({ playing: false, error: 'Playback not possible. Please try again.' });
     });
     return this.operations;
   }
@@ -52,7 +52,7 @@ export class VideoPlayback {
     if (this.disposed || this.navigating) return;
     const scene = this.scenes.findIndex(s => s.id === engine.scene);
     if (scene < 0) return;
-    this.update({ scene, time: engine.time, playing: engine.status === 'playing', ...(engine.error ? { error: 'Die Wiedergabe wurde unterbrochen. Bitte starte sie erneut.' } : {}) });
+    this.update({ scene, time: engine.time, playing: engine.status === 'playing', ...(engine.error ? { error: 'Playback was interrupted. Please start it again.' } : {}) });
     if (engine.status !== 'ended') { this.handledEnd = ''; return; }
     const key = `${scene}:${Object.keys(this.state.answers).length}`;
     if (this.handledEnd === key) return;

@@ -15,13 +15,13 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new ApiError(0, 'Keine Verbindung zum Server. Läuft das Backend?');
+    throw new ApiError(0, 'No connection to the server. Is the backend running?');
   }
   // Only the access gate answers 401. The service worker serves the page without asking for the login,
   // so a navigation past it lets the browser ask, and the server sends the learner back.
   if (res.status === 401) window.location.assign('/api/auth');
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? `Fehler ${res.status}`, data as Record<string, unknown>);
+  if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? `Error ${res.status}`, data as Record<string, unknown>);
   return data as T;
 }
 

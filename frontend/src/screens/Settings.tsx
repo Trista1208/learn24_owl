@@ -1,27 +1,27 @@
 import { ButtonLabel } from '../lib/ButtonLabel.tsx';
 // Settings, in tabs that keep the areas apart: general settings and account, the profile (DCC read-only,
-// Lernstand, missions), what was learned (records, Merkblatt, history, transfer) and the agent's decisions.
+// learning progress, missions), what was learned (records, key points, history, transfer) and the agent's decisions.
 import { useEffect, useRef, useState } from 'react';
 import type { Mission, SessionView, Track } from '@l45/shared';
 import { LERNSTAND_LABEL, RECORD_KIND_LABEL, SOURCE_LABEL } from '@l45/shared';
 import { MISSION_PRIVACY } from '../lessons/MissionCard.tsx';
 import { api } from '../lib/api.ts';
 import { Icon, type IconName } from '../lib/icons.tsx';
-import { LangSwitch, localeOf, useI18n } from '../lib/i18n.tsx';
+import { localeOf, useI18n } from '../lib/i18n.tsx';
 import { useStore } from '../lib/store.tsx';
 import { ThemeSwitch } from '../lib/theme.tsx';
 
 const time = (iso: string) => new Date(iso).toLocaleTimeString(localeOf(), { hour: '2-digit', minute: '2-digit' });
 const date = (iso: string) => new Date(iso).toLocaleDateString(localeOf());
 
-const STATUS: Record<string, string> = { online: 'KI an', offline: 'Ohne KI', simulation: 'KI simuliert aus' };
+const STATUS: Record<string, string> = { online: 'AI on', offline: 'No AI', simulation: 'AI off (demo)' };
 
 type Tab = 'general' | 'profile' | 'learning' | 'agent';
 const TABS: { id: Tab; label: string; icon: IconName; intro: string }[] = [
-  { id: 'general', label: 'Allgemein', icon: 'settings', intro: 'KI-Verbindung und Konto.' },
-  { id: 'profile', label: 'Profil', icon: 'user', intro: 'DCC-Profil, Lernstand und deine Missionen.' },
-  { id: 'learning', label: 'Lernen', icon: 'book', intro: 'Was du gezeigt und erledigt hast.' },
-  { id: 'agent', label: 'Agent', icon: 'agent', intro: 'Wie der Agent entschieden hat und warum.' },
+  { id: 'general', label: 'General', icon: 'settings', intro: 'AI connection and account.' },
+  { id: 'profile', label: 'Profile', icon: 'user', intro: 'DCC profile, learning progress and your missions.' },
+  { id: 'learning', label: 'Learning', icon: 'book', intro: 'What you have shown and done.' },
+  { id: 'agent', label: 'Agent', icon: 'agent', intro: 'How the agent decided and why.' },
 ];
 
 /** Changing a mission takes two steps: write, then confirm. Only then the agent uses it. */
@@ -43,28 +43,28 @@ function MissionRow({ track, mission, onSave }: { track: Track; mission?: Missio
     <li>
       <div className="meta">
         <strong>{trackName(track.id, track.name)}</strong>
-        {mission?.status === 'default' && <span>{t('Standard (übersprungen)')}</span>}
-        {!mission && <span>{t('noch offen')}</span>}
+        {mission?.status === 'default' && <span>{t('Default (skipped)')}</span>}
+        {!mission && <span>{t('still open')}</span>}
       </div>
       {!editing ? (
         <p>
-          {mission?.text ? t(mission.text) : <span className="muted">{t('Ein persönliches Ziel ist freiwillig. Du kannst direkt mit den Lektionen loslegen.')}</span>}{' '}
-          <button className="linkbtn small" onClick={() => setEditing(true)}><ButtonLabel variants={['Ändern', 'Festlegen']}>{mission ? t('Ändern') : t('Festlegen')}</ButtonLabel></button>
+          {mission?.text ? t(mission.text) : <span className="muted">{t('A personal goal is optional. You can start the lessons right away.')}</span>}{' '}
+          <button className="linkbtn small" onClick={() => setEditing(true)}><ButtonLabel variants={['Change', 'Set']}>{mission ? t('Change') : t('Set')}</ButtonLabel></button>
         </p>
       ) : (
         <div className="mission-edit">
           {track.mission?.suggestions && <div className="choices">{track.mission.suggestions.map((suggestion) => <button key={suggestion} className="choice small" onClick={() => setText(suggestion)} disabled={confirming}>{t(suggestion)}</button>)}</div>}
-          <textarea rows={2} maxLength={300} value={text} disabled={confirming} onChange={(e) => setText(e.target.value)} aria-label={t('Mission für {name}', { name: trackName(track.id, track.name) })} />
+          <textarea rows={2} maxLength={300} value={text} disabled={confirming} onChange={(e) => setText(e.target.value)} aria-label={t('Mission for {name}', { name: trackName(track.id, track.name) })} />
           {confirming ? (
             <div className="row">
-              <span className="small">{t('Neue Mission übernehmen? Der Agent plant ab jetzt danach.')}</span>
-              <button className="btn primary small" onClick={async () => { if (await onSave(text, true)) reset(); }}>{t('Ja, ändern')}</button>
-              <button className="btn quiet small" onClick={() => setConfirming(false)}>{t('Zurück')}</button>
+              <span className="small">{t('Use the new mission? From now on the agent plans with it.')}</span>
+              <button className="btn primary small" onClick={async () => { if (await onSave(text, true)) reset(); }}>{t('Yes, change it')}</button>
+              <button className="btn quiet small" onClick={() => setConfirming(false)}>{t('Back')}</button>
             </div>
           ) : (
             <div className="row">
-              <button className="btn secondary small" disabled={text.trim().length < 3 || text.trim() === mission?.text} onClick={next}>{t('Weiter')}</button>
-              <button className="btn quiet small" onClick={reset}>{t('Abbrechen')}</button>
+              <button className="btn secondary small" disabled={text.trim().length < 3 || text.trim() === mission?.text} onClick={next}>{t('Continue')}</button>
+              <button className="btn quiet small" onClick={reset}>{t('Cancel')}</button>
             </div>
           )}
         </div>
@@ -76,18 +76,18 @@ function MissionRow({ track, mission, onSave }: { track: Track; mission?: Missio
 function Records({ view, tname }: { view: SessionView; tname: (id: string) => string }) {
   const { t } = useI18n();
   const { records } = view.workspace;
-  if (!records.length) return <p className="muted small">{t('Noch keine. Ein Eintrag entsteht erst, wenn du etwas ohne Hilfe gezeigt hast. Behandelt ist nicht gelernt.')}</p>;
+  if (!records.length) return <p className="muted small">{t('None yet. A record only appears once you have shown something without help. Covered is not learned.')}</p>;
   const item = (r: (typeof records)[number]) => (
     <li key={r.id} className={r.status === 'active' ? '' : 'outdated'}>
       <div className="meta">
         <strong>{r.id}</strong>
         <span>{t(RECORD_KIND_LABEL[r.kind])}</span>
         <span>{tname(r.trackId)}</span>
-        <span>{r.author === 'agent' ? t('vom Agenten') : t('nach Regel')}</span>
-        {r.status !== 'active' && <span>{r.status.replace('superseded by', t('ersetzt durch'))}</span>}
+        <span>{r.author === 'agent' ? t('by the agent') : t('by rule')}</span>
+        {r.status !== 'active' && <span>{r.status.replace('superseded by', t('replaced by'))}</span>}
       </div>
       <p><strong>{r.title}</strong> {r.body}</p>
-      <p className="small muted">{t('Belege:')} {r.evidence.join(', ')}</p>
+      <p className="small muted">{t('Evidence:')} {r.evidence.join(', ')}</p>
     </li>
   );
   const old = records.filter((r) => r.status !== 'active');
@@ -96,7 +96,7 @@ function Records({ view, tname }: { view: SessionView; tname: (id: string) => st
       <ul className="log">{records.filter((r) => r.status === 'active').map(item)}</ul>
       {old.length > 0 && (
         <>
-          <h5>{t('Ersetzt')}</h5>
+          <h5>{t('Replaced')}</h5>
           <ul className="log">{old.map(item)}</ul>
         </>
       )}
@@ -168,8 +168,8 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
   return (
     <div className="overlay" onClick={onClose}>
       <div className="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" tabIndex={-1} ref={ref} onClick={(e) => e.stopPropagation()}>
-        <nav className="settings-nav" role="tablist" aria-orientation="vertical" aria-label={t('Bereiche der Einstellungen')} onKeyDown={onTabKey}>
-          <h2 id="settings-title">{t('Einstellungen')}</h2>
+        <nav className="settings-nav" role="tablist" aria-orientation="vertical" aria-label={t('Settings sections')} onKeyDown={onTabKey}>
+          <h2 id="settings-title">{t('Settings')}</h2>
           {TABS.map((tk) => (
             <button
               key={tk.id}
@@ -191,7 +191,7 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
               <h3>{t(current.label)}</h3>
               <p className="small muted">{t(current.intro)}</p>
             </div>
-            <button className="icon-btn" onClick={onClose} aria-label={t('Schliessen')}><Icon name="close" size={20} /></button>
+            <button className="icon-btn" onClick={onClose} aria-label={t('Close')}><Icon name="close" size={20} /></button>
           </header>
           {error && <p className="error" role="alert">{t(error)}</p>}
 
@@ -200,54 +200,50 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
               <section>
                 <div className="setting-group has-menu">
                   <div className="setting-row">
-                    <strong>{t('Sprache')}</strong>
-                    <LangSwitch />
-                  </div>
-                  <div className="setting-row">
-                    <strong>{t('Erscheinungsbild')}</strong>
+                    <strong>{t('Appearance')}</strong>
                     <ThemeSwitch />
                   </div>
                 </div>
               </section>
               <section>
-                <h4>{t('KI')}</h4>
+                <h4>{t('AI')}</h4>
                 <div className="setting-group">
                   <div className="setting-row">
                     <div className="text">
                       <strong>{t('Status')}</strong>
-                      <span>{t('Ohne KI kommen Gesprächsantworten und Hinweise aus vorbereiteten Texten.')}</span>
+                      <span>{t('Without AI, chat replies and hints come from prepared texts.')}</span>
                     </div>
                     <span className={`status ${view.modelStatus}`}>{t(STATUS[view.modelStatus] ?? '')}</span>
                   </div>
                   <label className="setting-row switch">
                     <span className="text">
-                      <strong>{t('KI-Verbindung für die Demo trennen')}</strong>
-                      <span>{t('Die App nutzt dann vorbereitete Inhalte und kennzeichnet sie.')}</span>
+                      <strong>{t('Disconnect the AI for the demo')}</strong>
+                      <span>{t('The app then uses prepared content and marks it.')}</span>
                     </span>
                     <input type="checkbox" role="switch" checked={session.simulation} onChange={(e) => patch({ simulation: e.target.checked })} />
                   </label>
                 </div>
               </section>
               <section>
-                <h4>{t('Konto')}</h4>
+                <h4>{t('Account')}</h4>
                 <div className="setting-group">
                   <div className="setting-row">
                     <div className="row">
                       <span className="avatar" aria-hidden="true">{session.userName.slice(0, 1).toUpperCase()}</span>
                       <div className="text">
                         <strong>{session.userName}</strong>
-                        <span>{t('Sitzung {n} · seit {date}', { n: session.sessionNo, date: date(session.createdAt) })}</span>
+                        <span>{t('Session {n} · since {date}', { n: session.sessionNo, date: date(session.createdAt) })}</span>
                       </div>
                     </div>
-                    <button className="btn secondary small" onClick={onLogout}><Icon name="logout" size={16} />{t('Abmelden')}</button>
+                    <button className="btn secondary small" onClick={onLogout}><Icon name="logout" size={16} />{t('Sign out')}</button>
                   </div>
                 </div>
                 <div className="stats">
-                  <div><strong>{session.events.length}</strong><span>{t('Lektionen erledigt')}</span></div>
-                  <div><strong>{tracks.length}</strong><span>{t('Bereiche')}</span></div>
-                  <div><strong>{ws.records.filter((r) => r.status === 'active').length}</strong><span>{t('Lerneinträge')}</span></div>
+                  <div><strong>{session.events.length}</strong><span>{t('Lessons done')}</span></div>
+                  <div><strong>{tracks.length}</strong><span>{t('Areas')}</span></div>
+                  <div><strong>{ws.records.filter((r) => r.status === 'active').length}</strong><span>{t('Learning records')}</span></div>
                 </div>
-                <p className="small muted">{t('Prototyp für Learn45. Anmeldung ohne Passwort, nur erfundene Daten.')}</p>
+                <p className="small muted">{t('Prototype for Learn45. Sign-in without a password, invented data only.')}</p>
               </section>
             </>
           )}
@@ -255,35 +251,35 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
           {tab === 'profile' && (
             <>
               <section>
-                <h4>{t('DCC-Profil')}</h4>
-                <p className="small muted">{t('Nur aus dem DCC. Lernen in dieser App verändert diese Werte nicht.')}</p>
+                <h4>{t('DCC profile')}</h4>
+                <p className="small muted">{t('From the DCC only. Learning in this app does not change these values.')}</p>
                 <div className="setting-group">
                   <table className="levels">
                     <tbody>
                       {content.skills.filter((s) => s.dccBased).flatMap((s) => s.tracks).map((tk) => (
-                        <tr key={tk.id}><td>{tk.dccArea} {trackName(tk.id, tk.name)}</td><td>{dcc.levels[tk.id] ? level(dcc.levels[tk.id]) : <span className="muted">{t('nicht erhoben')}</span>}</td></tr>
+                        <tr key={tk.id}><td>{tk.dccArea} {trackName(tk.id, tk.name)}</td><td>{dcc.levels[tk.id] ? level(dcc.levels[tk.id]) : <span className="muted">{t('not assessed')}</span>}</td></tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
                 {ws.dccSnapshots.length > 1 && (
                   <p className="small muted">
-                    {t('DCC-Stände:')} {ws.dccSnapshots.map((d) => `${date(d.at)} (${d.source === 'file' ? d.fileName ?? t('Datei') : t('von Hand')})`).join(', ')}. {t('Es gilt der neueste.')}
+                    {t('DCC results:')} {ws.dccSnapshots.map((d) => `${date(d.at)} (${d.source === 'file' ? d.fileName ?? t('file') : t('by hand')})`).join(', ')}. {t('The newest one applies.')}
                   </p>
                 )}
               </section>
 
               <section>
-                <h4>{t('Lernstand (aus dem Lernen, kein DCC)')}</h4>
-                <p className="small muted">{t('Aus deinen Lerneinträgen. «unbekannt» heisst: noch keine Belege, nicht: schwach. Die DCC-Stufen oben bleiben davon unberührt.')}</p>
-                {tracks.length === 0 && <p className="small muted">{t('Noch keine Bereiche auf deiner Karte.')}</p>}
+                <h4>{t('Learning progress (from learning, not DCC)')}</h4>
+                <p className="small muted">{t('From your learning records. “unknown” means: no evidence yet, not: weak. The DCC levels above stay untouched.')}</p>
+                {tracks.length === 0 && <p className="small muted">{t('No areas on your map yet.')}</p>}
                 <div>
                   {tracks.map((tk) => {
                     const stand = ws.lernstand.filter((l) => l.trackId === tk.id);
                     const known = stand.filter((l) => l.state !== 'unbekannt').length;
                     return (
                       <details key={tk.id} className="lernstand-track">
-                        <summary>{trackName(tk.id, tk.name)} <span className="muted small">({t('{known} von {total} mit Belegen', { known, total: stand.length })})</span></summary>
+                        <summary>{trackName(tk.id, tk.name)} <span className="muted small">({t('{known} of {total} with evidence', { known, total: stand.length })})</span></summary>
                         <ul className="lernstand">
                           {stand.map((l) => (
                             <li key={l.criterion}>
@@ -299,9 +295,9 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
               </section>
 
               <section>
-                <h4>{t('Mission pro Bereich')}</h4>
+                <h4>{t('Mission per area')}</h4>
                 <p className="small muted">{t(MISSION_PRIVACY)}</p>
-                {tracks.length === 0 && <p className="small muted">{t('Eine Mission gehört zu einem Bereich. Füge zuerst einen hinzu.')}</p>}
+                {tracks.length === 0 && <p className="small muted">{t('A mission belongs to an area. Add one first.')}</p>}
                 <ul className="log">
                   {tracks.map((tk) => {
                     const m = ws.missions.find((x) => x.trackId === tk.id);
@@ -315,19 +311,19 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
           {tab === 'learning' && (
             <>
               <section>
-                <h4>{t('Lerneinträge')}</h4>
+                <h4>{t('Learning records')}</h4>
                 <Records view={view} tname={tname} />
               </section>
 
               <section>
-                <h4>{t('Merkblatt')}</h4>
-                {tracks.every((tk) => !ws.reference[tk.id]?.length) ? <p className="muted small">{t('Wächst mit dem, was du ohne Hilfe zeigst.')}</p> : (
+                <h4>{t('Key points')}</h4>
+                {tracks.every((tk) => !ws.reference[tk.id]?.length) ? <p className="muted small">{t('Grows with what you show without help.')}</p> : (
                   tracks.filter((tk) => ws.reference[tk.id]?.length).map((tk) => (
                     <div key={tk.id} className="merkblatt">
                       <h5>{trackName(tk.id, tk.name)}</h5>
                       <ul>
                         {ws.reference[tk.id].map((e) => (
-                          <li key={`${e.section}-${e.title}`}><strong>{e.title}{e.section === 'term' ? ` (${t('Begriff')})` : ''}:</strong> {e.text}</li>
+                          <li key={`${e.section}-${e.title}`}><strong>{e.title}{e.section === 'term' ? ` (${t('term')})` : ''}:</strong> {e.text}</li>
                         ))}
                       </ul>
                     </div>
@@ -335,19 +331,19 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
                 )}
                 {ws.notes.length > 0 && (
                   <>
-                    <h5>{t('Notizen des Agenten zu deinen Vorlieben')}</h5>
+                    <h5>{t('The agent’s notes on your preferences')}</h5>
                     <ul className="log">{ws.notes.map((n) => <li key={n}>{n}</li>)}</ul>
                   </>
                 )}
               </section>
 
               <section>
-                <h4>{t('Lernverlauf')}</h4>
-                {session.events.length === 0 ? <p className="muted small">{t('Noch keine Lektion abgeschlossen.')}</p> : (
+                <h4>{t('Learning history')}</h4>
+                {session.events.length === 0 ? <p className="muted small">{t('No lesson finished yet.')}</p> : (
                   <ul className="log">
                     {[...session.events].reverse().map((e) => (
                       <li key={e.id}>
-                        <div className="meta"><span>{date(e.at)} {time(e.at)}</span><span>{tname(e.trackId)}</span>{e.helpUsed && <span>{t('mit Hinweis')}</span>}<span>{e.id}</span></div>
+                        <div className="meta"><span>{date(e.at)} {time(e.at)}</span><span>{tname(e.trackId)}</span>{e.helpUsed && <span>{t('with a hint')}</span>}<span>{e.id}</span></div>
                         <p><strong>{label(e.nodeId)}</strong>: {e.result.summary}</p>
                       </li>
                     ))}
@@ -355,10 +351,10 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
                 )}
                 {session.observations.length > 0 && (
                   <>
-                    <h5>{t('Beobachtungen')}</h5>
+                    <h5>{t('Observations')}</h5>
                     <ul className="log">
                       {session.observations.map((o) => (
-                        <li key={o.id} className={o.status}>{o.text} ({tname(o.trackId)}){o.status === 'outdated' ? t(', überholt') : ''}</li>
+                        <li key={o.id} className={o.status}>{o.text} ({tname(o.trackId)}){o.status === 'outdated' ? t(', outdated') : ''}</li>
                       ))}
                     </ul>
                   </>
@@ -366,8 +362,8 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
               </section>
 
               <section>
-                <h4>{t('Transfer in den Arbeitsalltag')}</h4>
-                {session.transfer.length === 0 ? <p className="muted small">{t('Nach jeder Lektion erscheint hier ein Hinweis für die Arbeit.')}</p> : (
+                <h4>{t('Using it at work')}</h4>
+                {session.transfer.length === 0 ? <p className="muted small">{t('After each lesson a note for your work appears here.')}</p> : (
                   <ul className="log">
                     {[...session.transfer].reverse().map((tk, i) => <li key={i}><strong>{tk.lessonTitle}:</strong> {tk.text}</li>)}
                   </ul>
@@ -379,39 +375,39 @@ export function Settings({ onClose, onLogout }: { onClose: () => void; onLogout:
           {tab === 'agent' && (
             <>
               <section>
-                <h4>{t('Entscheidungen des Agenten')}</h4>
-                {session.recommendations.length === 0 && <p className="muted small">{t('Noch keine. Füge einen Bereich hinzu.')}</p>}
+                <h4>{t('The agent’s decisions')}</h4>
+                {session.recommendations.length === 0 && <p className="muted small">{t('None yet. Add an area.')}</p>}
                 <ul className="log">
                   {[...session.recommendations].reverse().map((r) => (
                     <li key={r.id}>
-                      <div className="meta"><span>{time(r.createdAt)}</span><strong>{r.ruleId} {t(r.ruleName)}</strong><span>{t(r.status === 'open' ? 'offen' : r.status === 'accepted' ? 'angenommen' : 'abgelehnt')}</span></div>
-                      <p>{label(r.nodeId) ?? t('Kein nächster Schritt')}{r.alternativeNodeId ? `. ${t('Alternative')}: ${label(r.alternativeNodeId)}` : ''}</p>
+                      <div className="meta"><span>{time(r.createdAt)}</span><strong>{r.ruleId} {t(r.ruleName)}</strong><span>{t(r.status === 'open' ? 'open' : r.status === 'accepted' ? 'accepted' : 'declined')}</span></div>
+                      <p>{label(r.nodeId) ?? t('No next step')}{r.alternativeNodeId ? `. ${t('Alternative')}: ${label(r.alternativeNodeId)}` : ''}</p>
                       <p className="small muted">{t(r.observation)} {r.tags.map((tk) => t(SOURCE_LABEL[tk])).join(', ')}</p>
-                      {r.basedOn?.length ? <p className="small muted">{t('Gestützt auf:')} {r.basedOn.join(', ')}</p> : null}
+                      {r.basedOn?.length ? <p className="small muted">{t('Based on:')} {r.basedOn.join(', ')}</p> : null}
                     </li>
                   ))}
                 </ul>
               </section>
               {session.plannerRuns.length > 0 && (
                 <section>
-                  <h4>{t('Läufe des Planer-Agenten')}</h4>
+                  <h4>{t('Planner agent runs')}</h4>
                   <ul className="log">
                     {[...session.plannerRuns].reverse().map((r) => (
                       <li key={r.id}>
                         <div className="meta">
                           <span>{time(r.startedAt)}</span>
                           <span>{tname(r.trackId)}</span>
-                          <strong>{t(r.outcome === 'accepted' ? 'Plan übernommen' : r.outcome === 'running' ? 'läuft' : 'Plan nach Regeln')}</strong>
-                          <span>{t('{n} Schritte', { n: r.steps })}</span>
+                          <strong>{t(r.outcome === 'accepted' ? 'Plan adopted' : r.outcome === 'running' ? 'running' : 'Rule-based plan')}</strong>
+                          <span>{t('{n} steps', { n: r.steps })}</span>
                         </div>
                         <p className="small">{r.note}</p>
-                        {r.tools.length > 0 && <p className="small muted">{t('Werkzeuge:')} {r.tools.join(', ')}</p>}
+                        {r.tools.length > 0 && <p className="small muted">{t('Tools:')} {r.tools.join(', ')}</p>}
                       </li>
                     ))}
                   </ul>
                 </section>
               )}
-              <p className="small muted">{t('KI-Aufrufe in dieser Sitzung: {calls}, davon {fallback} mit Rückfall auf vorbereitete Inhalte oder Regeln.', { calls: session.modelCalls.length, fallback: session.modelCalls.filter((c) => c.fallback).length })}</p>
+              <p className="small muted">{t('AI calls in this session: {calls}, of which {fallback} fell back to prepared content or rules.', { calls: session.modelCalls.length, fallback: session.modelCalls.filter((c) => c.fallback).length })}</p>
             </>
           )}
         </div>

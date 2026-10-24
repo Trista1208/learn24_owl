@@ -10,13 +10,13 @@ import { addTracks, catalog } from './helpers.ts';
 
 process.env.MODEL_PROVIDER = 'none';
 const root = join(import.meta.dirname, '..', '..');
-const sample = (name: string) => JSON.parse(readFileSync(join(root, 'frontend', 'public', 'dcc-beispiele', name), 'utf8'));
+const sample = (name: string) => JSON.parse(readFileSync(join(root, 'frontend', 'public', 'dcc-examples', name), 'utf8'));
 const app = createApp();
 
 async function login(body: Record<string, unknown> = {}): Promise<SessionView> {
   const res = await request(app)
     .post('/api/login')
-    .send({ name: 'Test', dccFile: sample('dcc-gemischt.json'), fileName: 'dcc-gemischt.json', ...body });
+    .send({ name: 'Test', dccFile: sample('dcc-mixed.json'), fileName: 'dcc-mixed.json', ...body });
   expect(res.status).toBe(201);
   return addTracks(app, res.body, catalog);
 }
@@ -39,8 +39,8 @@ const allBelegt = { type: 'mark-evidence', marks: { s1: 'belegt', s2: 'belegt', 
 
 beforeEach(() => _reset());
 
-describe('Login und DCC', () => {
-  it('liest eine DCC-Resultatdatei', async () => {
+describe('Login and DCC', () => {
+  it('reads a DCC result file', async () => {
     const v = await login();
     expect(v.dcc.source).toBe('file');
     expect(v.dcc.levels['t-info']).toBe('Grundstufe');
@@ -48,54 +48,54 @@ describe('Login und DCC', () => {
     expect(v.dcc.levels['t-problem']).toBeNull();
   });
 
-  it('nimmt Stufen von Hand an', async () => {
+  it('accepts levels entered by hand', async () => {
     const v = await login({ dccFile: undefined, levels: { 't-info': 'Fortgeschritten', 't-sicherheit': 'Grundstufe' } });
     expect(v.dcc.source).toBe('manual');
     expect(v.dcc.levels['t-info']).toBe('Fortgeschritten');
     expect(v.dcc.levels['t-komm']).toBeNull();
   });
 
-  it('lehnt falsche Dateien und Stufen ab', async () => {
+  it('rejects wrong files and levels', async () => {
     await request(app).post('/api/login').send({ name: 'x', dccFile: { foo: 1 } }).expect(400);
     await request(app).post('/api/login').send({ name: 'x', dccFile: { type: 'dcc-result', areas: [{ area: '9', level: 'Grundstufe' }] } }).expect(400);
-    await request(app).post('/api/login').send({ name: 'x', levels: { 't-info': 'Experte' } }).expect(400);
+    await request(app).post('/api/login').send({ name: 'x', levels: { 't-info': 'Expert' } }).expect(400);
   });
 
-  it('plant pro Bereich passend zur DCC-Stufe', async () => {
+  it('plans each area to match its DCC level', async () => {
     const v = await login();
     const info = lessonsOn(v, 't-info');
     expect(info.length).toBeGreaterThan(0);
     expect(info.every((n) => n.state === 'planned' || n.state === 'recommended' || n.state === 'alternative')).toBe(true);
-    // Not assessed (Problemlösen): a short starter plus one step, not a full basic course.
+    // Not assessed (Problem solving): a short starter plus one step, not a full basic course.
     expect(lessonsOn(v, 't-problem').length).toBeLessThanOrEqual(2);
-    // Skills without DCC (Mathematik, Naturwissenschaften) are on the map too.
+    // Skills without DCC (Mathematics, Science) are on the map too.
     expect(lessonsOn(v, 't-analysis').length).toBeGreaterThan(0);
     expect(lessonsOn(v, 't-physik').length).toBeGreaterThan(0);
   });
 
-  it('beginnt mit einem Bereich in der Grundstufe und bietet eine Alternative', async () => {
+  it('starts with an area at Foundation level and offers an alternative', async () => {
     const v = await login();
     expect(v.recommendation?.ruleId).toBe('R3');
     expect(v.dcc.levels[recNode(v).trackId!]).toBe('Grundstufe');
     expect(altNode(v)).toBeDefined();
   });
 
-  it('fehlende DCC-Werte gelten nicht als tiefe Kompetenz', async () => {
-    // Only Problemlösen is missing. The agent offers a short starter to collect evidence,
+  it('treats missing DCC values as not low competence', async () => {
+    // Only Problem solving is missing. The agent offers a short starter to collect evidence,
     // not a full basic course, and does not call it the largest need.
     const levels = { 't-info': 'Mittelstufe', 't-komm': 'Fortgeschritten', 't-inhalte': 'Fortgeschritten', 't-sicherheit': 'Fortgeschritten', 't-problem': null };
     const v = await login({ dccFile: undefined, levels });
     const rec = v.recommendation!;
     expect(recNode(v).trackId).toBe('t-problem');
-    expect(rec.observation).toMatch(/kein DCC-Resultat/);
-    expect(rec.why).toMatch(/nicht geringe Kompetenz/);
-    expect(rec.reason).not.toMatch(/Entwicklungsbedarf/);
+    expect(rec.observation).toMatch(/no DCC result/);
+    expect(rec.why).toMatch(/does not mean low competence/);
+    expect(rec.reason).not.toMatch(/most to gain/);
     expect(lessonsOn(v, 't-problem').length).toBeLessThanOrEqual(2);
   });
 });
 
 describe('Agent', () => {
-  it('fügt nach zweimal gleichem Fehler einen KI-Knoten mit Alternative ein (R1)', async () => {
+  it('adds an AI node with an alternative after the same mistake twice (R1)', async () => {
     let v = await login();
     // Two text checks in the info track, each time the invented date is missed (criterion "zeit").
     v = await complete(v, node(v, 'n-info-m1'), allBelegt);
@@ -115,17 +115,17 @@ describe('Agent', () => {
     expect(lesson.content.criteria.every((c: { patterns: string[] }) => c.patterns.length === 0)).toBe(true);
   });
 
-  it('wertet die Alternative als Ablehnung und plant neu', async () => {
+  it('counts the alternative as declining and plans again', async () => {
     const v = await login();
     const alt = altNode(v)!;
     const res = await request(app).post(`/api/sessions/${v.session.id}/nodes/${alt.id}/start`).expect(200);
-    expect(res.body.switched).toMatch(/Alternative/);
+    expect(res.body.switched).toMatch(/alternative/);
     const recs = res.body.view.session.recommendations;
     expect(recs.at(-1).status).toBe('declined');
     expect(res.body.view.recommendation).toBeNull();
   });
 
-  it('ändert das DCC-Profil durch Lernen nie', async () => {
+  it('never changes the DCC profile through learning', async () => {
     let v = await login();
     const before = JSON.stringify(v.dcc);
     for (let i = 0; i < 3; i++) {
@@ -137,7 +137,7 @@ describe('Agent', () => {
         type === 'video' ? { type, answers: {} }
         : type === 'mark-evidence' ? allBelegt
         : type === 'mock-site' ? { type, marked: [], verdict: 'phishing' }
-        : { type, turns: [{ role: 'learner', text: 'Ich prüfe jede Angabe an der Quelle.' }] };
+        : { type, turns: [{ role: 'learner', text: 'I check every detail against the source.' }] };
       v = await complete(v, n, answer);
     }
     expect(v.session.events.length).toBe(3);
@@ -145,8 +145,8 @@ describe('Agent', () => {
   });
 });
 
-describe('Lektionen', () => {
-  it('schickt keine Lösungen an den Browser', async () => {
+describe('Lessons', () => {
+  it('sends no solutions to the browser', async () => {
     const res = await request(app).get('/api/content').expect(200);
     for (const l of res.body.lessons) {
       if (l.type === 'mark-evidence') expect(l.content.summary.every((x: { explanation: string }) => x.explanation === '')).toBe(true);
@@ -156,7 +156,7 @@ describe('Lektionen', () => {
     }
   });
 
-  it('erkennt eine Phishing-Seite mit den richtigen Hinweisen', async () => {
+  it('recognises a phishing page with the right clues', async () => {
     const v = await login();
     const n = v.session.nodes.find((x) => x.lessonId === 'sich-s1') ?? v.session.nodes.find((x) => x.lessonId?.startsWith('sich-s'));
     expect(n).toBeDefined();
@@ -167,13 +167,13 @@ describe('Lektionen', () => {
     expect(done.result?.criteria.find((c) => c.key === 'entscheid')?.status).toBe('missed');
   });
 
-  it('antwortet ohne Modell mit gekennzeichneten vorbereiteten Inhalten', async () => {
+  it('answers without a model with labelled prepared content', async () => {
     const v = await login();
     const n = v.session.nodes.find((x) => x.lessonId === 'info-c1') ?? v.session.nodes.find((x) => x.lessonId?.includes('-c'));
     expect(n).toBeDefined();
     const res = await request(app)
       .post(`/api/sessions/${v.session.id}/nodes/${n!.id}/chat`)
-      .send({ turns: [{ role: 'learner', text: 'Hallo' }] })
+      .send({ turns: [{ role: 'learner', text: 'Hello' }] })
       .expect(200);
     expect(res.body.source).toBe('prepared');
     expect(res.body.text.length).toBeGreaterThan(0);
@@ -182,8 +182,8 @@ describe('Lektionen', () => {
   });
 });
 
-describe('Sicherheit', () => {
-  it('enthält keine API-Schlüssel im Frontend', () => {
+describe('Security', () => {
+  it('contains no API keys in the frontend', () => {
     const files: string[] = [];
     const walk = (dir: string) => {
       for (const f of readdirSync(dir)) {

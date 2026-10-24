@@ -15,16 +15,16 @@ export function ReviewCard({ view, trackId, onStart }: { view: SessionView; trac
   const time = useReviewTime();
   const due = view.reviews.due.filter((q) => !trackId || q.trackId === trackId);
   const next = view.reviews.upcoming.find((q) => !trackId || q.trackId === trackId);
-  if (!due.length) return next ? <p className="review-upcoming"><Icon name="repeat" />{t('Nächste Wiederholung: {at}', { at: time(next.dueAt) })}</p> : null;
+  if (!due.length) return next ? <p className="review-upcoming"><Icon name="repeat" />{t('Next review: {at}', { at: time(next.dueAt) })}</p> : null;
   const failed = due.filter((q) => q.lapses > 0).length;
   return (
-    <section className="review-card" aria-label={t('Kurz wiederholen')}>
-      <div className="review-card-title"><Icon name="repeat" size={28} /><h2>{t('Kurz wiederholen')}</h2><span className="review-count">{due.length}</span></div>
-      <p>{t('{n} kurze Fragen zu dem, was du gelernt hast.', { n: due.length })}</p>
-      {failed > 0 && <p className="review-priority"><Icon name="target" />{t('Zuerst üben wir, was zuletzt schwierig war.')}</p>}
+    <section className="review-card" aria-label={t('Quick review')}>
+      <div className="review-card-title"><Icon name="repeat" size={28} /><h2>{t('Quick review')}</h2><span className="review-count">{due.length}</span></div>
+      <p>{t('{n} short questions about what you have learned.', { n: due.length })}</p>
+      {failed > 0 && <p className="review-priority"><Icon name="target" />{t('We start with what you found difficult last time.')}</p>}
       <ul className="review-concepts">{due.slice(0, 3).map((q) => <li key={q.id}>{q.label}</li>)}</ul>
-      <button className="btn primary" onClick={onStart}><Icon name="play" />{t('Jetzt wiederholen')}</button>
-      <p className="small muted">{t('Nur Fragen, keine neue Lektion. Bei Fehlern üben wir früher wieder.')}</p>
+      <button className="btn primary" onClick={onStart}><Icon name="play" />{t('Review now')}</button>
+      <p className="small muted">{t('Just questions, no new lesson. Missed answers come back sooner.')}</p>
     </section>
   );
 }
@@ -94,24 +94,24 @@ export function ReviewOverlay({ trackId, onClose }: { trackId?: string; onClose:
 
   return (
     <dialog ref={dialog} className="review-dialog" aria-labelledby="review-title" onCancel={(event) => { event.preventDefault(); if (!busy) onClose(); }}>
-      <header className="overlay-head"><div><p className="eyebrow">{t('Kurz wiederholen')}</p><h2 id="review-title">{finished ? t('Für jetzt geschafft!') : t('Frage {n} von {total}', { n: index + 1, total: ids.length })}</h2></div><button className="btn quiet small" disabled={busy} onClick={onClose} aria-label={t('Schliessen')}><Icon name="close" /></button></header>
-      {!finished && <progress value={index} max={ids.length} aria-label={t('Fortschritt')} />}
-      {error && <div role="alert"><p className="error">{t(error)}</p><button className="btn secondary" disabled={busy} onClick={() => question && selected !== null ? void answer(selected) : setRetry((n) => n + 1)}>{t('Erneut versuchen')}</button></div>}
-      {!finished && !question && !error && <p role="status">{t('Wird geladen …')}</p>}
+      <header className="overlay-head"><div><p className="eyebrow">{t('Quick review')}</p><h2 id="review-title">{finished ? t('Done for now!') : t('Question {n} of {total}', { n: index + 1, total: ids.length })}</h2></div><button className="btn quiet small" disabled={busy} onClick={onClose} aria-label={t('Close')}><Icon name="close" /></button></header>
+      {!finished && <progress value={index} max={ids.length} aria-label={t('Progress')} />}
+      {error && <div role="alert"><p className="error">{t(error)}</p><button className="btn secondary" disabled={busy} onClick={() => question && selected !== null ? void answer(selected) : setRetry((n) => n + 1)}>{t('Try again')}</button></div>}
+      {!finished && !question && !error && <p role="status">{t('Loading …')}</p>}
       {!finished && question && <div className="review-question">
         <p className="small muted">{question.label}</p>
         {question.context && <blockquote>{question.context.map((line, i) => <p key={i}>{line}</p>)}</blockquote>}
         <h3 ref={heading} tabIndex={-1}>{question.prompt}</h3>
         <div className="question-options">{question.options.map((option, i) => <button key={i} className={`question-option${feedback?.correctOption === i ? ' is-correct' : feedback && selected === i ? ' is-missed' : ''}`} disabled={busy || Boolean(feedback) || (Boolean(error) && selected !== null)} aria-pressed={selected === i} onClick={() => void answer(i)}><span className="option-letter">{String.fromCharCode(65 + i)}</span><span>{option}</span>{feedback?.correctOption === i && <Icon name="check" />}</button>)}</div>
-        {busy && <p role="status">{t('Antwort wird geprüft …')}</p>}
+        {busy && <p role="status">{t('Checking your answer …')}</p>}
         {feedback && <div className={`review-feedback ${feedback.correct ? 'ok' : 'gap'}`} role="status">
-          <strong>{feedback.correct ? t('Richtig erinnert!') : t('Das üben wir bald wieder.')}</strong>
+          <strong>{feedback.correct ? t('You remembered!') : t('We will practise this again soon.')}</strong>
           {!feedback.correct && <p>{feedback.explanation}</p>}
-          <p>{feedback.correct ? t('Nächste Wiederholung: {at}', { at: time(feedback.dueAt) }) : t('Dieses Thema wiederholen wir in 10 Minuten.')}</p>
-          <button className="btn primary" onClick={() => setIndex((n) => n + 1)}>{index + 1 === ids.length ? t('Runde abschliessen') : t('Nächste Frage')}</button>
+          <p>{feedback.correct ? t('Next review: {at}', { at: time(feedback.dueAt) }) : t('We will review this concept again in 10 minutes.')}</p>
+          <button className="btn primary" onClick={() => setIndex((n) => n + 1)}>{index + 1 === ids.length ? t('Finish this round') : t('Next question')}</button>
         </div>}
       </div>}
-      {finished && <div className="review-finished"><Icon name="check" size={44} /><p>{t('{n} von {total} richtig erinnert.', { n: correct, total: ids.length })}</p><p>{t('Richtige Antworten kommen mit mehr Abstand wieder. Schwierige Fragen üben wir häufiger.')}</p>{view!.reviews.due.length > 0 && <p>{t('Weitere Fragen warten auf der Startseite.')}</p>}<button className="btn primary" onClick={onClose}>{t('Zurück zum Lernen')}</button></div>}
+      {finished && <div className="review-finished"><Icon name="check" size={44} /><p>{t('You remembered {n} of {total} correctly.', { n: correct, total: ids.length })}</p><p>{t('Correct answers return after longer gaps. Difficult questions come back more often.')}</p>{view!.reviews.due.length > 0 && <p>{t('More questions are waiting on the home screen.')}</p>}<button className="btn primary" onClick={onClose}>{t('Back to learning')}</button></div>}
     </dialog>
   );
 }

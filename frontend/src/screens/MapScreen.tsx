@@ -88,7 +88,7 @@ export function MapScreen() {
       if (v && !v.session.planning) {
         // An open lesson shows the next step itself; the toast would only cover its buttons.
         if (v.recommendation?.ruleId === 'A1' && !lessonNode) {
-          setToast(t('Deine nächste Lektion ist bereit'));
+          setToast(t('Your next lesson is ready'));
           setFocusId(v.recommendation.nodeId);
         }
         return;
@@ -155,14 +155,14 @@ export function MapScreen() {
     <div className="mapscreen">
       <header className="topbar">
         {back
-          ? <button className="btn secondary small" onClick={back}><Icon name="back" size={18} />{t('Alle Themen')}</button>
+          ? <button className="btn secondary small" onClick={back}><Icon name="back" size={18} />{t('All topics')}</button>
           : <BrandMark />}
         <span className="spacer" />
-        {view.reviews.due.length > 0 && <button className="btn secondary small review-nav" onClick={() => setReviewing('all')}><Icon name="repeat" />{t('Wiederholen ({n})', { n: view.reviews.due.length })}</button>}
+        {view.reviews.due.length > 0 && <button className="btn secondary small review-nav" onClick={() => setReviewing('all')}><Icon name="repeat" />{t('Review ({n})', { n: view.reviews.due.length })}</button>}
         <span className="header-xp" aria-label={`Level ${view.rewards.level}, ${view.rewards.xp} XP`}><Icon name="star" size={18} /><strong>Level {view.rewards.level}</strong><span>{view.rewards.xp} XP</span></span>
-        <button className="btn quiet small who" onClick={() => setSettings(true)} aria-label={t('Mein Konto ({name})', { name: view.session.userName })}>
+        <button className="btn quiet small who" onClick={() => setSettings(true)} aria-label={t('My account ({name})', { name: view.session.userName })}>
           <span className="avatar" aria-hidden="true">{view.session.userName.slice(0, 1).toUpperCase()}</span>
-          <span className="name">{t('Mein Konto')}</span>
+          <span className="name">{t('My account')}</span>
         </button>
       </header>
 
@@ -188,7 +188,7 @@ export function MapScreen() {
           <aside className={`side${wide ? '' : ' sheet'}${!wide && !sheetOpen ? ' collapsed' : ''}`} aria-label={t('Details')}>
             {!wide && (
               <button className="sheet-handle" onClick={() => setSheetOpen(!sheetOpen)} aria-expanded={sheetOpen}>
-                <ButtonLabel variants={['Nach unten klappen', 'Als Nächstes']}>{sheetOpen ? t('Nach unten klappen') : t('Als Nächstes')}</ButtonLabel>
+                <ButtonLabel variants={['Fold down', 'Up next']}>{sheetOpen ? t('Fold down') : t('Up next')}</ButtonLabel>
               </button>
             )}
             {(wide || sheetOpen) && !lessonNode && (

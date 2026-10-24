@@ -1,4 +1,4 @@
-// Designs a track from what the learner wants to learn ("Security+ Prüfung bestehen") with the model:
+// Designs a track from what the learner wants to learn ("pass the Security+ exam") with the model:
 // name, 3 to 6 criteria with rules of thumb, mission suggestions, sources and the lesson types that fit.
 // The server checks the design and keeps only sources whose address answers. Without a model there are no own tracks.
 import type { DccLevel, LessonType, ModelCall, Track, TrackSource } from '@l45/shared';
@@ -26,24 +26,24 @@ interface RawDesign {
   lessonTypes?: string[];
 }
 
-const SYSTEM = `Du planst in einer Lern-App einen neuen Lernbereich zu einem Thema, das eine Person lernen will. Antworte NUR mit JSON, ohne Text davor oder danach.
+const SYSTEM = `In a learning app, you plan a new learning area for a topic someone wants to learn. Answer ONLY with JSON, with no text before or after.
 
-Regeln:
-- Schweizer Hochdeutsch: immer ss, nie ß. Kurze, klare Sätze.
-- name: kurzer Name des Bereichs, höchstens 40 Zeichen.
-- criteria: 3 bis 6 Dinge, die man für das Ziel können oder erkennen muss. Eng gefasst und in einer Übung prüfbar, vom Grundlegenden zum Anspruchsvollen. id: kurz, nur a-z, Ziffern und Bindestrich. label: höchstens 40 Zeichen. ruleOfThumb: eine Faustregel in einem Satz.
-- mission: drei Vorschläge in der Ich-Form («Ich ... und will ...»), dazu ein default für Personen ohne eigene Angabe.
-- sources: 2 bis 5 vertrauenswürdige Quellen, die es wirklich gibt: offizielle Stellen, die Organisation hinter einer Prüfung, Hochschulen, Standards. Keine Blogs, keine Foren. Nimm lieber eine Hauptseite als eine tiefe Unterseite, die es vielleicht nicht gibt. Nur https. note: wofür die Quelle taugt.
-- lessonTypes: welche Lektionsarten zum Thema passen. video: kurze Erklärung mit Quizfragen. ai-chat: Gespräch mit einer KI als Tutor, Rollenspiel oder Auftrag an die KI. mark-evidence: eine KI-Zusammenfassung gegen eine Notiz prüfen. mock-site: eine erfundene Mail oder Webseite auf Warnzeichen prüfen, nur für Themen wie Phishing oder Betrug.
-- Ist das Thema nicht lernbar, zu ungenau oder schädlich, antworte {"error":"Grund in einem Satz"}.
+Rules:
+- Write in plain English. Short, clear sentences.
+- name: short name of the area, at most 40 characters.
+- criteria: 3 to 6 things you need to be able to do or recognise for the goal. Narrow, testable in an exercise, from basic to demanding. id: short, only a-z, digits and hyphen. label: at most 40 characters. ruleOfThumb: one rule of thumb in one sentence.
+- mission: three suggestions in the first person ("I ... and want to ..."), plus a default for people who give none.
+- sources: 2 to 5 trustworthy sources that really exist: official bodies, the organisation behind an exam, universities, standards. No blogs, no forums. Prefer a main page to a deep subpage that may not exist. Only https. note: what the source is good for.
+- lessonTypes: which lesson types fit the topic. video: short explanation with quiz questions. ai-chat: conversation with an AI as tutor, role play or a prompt for the AI. mark-evidence: check an AI summary against a note. mock-site: check a made-up email or website for warning signs, only for topics like phishing or fraud.
+- If the topic cannot be learned, is too vague or is harmful, answer {"error":"Reason in one sentence"}.
 
 Format:
 {"name":"...","criteria":[{"id":"...","label":"...","ruleOfThumb":"..."}],"mission":{"suggestions":["...","...","..."],"default":"..."},"sources":[{"title":"...","url":"https://...","note":"..."}],"lessonTypes":["video","ai-chat"]}`;
 
 const LEVEL_TEXT: Record<DccLevel, string> = {
-  Grundstufe: 'kein oder wenig Vorwissen',
-  Mittelstufe: 'etwas Vorwissen',
-  Fortgeschritten: 'viel Vorwissen',
+  Grundstufe: 'no or little prior knowledge',
+  Mittelstufe: 'some prior knowledge',
+  Fortgeschritten: 'a lot of prior knowledge',
 };
 
 const swiss = (s: unknown) => String(s ?? '').replace(/ß/g, 'ss').replace(/\s+/g, ' ').trim();
@@ -68,26 +68,26 @@ export function setSourceCheck(fn: typeof checkSource | null) {
 
 /** Problems with a design, or the track it describes (without the sources check). */
 export function checkDesign(raw: RawDesign | null, input: Pick<DesignInput, 'topic' | 'selfLevel'>): { errors: string[]; track?: Track } {
-  if (!raw) return { errors: ['Antwort ist kein JSON'] };
+  if (!raw) return { errors: ['The answer is not JSON'] };
   if (raw.error) return { errors: [swiss(raw.error)] };
   const e: string[] = [];
   const name = swiss(raw.name);
-  if (!fits(name, 3, 40)) e.push('name braucht 3 bis 40 Zeichen');
+  if (!fits(name, 3, 40)) e.push('name needs 3 to 40 characters');
 
   const criteria = (Array.isArray(raw.criteria) ? raw.criteria : []).map((c) => ({
     id: String(c?.id ?? '').trim().toLowerCase(),
     label: swiss(c?.label),
     ruleOfThumb: swiss(c?.ruleOfThumb),
   }));
-  if (criteria.length < 3 || criteria.length > 6) e.push('3 bis 6 Kriterien nötig');
+  if (criteria.length < 3 || criteria.length > 6) e.push('3 to 6 criteria needed');
   const ids = new Set<string>();
   for (const c of criteria) {
-    // «entscheid» is the verdict of a mock-site lesson, not a criterion of a track.
-    if (!/^[a-z][a-z0-9-]{1,23}$/.test(c.id) || c.id === 'entscheid') e.push(`Kriterium «${c.id}»: id nur a-z, Ziffern und Bindestrich, 2 bis 24 Zeichen`);
-    else if (ids.has(c.id)) e.push(`Kriterium «${c.id}» doppelt`);
+    // 'entscheid' is the verdict of a mock-site lesson, not a criterion of a track.
+    if (!/^[a-z][a-z0-9-]{1,23}$/.test(c.id) || c.id === 'entscheid') e.push(`Criterion “${c.id}”: id only a-z, digits and hyphen, 2 to 24 characters`);
+    else if (ids.has(c.id)) e.push(`Criterion “${c.id}” appears twice`);
     ids.add(c.id);
-    if (!fits(c.label, 2, 60)) e.push(`Kriterium «${c.id}»: label fehlt oder ist zu lang`);
-    if (!fits(c.ruleOfThumb, 5, 240)) e.push(`Kriterium «${c.id}»: Faustregel fehlt oder ist zu lang`);
+    if (!fits(c.label, 2, 60)) e.push(`Criterion “${c.id}”: label is missing or too long`);
+    if (!fits(c.ruleOfThumb, 5, 240)) e.push(`Criterion “${c.id}”: rule of thumb is missing or too long`);
   }
 
   const suggestions = (Array.isArray(raw.mission?.suggestions) ? raw.mission.suggestions : []).map(swiss).filter((x) => fits(x, 3, 300)).slice(0, 3);
@@ -101,7 +101,7 @@ export function checkDesign(raw: RawDesign | null, input: Pick<DesignInput, 'top
     seen.add(url);
     sources.push({ title: swiss(x?.title).slice(0, 120) || url, url, note: swiss(x?.note).slice(0, 300) });
   }
-  if (!sources.length) e.push('keine Quelle mit https-Adresse');
+  if (!sources.length) e.push('no source with an https address');
 
   const lessonTypes = [...new Set((Array.isArray(raw.lessonTypes) ? raw.lessonTypes : []).filter((t): t is LessonType => (LESSON_TYPES as string[]).includes(t)))];
   if (e.length) return { errors: e };
@@ -111,7 +111,7 @@ export function checkDesign(raw: RawDesign | null, input: Pick<DesignInput, 'top
     skillId: CUSTOM_SKILL.id,
     name,
     criteria,
-    mission: { suggestions, default: fits(fallback, 3, 300) ? fallback : `Ich will «${name}» lernen.` },
+    mission: { suggestions, default: fits(fallback, 3, 300) ? fallback : `I want to learn “${name}”.` },
     custom: {
       topic: input.topic,
       createdAt: nowIso(),
@@ -126,22 +126,22 @@ export function checkDesign(raw: RawDesign | null, input: Pick<DesignInput, 'top
 
 export async function designTrack(input: DesignInput, onCall: (c: ModelCall) => void): Promise<DesignResult> {
   const user = [
-    `Thema: ${input.topic}`,
-    input.goal ? `Wofür die Person es braucht: ${input.goal}` : '',
-    `Vorwissen (Selbsteinschätzung): ${LEVEL_TEXT[input.selfLevel]}`,
+    `Topic: ${input.topic}`,
+    input.goal ? `What the learner needs it for: ${input.goal}` : '',
+    `Prior knowledge (self-assessed): ${LEVEL_TEXT[input.selfLevel]}`,
   ].filter(Boolean).join('\n');
   const reply = await callModel({ purpose: 'design', system: SYSTEM, messages: [{ role: 'user', content: user }], maxTokens: 2000, timeoutMs: input.timeoutMs, planner: true });
   onCall(reply.call);
-  if (!reply.ok) return { ok: false, errors: [`Modell: ${reply.error}`] };
+  if (!reply.ok) return { ok: false, errors: [`Model: ${reply.error}`] };
   const { errors, track } = checkDesign(extractJson<RawDesign>(reply.text), input);
   if (!track) {
-    console.warn(`Bereich «${input.topic}» verworfen: ${errors.join('; ')}`);
+    console.warn(`Area “${input.topic}” discarded: ${errors.join('; ')}`);
     return { ok: false, errors };
   }
   // Models invent addresses. Only sources that answer are kept.
   const custom = track.custom!;
   const ok = await Promise.all(custom.sources.map((s) => checkSource(s.url)));
   custom.sources = custom.sources.filter((_, i) => ok[i]);
-  if (!custom.sources.length) return { ok: false, errors: ['Keine der vorgeschlagenen Quellen war erreichbar'] };
+  if (!custom.sources.length) return { ok: false, errors: ['None of the suggested sources could be reached'] };
   return { ok: true, track };
 }

@@ -1,12 +1,12 @@
-# Informations- und Datenkompetenz: Quellen
+# Information and data literacy: sources
 
-Geprüft am 2026-10-24. Generierte Lektionen stützen sich nur auf diese Quellen, die Kriterien und die Faustregeln des Bereichs.
+Checked on 2026-10-24. Generated lessons rely only on these sources and the area's criteria and rules of thumb.
 
 ## Knowledge
 
 - [DigComp 2.2: The Digital Competence Framework for Citizens (JRC, 2022)](https://publications.jrc.ec.europa.eu/repository/handle/JRC128415)
-  Europäischer Referenzrahmen, Bereich 1 «Information and data literacy», mit Beispielen zum Umgang mit KI-Systemen. Use for: Informationen bewerten, Angaben an der Quelle prüfen.
+  European reference framework, area 1 “Information and data literacy”, with examples of working with AI systems. Use for: evaluating information, checking details against the source.
 
 ## Gaps
 
-- Deutschsprachige, behördliche Anleitung zum Prüfen von KI-Zusammenfassungen gegen die Quelle. Noch keine geprüfte gefunden.
+- An official guide to checking AI summaries against the source. None checked yet.

@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import type { DccLevel, DccResultFile, LoginConflict } from '@l45/shared';
 import { DCC_LEVELS } from '@l45/shared';
 import { api, ApiError } from '../lib/api.ts';
-import { LangSwitch, localeOf, useI18n } from '../lib/i18n.tsx';
+import { localeOf, useI18n } from '../lib/i18n.tsx';
 import { ThemeSwitch } from '../lib/theme.tsx';
 import { useStore } from '../lib/store.tsx';
 import { BrandName } from './MapScreen.tsx';
 
 const SAMPLES = [
-  { file: 'dcc-gemischt.json', label: 'Gemischt' },
-  { file: 'dcc-fortgeschritten.json', label: 'Eher fortgeschritten' },
-  { file: 'dcc-teilweise.json', label: 'Nur teilweise erhoben' },
+  { file: 'dcc-mixed.json', label: 'Mixed' },
+  { file: 'dcc-advanced.json', label: 'Mostly advanced' },
+  { file: 'dcc-partial.json', label: 'Only partly assessed' },
 ];
 
 export function Login() {
@@ -33,11 +33,11 @@ export function Login() {
     setError(null);
     try {
       const data = JSON.parse(await f.text()) as DccResultFile;
-      if (data?.type !== 'dcc-result' || !Array.isArray(data.areas)) throw new Error(t('kein DCC-Resultat'));
+      if (data?.type !== 'dcc-result' || !Array.isArray(data.areas)) throw new Error(t('not a DCC result'));
       setFile({ name: f.name, data });
     } catch {
       setFile(null);
-      setError(t('«{name}» ist keine gültige DCC-Resultatdatei. Nimm eine der Beispieldateien als Vorlage.', { name: f.name }));
+      setError(t('“{name}” is not a valid DCC result file. Use one of the sample files as a template.', { name: f.name }));
     }
   };
 
@@ -48,7 +48,7 @@ export function Login() {
     if (f) readFile(f);
   };
 
-  // The DCC profile is optional: it only sets the levels of the prepared Digitale-Kompetenz tracks.
+  // The DCC profile is optional: it only sets the levels of the prepared Digital competence tracks.
   const ready = name.trim().length > 0;
 
   const submit = async (resume?: 'continue' | 'new') => {
@@ -62,7 +62,7 @@ export function Login() {
       });
       setConflict(null);
       setView(v, resume === 'continue' ? await api.generated(v.session.id) : []);
-      nav('/karte');
+      nav('/map');
     } catch (e) {
       if (e instanceof ApiError && e.status === 409 && e.body.code === 'learner-exists') setConflict(e.body as unknown as LoginConflict);
       else setError(e instanceof Error ? e.message : String(e));
@@ -77,23 +77,22 @@ export function Login() {
     <div className="login">
       <div className="lang-float">
         <ThemeSwitch />
-        <LangSwitch />
       </div>
       <section className="login-intro">
         <h1>
           <img className="logo" src="/icons/owl.svg" alt="" width={46} height={46} />
           <BrandName />
         </h1>
-        <p className="partner">{t('für')} <img src="/icons/learn45.png" alt="Learn45" /></p>
-        <p className="lead">{t('Lerne den Umgang mit dem Computer in kleinen Schritten. Du wählst ein Thema, der Lernagent zeigt dir immer, was als Nächstes kommt.')}</p>
+        <p className="partner">{t('for')} <img src="/icons/learn45.png" alt="Learn45" /></p>
+        <p className="lead">{t('Learn to use the computer in small steps. You choose a topic, and the learning agent always shows you what comes next.')}</p>
         <MiniMap />
-        <p className="small muted">{t('Prototyp für Learn45. Anmeldung ohne Passwort, nur erfundene Daten.')}</p>
+        <p className="small muted">{t('Prototype for Learn45. Sign-in without a password, invented data only.')}</p>
       </section>
 
-      <section className="login-card" aria-label={t('Anmelden')}>
-        <h2>{t('Willkommen!')}</h2>
+      <section className="login-card" aria-label={t('Sign in')}>
+        <h2>{t('Welcome!')}</h2>
         <label className="field">
-          <span>{t('Wie heisst du?')}</span>
+          <span>{t('What is your name?')}</span>
           <input
             type="text"
             value={name}
@@ -104,13 +103,13 @@ export function Login() {
           />
         </label>
 
-        {/* Optional and only for the prepared Digitale-Kompetenz tracks, so it stays closed unless asked for. */}
+        {/* Optional and only for the prepared Digital competence tracks, so it stays closed unless asked for. */}
         <details className="dcc-box more">
-          <summary>{t('Ich habe ein DCC-Resultat (freiwillig)')}</summary>
-          <p className="small muted">{t('Nur nötig, wenn du einen DCC-Test gemacht hast. Sonst einfach weiter.')}</p>
+          <summary>{t('I have a DCC result (optional)')}</summary>
+          <p className="small muted">{t('Only needed if you have taken a DCC test. Otherwise just continue.')}</p>
           <div className="seg" role="tablist">
-            <button role="tab" aria-selected={mode === 'file'} onClick={() => setMode('file')}>{t('Resultat laden')}</button>
-            <button role="tab" aria-selected={mode === 'manual'} onClick={() => setMode('manual')}>{t('Stufen eingeben')}</button>
+            <button role="tab" aria-selected={mode === 'file'} onClick={() => setMode('file')}>{t('Load a result')}</button>
+            <button role="tab" aria-selected={mode === 'manual'} onClick={() => setMode('manual')}>{t('Enter levels')}</button>
           </div>
 
           {mode === 'file' ? (
@@ -122,13 +121,13 @@ export function Login() {
                 onDrop={onDrop}
               >
                 <input type="file" accept=".json,application/json" onChange={(e) => e.target.files?.[0] && readFile(e.target.files[0])} />
-                {file ? <strong>{file.name}</strong> : <span>{t('DCC-Resultat (JSON) hierher ziehen oder auswählen')}</span>}
+                {file ? <strong>{file.name}</strong> : <span>{t('Drop a DCC result (JSON) here, or choose a file')}</span>}
               </label>
               <p className="small muted">
-                {t('Beispieldateien')}:{' '}
+                {t('Sample files')}:{' '}
                 {SAMPLES.map((s, i) => (
                   <span key={s.file}>
-                    <a href={`/dcc-beispiele/${s.file}`} download>{t(s.label)}</a>
+                    <a href={`/dcc-examples/${s.file}`} download>{t(s.label)}</a>
                     {i < SAMPLES.length - 1 ? ', ' : ''}
                   </span>
                 ))}
@@ -163,25 +162,25 @@ export function Login() {
               </tbody>
             </table>
           )}
-          <p className="small muted">{t('Die DCC-Werte bleiben unverändert. Lernen in der App stuft nichts hoch. «Nicht erhoben» heisst nicht geringe Kompetenz.')}</p>
+          <p className="small muted">{t('DCC levels stay as they are. Learning in this app does not raise them. “Not assessed” does not mean low competence.')}</p>
         </details>
 
         {error && <p className="error" role="alert">{t(error)}</p>}
         {conflict ? (
           <div className="choice-card" role="alert">
             <p>
-              <strong>{t('Willkommen zurück, {name}!', { name: conflict.name })}</strong>{' '}
-              {t('Du hast schon {n} {lessons} geschafft.', { n: conflict.lessonsDone, lessons: conflict.lessonsDone === 1 ? t('Lektion') : t('Lektionen') })}
+              <strong>{t('Welcome back, {name}!', { name: conflict.name })}</strong>{' '}
+              {t('You have already finished {n} {lessons}.', { n: conflict.lessonsDone, lessons: conflict.lessonsDone === 1 ? t('Lesson') : t('lessons') })}
             </p>
             <div className="row">
-              <button className="btn primary big" disabled={busy} onClick={() => submit('continue')}>{t('Weitermachen')}</button>
-              <button className="btn secondary" disabled={busy} onClick={() => submit('new')}>{t('Neu anfangen')}</button>
+              <button className="btn primary big" disabled={busy} onClick={() => submit('continue')}>{t('Continue')}</button>
+              <button className="btn secondary" disabled={busy} onClick={() => submit('new')}>{t('Start over')}</button>
             </div>
-            <p className="small muted">{t('Neu anfangen gibt dir eine leere Karte. Dein alter Stand bleibt gespeichert.')}</p>
+            <p className="small muted">{t('Starting over gives you an empty map. Your old progress stays saved.')}</p>
           </div>
         ) : (
           <button className="btn primary big block" disabled={!ready || busy} onClick={() => submit()}>
-            <ButtonLabel variants={["Los geht's", 'Einen Moment …']}>{busy ? t('Einen Moment …') : t("Los geht's")}</ButtonLabel>
+            <ButtonLabel variants={["Let’s go", 'One moment …']}>{busy ? t('One moment …') : t("Let’s go")}</ButtonLabel>
           </button>
         )}
       </section>

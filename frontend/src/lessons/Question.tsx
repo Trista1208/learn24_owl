@@ -20,10 +20,10 @@ export function Question({ q, n, total, onAnswer, headingRef, id, note }: {
     window.setTimeout(() => onAnswer(i), 320);
   };
   return (
-    <section className="video-pop" id={id} aria-label={t('Frage {n}', { n: n + 1 })} key={n}>
+    <section className="video-pop" id={id} aria-label={t('Question {n}', { n: n + 1 })} key={n}>
       <p className="video-pop-label">
         <span className="video-pop-dots" aria-hidden="true">{Array.from({ length: total }, (_, i) => <i key={i} className={i < n ? 'is-done' : i === n ? 'is-at' : ''} />)}</span>
-        {t('Video pausiert · Frage {n} von {total}', { n: n + 1, total })}
+        {t('Video paused · question {n} of {total}', { n: n + 1, total })}
       </p>
       <h3 ref={headingRef} tabIndex={-1}>{q.prompt}</h3>
       <div className="choices">

@@ -22,7 +22,7 @@ interface Spec { skill: string; tracks: { id: string; name: string; lessons: num
 function build(specs: Spec[], rand: () => number): MapNode[] {
   const nodes: MapNode[] = [{ id: 'start', kind: 'start', parentId: null, label: 'Mara' }];
   for (const s of specs) {
-    nodes.push({ id: `s-${s.skill}`, kind: 'skill', parentId: 'start', label: skills.find((x) => x.id === s.skill)?.name ?? 'Eigene Themen', skillId: s.skill });
+    nodes.push({ id: `s-${s.skill}`, kind: 'skill', parentId: 'start', label: skills.find((x) => x.id === s.skill)?.name ?? 'Own topics', skillId: s.skill });
     for (const t of s.tracks) {
       nodes.push({ id: `t-${t.id}`, kind: 'track', parentId: `s-${s.skill}`, label: t.name, skillId: s.skill, trackId: t.id });
       const own: string[] = [];
@@ -46,7 +46,7 @@ function randomMap(seed: number): MapNode[] {
     skill,
     tracks: Array.from({ length: 1 + Math.floor(rand() * (skill === 'digital' ? 5 : 6)) }, (_, i) => ({
       id: `${k}-${i}`,
-      name: rand() < 0.5 ? 'Security+ SY0-701 bestehen mit Praxisfragen' : skills.flatMap((s) => s.tracks)[Math.floor(rand() * 7)].name,
+      name: rand() < 0.5 ? 'Pass Security+ SY0-701 with practice questions' : skills.flatMap((s) => s.tracks)[Math.floor(rand() * 7)].name,
       lessons: Math.floor(rand() * 12),
       forkRate: rand() * 0.35,
     })),
@@ -80,7 +80,7 @@ function problems(nodes: MapNode[]): string[] {
 
   for (let i = 0; i < placed.length; i++) {
     for (let j = i + 1; j < placed.length; j++) {
-      if (overlaps(box(placed[i])[0], box(placed[j])[0])) out.push(`${placed[i].node.id} überlappt ${placed[j].node.id}`);
+      if (overlaps(box(placed[i])[0], box(placed[j])[0])) out.push(`${placed[i].node.id} overlaps ${placed[j].node.id}`);
     }
   }
 
@@ -89,7 +89,7 @@ function problems(nodes: MapNode[]): string[] {
     for (const p of placed) {
       const own = p === e.from || p === e.to;
       for (const b of box(p, own ? 'text' : 'all')) {
-        if (e.pts.some((pt) => inside(pt, b))) out.push(`Linie ${e.from.node.id}→${e.to.node.id} durch ${p.node.id}`);
+        if (e.pts.some((pt) => inside(pt, b))) out.push(`Line ${e.from.node.id}→${e.to.node.id} through ${p.node.id}`);
       }
     }
   }
@@ -98,28 +98,28 @@ function problems(nodes: MapNode[]): string[] {
       const a = edges[i], b = edges[j];
       if (a.from === b.from || a.to === b.from || b.to === a.from) continue;
       const crossed = a.pts.some((p, k) => k > 0 && b.pts.some((q, m) => m > 0 && segmentsCross(a.pts[k - 1], p, b.pts[m - 1], q)));
-      if (crossed) out.push(`Linien ${a.to.node.id} und ${b.to.node.id} kreuzen sich`);
+      if (crossed) out.push(`Lines ${a.to.node.id} and ${b.to.node.id} cross`);
     }
   }
   return [...new Set(out)];
 }
 
-describe('Layout der Karte', () => {
-  it('ordnet die vorbereiteten Bereiche ohne Überlappung an', () => {
+describe('Map layout', () => {
+  it('arranges the prepared areas without overlap', () => {
     const specs: Spec[] = skills.map((s) => ({ skill: s.id, tracks: s.tracks.map((t) => ({ id: t.id, name: t.name, lessons: 4, forkRate: 0 })) }));
     expect(problems(build(specs, rng(1)))).toEqual([]);
   });
 
-  it('bleibt bei langen Ketten und Verzweigungen sauber', () => {
-    const specs: Spec[] = [{ skill: 'custom', tracks: [{ id: 'sec', name: 'Security+ SY0-701 bestehen', lessons: 25, forkRate: 0.3 }] }];
+  it('stays clean with long chains and branches', () => {
+    const specs: Spec[] = [{ skill: 'custom', tracks: [{ id: 'sec', name: 'Pass Security+ SY0-701', lessons: 25, forkRate: 0.3 }] }];
     expect(problems(build(specs, rng(2)))).toEqual([]);
   });
 
-  it('ist für zufällige Karten sauber', () => {
-    for (let seed = 1; seed <= 40; seed++) expect(problems(randomMap(seed)), `Karte ${seed}`).toEqual([]);
+  it('is clean for random maps', () => {
+    for (let seed = 1; seed <= 40; seed++) expect(problems(randomMap(seed)), `Map ${seed}`).toEqual([]);
   });
 
-  it('hält beide Seiten ungefähr gleich hoch', () => {
+  it('keeps both sides about equally high', () => {
     const specs: Spec[] = skills.map((s) => ({ skill: s.id, tracks: s.tracks.map((t) => ({ id: t.id, name: t.name, lessons: 2, forkRate: 0 })) }));
     const placed = [...layout(build(specs, rng(3))).values()];
     const span = (side: 1 | -1) => {
@@ -130,20 +130,20 @@ describe('Layout der Karte', () => {
     expect(span(-1)).toBeGreaterThan(0);
   });
 
-  it('reserviert genug Platz für die längsten Beschriftungen', () => {
+  it('reserves enough room for the longest labels', () => {
     // Conservative width per character of the map font (Signika): regular 0.56 em, bold 0.6 em.
     const width = (text: string, px: number, bold = false) => text.length * px * (bold ? 0.6 : 0.56);
     const half = (kind: MapNode['kind']) => extent(kind).left;
-    const long = 'Ein sehr langer Titel für eine Lektion über Verschlüsselung und Schlüsseltausch';
+    const long = 'A very long title for a lesson about encryption and the exchange of keys';
     for (const title of [...lessons.map((l) => l.title), long]) {
       for (const line of wrap(title, 20)) expect(width(line, 14) / 2, line).toBeLessThanOrEqual(half('lesson'));
     }
     for (const t of Object.values(TYPE_LABEL)) expect(width(`${t}, 5 Min., KI`, 12) / 2).toBeLessThanOrEqual(half('lesson'));
-    expect(width('Nächster Schritt', 12, true) / 2).toBeLessThanOrEqual(half('lesson'));
-    for (const name of [...skills.flatMap((s) => s.tracks.map((t) => t.name)), 'Security+ SY0-701 bestehen mit Praxisfragen und PBQs']) {
+    expect(width('Next step', 12, true) / 2).toBeLessThanOrEqual(half('lesson'));
+    for (const name of [...skills.flatMap((s) => s.tracks.map((t) => t.name)), 'Pass Security+ SY0-701 with practice questions and PBQs']) {
       for (const line of wrap(name, 18)) expect(width(line, 16, true) / 2, line).toBeLessThanOrEqual(half('track'));
     }
-    expect(width('DCC: Fortgeschritten', 13) / 2).toBeLessThanOrEqual(half('track'));
-    for (const s of [...skills.map((x) => x.name), 'Eigene Themen']) expect(width(s, 21, true) / 2, s).toBeLessThanOrEqual(half('skill'));
+    expect(width('DCC: Intermediate', 13) / 2).toBeLessThanOrEqual(half('track'));
+    for (const s of [...skills.map((x) => x.name), 'Own topics']) expect(width(s, 21, true) / 2, s).toBeLessThanOrEqual(half('skill'));
   });
 });

@@ -4,36 +4,36 @@
     "trackId": "t-analysis",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Was ist eine Ableitung?",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "What is a derivative?",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 3,
     "mode": "alone",
     "targets": ["grenzwert", "steigung"],
-    "transfer": "Schau dir eine Kurve aus deinem Alltag an (z. B. Temperatur über den Tag) und schätze, wo sie am steilsten ist.",
+    "transfer": "Look at a curve from your everyday life (e.g. temperature over the day) and estimate where it is steepest.",
     "source": "prepared",
     "content": {
       "narrated": { "manifestUrl": "/videos/math-v1/manifest.json" },
       "scenes": [
-        { "caption": "Eine Kurve und zwei Punkte darauf. Die Gerade durch beide heisst Sekante. Ihre Steigung: Höhenunterschied geteilt durch Abstand.", "visual": "secant-tangent", "seconds": 7 },
-        { "caption": "Jetzt rückt der zweite Punkt immer näher an den ersten. Die Sekante dreht sich mit.", "visual": "secant-tangent", "seconds": 7 },
-        { "caption": "Im Grenzfall berührt die Gerade die Kurve nur noch in einem Punkt: die Tangente. Ihre Steigung ist die Ableitung an dieser Stelle.", "visual": "slope-zoom", "seconds": 7 },
-        { "caption": "Zoomt man stark genug hinein, sieht die Kurve dort fast wie eine Gerade aus – mit genau dieser Steigung.", "visual": "slope-zoom", "seconds": 6 }
+        { "caption": "A curve and two points on it. The straight line through both is called a secant. Its slope: the difference in height divided by the distance.", "visual": "secant-tangent", "seconds": 7 },
+        { "caption": "Now the second point moves closer and closer to the first. The secant turns with it.", "visual": "secant-tangent", "seconds": 7 },
+        { "caption": "In the limit, the line touches the curve at only one point: the tangent. Its slope is the derivative at that point.", "visual": "slope-zoom", "seconds": 7 },
+        { "caption": "If you zoom in far enough, the curve there looks almost like a straight line, with exactly this slope.", "visual": "slope-zoom", "seconds": 6 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Was passiert mit der Sekante, wenn der zweite Punkt näher rückt?",
-          "options": ["Sie wird immer steiler, egal wo", "Sie verschwindet ganz aus dem Bild", "Sie nähert sich der Tangente an"],
+          "prompt": "What happens to the secant when the second point moves closer?",
+          "options": ["It becomes steeper at every point", "It disappears completely from the picture", "It moves closer to the tangent"],
           "correct": 2,
-          "explanation": "Rückt der Punkt näher, nähert sich die Sekante der Tangente an.",
+          "explanation": "As the point moves closer, the secant approaches the tangent.",
           "criterion": "grenzwert"
         },
         {
           "afterScene": 3,
-          "prompt": "Was gibt die Ableitung an einer Stelle an?",
-          "options": ["Die Fläche unter der Kurve", "Die Steigung der Tangente dort", "Den höchsten Punkt der Kurve"],
+          "prompt": "What does the derivative at a point tell you?",
+          "options": ["The area under the curve", "The slope of the tangent there", "The highest point of the curve"],
           "correct": 1,
-          "explanation": "Die Ableitung ist die Steigung der Tangente an dieser Stelle.",
+          "explanation": "The derivative is the slope of the tangent at that point.",
           "criterion": "steigung"
         }
       ]

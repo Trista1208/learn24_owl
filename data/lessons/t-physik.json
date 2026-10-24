@@ -4,35 +4,35 @@
     "trackId": "t-physik",
     "type": "video",
     "level": "Grundstufe",
-    "title": "Fallen schwere Dinge schneller?",
-    "intro": "Kurzes Erklärvideo mit zwei Fragen unterwegs.",
+    "title": "Do heavy things fall faster?",
+    "intro": "A short explainer video with two questions along the way.",
     "durationMin": 2,
     "mode": "alone",
     "targets": ["masse", "luft"],
-    "transfer": "Lass ein flaches und ein zerknülltes Blatt Papier gleichzeitig fallen: Beide wiegen gleich viel – welches landet zuerst, und warum?",
+    "transfer": "Drop a flat and a crumpled sheet of paper at the same time: both weigh the same. Which one lands first, and why?",
     "source": "prepared",
     "content": {
       "scenes": [
-        { "caption": "Ein Ball und eine Feder fallen gleichzeitig los. Der Ball landet zuerst, die Feder schwebt langsam nach unten.", "visual": "falling", "items": ["Ball", "Feder", "mit Luft"], "seconds": 7 },
-        { "caption": "Liegt das am Gewicht? Nein. Die Feder bietet der Luft viel Fläche, die Luft bremst sie stark. Den Ball bremst sie kaum.", "visual": "steps", "items": ["Gewicht?", "Nein: Luftwiderstand"], "seconds": 7 },
-        { "caption": "Jetzt pumpen wir die Luft aus einer Röhre. Im Vakuum fallen Ball und Feder genau gleich schnell.", "visual": "falling", "items": ["Ball", "Feder", "ohne Luft"], "seconds": 8 },
-        { "caption": "Ohne Luft fallen alle Körper gleich schnell, egal wie schwer. Unterschiede im Alltag kommen von der Luft.", "visual": "steps", "items": ["Ohne Luft: gleich schnell", "Mit Luft: Form zählt"], "seconds": 7 }
+        { "caption": "A ball and a feather start falling at the same time. The ball lands first, the feather floats slowly down.", "visual": "falling", "items": ["Ball", "Feather", "with air"], "seconds": 7 },
+        { "caption": "Is it because of the weight? No. The feather offers the air a lot of surface, and the air slows it down a lot. It hardly slows the ball.", "visual": "steps", "items": ["Weight?", "No: air resistance"], "seconds": 7 },
+        { "caption": "Now we pump the air out of a tube. In a vacuum, the ball and the feather fall exactly equally fast.", "visual": "falling", "items": ["Ball", "Feather", "without air"], "seconds": 8 },
+        { "caption": "Without air, all bodies fall equally fast, however heavy they are. Differences in everyday life come from the air.", "visual": "steps", "items": ["Without air: equally fast", "With air: shape counts"], "seconds": 7 }
       ],
       "questions": [
         {
           "afterScene": 1,
-          "prompt": "Warum landet die Feder später als der Ball?",
-          "options": ["Die Luft bremst die Feder stark", "Die Feder ist einfach viel leichter", "Bälle fallen von Natur aus schneller"],
+          "prompt": "Why does the feather land later than the ball?",
+          "options": ["The air slows the feather down a lot", "The feather is simply much lighter", "Balls naturally fall a bit faster"],
           "correct": 0,
-          "explanation": "Der Unterschied kommt vom Luftwiderstand. Ohne Luft wäre die Feder genauso schnell.",
+          "explanation": "The difference comes from air resistance. Without air the feather would be just as fast.",
           "criterion": "luft"
         },
         {
           "afterScene": 2,
-          "prompt": "Was passiert ohne Luft mit Ball und Feder?",
-          "options": ["Der Ball fällt etwas schneller", "Die Feder fällt jetzt schneller", "Beide fallen genau gleich schnell"],
+          "prompt": "What happens to the ball and the feather without air?",
+          "options": ["The ball falls a little faster", "The feather now falls faster", "Both fall exactly equally fast"],
           "correct": 2,
-          "explanation": "Im Vakuum bremst nichts. Dann fallen alle Körper gleich schnell, egal wie schwer.",
+          "explanation": "In a vacuum nothing slows them down. Then all bodies fall equally fast, however heavy.",
           "criterion": "masse"
         }
       ]
@@ -43,36 +43,36 @@
     "trackId": "t-physik",
     "type": "ai-chat",
     "level": "Mittelstufe",
-    "title": "Warum fallen alle gleich schnell?",
-    "intro": "Erklär der KI, warum ohne Luft ein schwerer und ein leichter Körper gleich schnell fallen.",
+    "title": "Why does everything fall at the same speed?",
+    "intro": "Explain to the AI why, without air, a heavy and a light body fall equally fast.",
     "durationMin": 4,
     "mode": "ai",
     "targets": ["masse", "luft"],
-    "transfer": "Wenn jemand sagt «Schweres fällt schneller», frag zurück: Liegt es am Gewicht oder an der Luft?",
+    "transfer": "When someone says “heavy things fall faster”, ask back: is it the weight or the air?",
     "source": "prepared",
     "content": {
       "kind": "tutor",
-      "goal": "Du erklärst in eigenen Worten, warum die Masse ohne Luft keine Rolle spielt und woher Unterschiede im Alltag kommen.",
-      "aiRole": "Du bist ein Lerncoach für Physik. Die Person soll in eigenen Worten erklären, warum ohne Luft alle Körper gleich schnell fallen und warum es im Alltag trotzdem Unterschiede gibt. Nutze die drei Versuche im Material. Erkläre nicht selbst, sondern frag nach: Was ist bei Versuch 2 gleich, was ist anders? Woran kann es also nicht liegen? Was fehlt in Versuch 3? Wer weiter ist, darf überlegen, warum die grössere Anziehung auf die schwere Kugel durch ihre grössere Trägheit ausgeglichen wird – verlange das aber nicht. Gib keine fertige Erklärung. Ist eine Antwort falsch (zum Beispiel «Schweres fällt schneller»), frag mit einem der Versuche nach. Eine Frage aufs Mal, höchstens 2–3 kurze Sätze. Zum Schluss bittest du um eine Erklärung in zwei Sätzen: einer zur Masse, einer zur Luft.",
-      "opening": "Schau dir Versuch 2 an: Beide Blätter wiegen gleich viel. Warum landet das zerknüllte trotzdem zuerst?",
+      "goal": "You explain in your own words why mass plays no role without air and where differences in everyday life come from.",
+      "aiRole": "You are a physics learning coach. The learner should explain in their own words why all bodies fall equally fast without air and why there are still differences in everyday life. Use the three experiments in the material. Do not explain it yourself; ask instead: what is the same in experiment 2, and what is different? So what can it not be? What is missing in experiment 3? A learner who is further along may think about why the greater pull on the heavy ball is balanced by its greater inertia, but do not require it. Do not give a finished explanation. If an answer is wrong (for example “heavy things fall faster”), ask a follow-up question using one of the experiments. One question at a time, at most 2 to 3 short sentences. Finally, ask for an explanation in two sentences: one about mass, one about air.",
+      "opening": "Look at experiment 2: both sheets weigh the same. Why does the crumpled one still land first?",
       "material": {
-        "title": "Drei Versuche (erfunden)",
+        "title": "Three experiments (made up)",
         "lines": [
-          "Versuch 1: Zwei gleich grosse Kugeln, eine wiegt 1 kg, die andere 100 g. Aus 2 m Höhe landen beide fast gleichzeitig.",
-          "Versuch 2: Ein flaches und ein zerknülltes Blatt Papier fallen. Das zerknüllte landet zuerst.",
-          "Versuch 3: In einer luftleeren Röhre fallen eine Münze und eine Feder gleich schnell."
+          "Experiment 1: Two balls of the same size, one weighs 1 kg, the other 100 g. Dropped from 2 m, both land almost at the same time.",
+          "Experiment 2: A flat and a crumpled sheet of paper fall. The crumpled one lands first.",
+          "Experiment 3: In a tube with no air, a coin and a feather fall equally fast."
         ]
       },
       "criteria": [
-        { "id": "masse", "label": "Masse spielt keine Rolle", "hint": "Hängt die Fallzeit ohne Luft vom Gewicht ab?", "patterns": ["gleich schnell", "gleichzeitig", "(masse|gewicht).{0,40}(egal|keine rolle|unabhängig|nicht)", "(egal|unabhängig).{0,30}(masse|gewicht|schwer)", "gleich (schwer|viel)", "trägheit", "beschleunig"] },
-        { "id": "luft", "label": "Luftwiderstand", "hint": "Was bremst das flache Blatt und die Feder?", "patterns": ["luftwiderstand", "\\bluft", "bremst|bremsen", "fläche|form|flach", "vakuum|luftleer|ohne luft", "widerstand"] }
+        { "id": "masse", "label": "Mass plays no role", "hint": "Without air, does the fall time depend on the weight?", "patterns": ["(equally|just as|as) fast", "same (speed|time|rate)", "at the same time", "(mass|weight).{0,40}(doesn't matter|does not matter|no role|independent|not)", "(regardless|independent) of .{0,20}(mass|weight|heavy)", "same weight", "inertia", "accelerat"] },
+        { "id": "luft", "label": "Air resistance", "hint": "What slows down the flat sheet and the feather?", "patterns": ["air resistance", "\\bair\\b", "slow|brake|drag", "surface|shape|flat", "vacuum|no air|without air", "resistance"] }
       ],
       "fallbackReplies": [
-        "Interessant. Wenn beide Blätter gleich viel wiegen: Woran kann es dann liegen, dass eines schneller fällt?",
-        "Schau dir jetzt Versuch 3 an. Was fehlt in der Röhre, und was bedeutet das für Münze und Feder?",
-        "Und Versuch 1: Die Kugeln sind gleich gross, aber verschieden schwer. Was sagt dir das über die Masse?",
-        "Erklär es jetzt in zwei Sätzen: einer zur Masse, einer zur Luft.",
-        "Danke, das ist eine Erklärung in deinen eigenen Worten. Du kannst die Lektion jetzt abschliessen."
+        "Interesting. If both sheets weigh the same: what else can make one of them fall faster?",
+        "Now look at experiment 3. What is missing in the tube, and what does that mean for the coin and the feather?",
+        "And experiment 1: the balls are the same size but different weights. What does that tell you about mass?",
+        "Now explain it in two sentences: one about mass, one about air.",
+        "Thanks, that is an explanation in your own words. You can finish the lesson now."
       ],
       "minTurns": 3
     }

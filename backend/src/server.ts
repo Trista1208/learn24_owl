@@ -4,8 +4,8 @@ import { providerName } from './provider.ts';
 
 const port = Number(process.env.PORT ?? 8787);
 createApp().listen(port, () => {
-  console.log(`Lernagent auf http://localhost:${port}`);
-  console.log(`Inhalt: ${content.lessons.length} Lektionen in ${content.skills.flatMap((s) => s.tracks).length} Tracks`);
+  console.log(`Learning agent on http://localhost:${port}`);
+  console.log(`Content: ${content.lessons.length} lessons in ${content.skills.flatMap((s) => s.tracks).length} tracks`);
   const provider = providerName();
-  console.log(provider === 'none' ? 'Modell: keines konfiguriert -> vorbereitete Inhalte (Modus «Ohne KI»)' : `Modell: ${provider}`);
+  console.log(provider === 'none' ? 'Model: none configured -> prepared content (“Without AI” mode)' : `Model: ${provider}`);
 });

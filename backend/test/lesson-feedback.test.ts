@@ -70,7 +70,7 @@ describe('Individual answer feedback', () => {
     const learner = await login(app);
     const video = content.lessons.find((l) => l.id === 'sich-v1')!;
     if (video.type !== 'video') throw new Error('Expected video');
-    const podcast: PodcastLesson = { ...video, id: 'feedback-podcast', type: 'podcast', content: { lines: [{ speaker: 'a', text: 'Prüfe die Domain.' }, { speaker: 'b', text: 'Den Namen vor der Endung?' }], questions: video.content.questions } };
+    const podcast: PodcastLesson = { ...video, id: 'feedback-podcast', type: 'podcast', content: { lines: [{ speaker: 'a', text: 'Check the domain.' }, { speaker: 'b', text: 'The name before the ending?' }], questions: video.content.questions } };
     const stored = get(learner.session.id);
     stored.session.generatedLessons.push(podcast);
     stored.session.nodes.push({ ...node(learner, video.id), id: 'feedback-podcast-node', lessonId: podcast.id });

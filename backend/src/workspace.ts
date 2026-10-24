@@ -136,13 +136,13 @@ export function readMissions(learnerId: string): Mission[] {
       trackId: String(meta.track ?? f.replace(/\.md$/, '')),
       status: meta.status === 'default' ? 'default' : 'set',
       updatedAt: String(meta.updatedAt ?? ''),
-      text: section(body, 'Warum'),
+      text: section(body, 'Why'),
     };
   });
 }
 
 export function writeMission(learnerId: string, m: Mission, trackName: string) {
-  const body = `# Mission: ${trackName}\n\n## Warum\n${m.text}\n`;
+  const body = `# Mission: ${trackName}\n\n## Why\n${m.text}\n`;
   atomicWrite(dir(learnerId, 'missions', `${m.trackId}.md`), toMd({ track: m.trackId, status: m.status, updatedAt: m.updatedAt }, body));
 }
 
@@ -211,9 +211,9 @@ export function deleteLesson(learnerId: string, lessonId: string) {
   }
 }
 
-// --- Merkblatt per track -----------------------------------------------------------------------------
+// --- Key points per track -----------------------------------------------------------------------------
 
-const SECTIONS: [ReferenceEntry['section'], string][] = [['rule', 'Faustregeln'], ['term', 'Begriffe']];
+const SECTIONS: [ReferenceEntry['section'], string][] = [['rule', 'Rules of thumb'], ['term', 'Terms']];
 
 export function readReference(learnerId: string): Record<string, ReferenceEntry[]> {
   const d = dir(learnerId, 'reference');
@@ -235,9 +235,9 @@ export function readReference(learnerId: string): Record<string, ReferenceEntry[
 export function writeReference(learnerId: string, trackId: string, trackName: string, entries: ReferenceEntry[]) {
   const line = (e: ReferenceEntry) => `- **${e.title}**: ${e.text}${e.basedOn.length ? ` (${e.basedOn.join(', ')})` : ''}`;
   const body = [
-    `# Merkblatt: ${trackName}`,
+    `# Key points: ${trackName}`,
     '',
-    'Was du ohne Hilfe gezeigt hast, kurz zum Nachschlagen.',
+    'What you have shown without help, short and easy to look up.',
     ...SECTIONS.flatMap(([kind, heading]) => {
       const items = entries.filter((e) => e.section === kind);
       return items.length ? ['', `## ${heading}`, ...items.map(line)] : [];
@@ -254,11 +254,11 @@ export function readNotes(learnerId: string): string[] {
 }
 
 export function writeNotes(learnerId: string, notes: string[]) {
-  atomicWrite(dir(learnerId, 'notes.md'), `# Notizen\n\nVorlieben beim Lernen, vom Agenten notiert.\n\n${notes.map((n) => `- ${n}`).join('\n')}\n`);
+  atomicWrite(dir(learnerId, 'notes.md'), `# Notes\n\nLearning preferences, noted by the agent.\n\n${notes.map((n) => `- ${n}`).join('\n')}\n`);
 }
 
 /** Test helper: removes all learner folders. Only allowed for a LEARNER_DIR set explicitly (tests use a temp folder). */
 export function _wipe() {
-  if (!process.env.LEARNER_DIR) throw new Error('_wipe nur mit LEARNER_DIR');
+  if (!process.env.LEARNER_DIR) throw new Error('_wipe only with LEARNER_DIR');
   rmSync(learnersRoot(), { recursive: true, force: true });
 }

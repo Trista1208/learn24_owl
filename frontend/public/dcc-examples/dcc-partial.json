@@ -6,27 +6,27 @@
   "areas": [
     {
       "area": "1",
-      "name": "Informations- und Datenkompetenz",
-      "level": "Grundstufe"
+      "name": "Information and data literacy",
+      "level": null
     },
     {
       "area": "2",
-      "name": "Kommunikation und Zusammenarbeit",
-      "level": "Mittelstufe"
+      "name": "Communication and collaboration",
+      "level": null
     },
     {
       "area": "3",
-      "name": "Erstellung digitaler Inhalte",
+      "name": "Digital content creation",
       "level": "Grundstufe"
     },
     {
       "area": "4",
-      "name": "Sicherheit",
-      "level": "Mittelstufe"
+      "name": "Safety",
+      "level": null
     },
     {
       "area": "5",
-      "name": "Problemlösen",
+      "name": "Problem solving",
       "level": null
     }
   ]

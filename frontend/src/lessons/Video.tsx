@@ -46,11 +46,11 @@ const YELLOW = '#f5c400';
 const RED = '#ff8a7a';
 
 function NextWord({ p, chosen }: { p: number; chosen: boolean }) {
-  const words: [string, number][] = [['Montag', 0.46], ['Dienstag', 0.21], ['Mittwoch', 0.17], ['Freitag', 0.1], ['Juni', 0.06]];
+  const words: [string, number][] = [['Monday', 0.46], ['Tuesday', 0.21], ['Wednesday', 0.17], ['Friday', 0.1], ['June', 0.06]];
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label="Balken: wie gut passt welches nächste Wort">
-      <text x="16" y="30" fill={INK} fontSize="15">Das Team trifft sich nächsten{chosen && p > 0.5 ? '' : ' …'}</text>
-      {chosen && p > 0.5 && <text x="226" y="30" fill={YELLOW} fontSize="15" fontWeight="700">Montag.</text>}
+    <svg viewBox="0 0 320 200" role="img" aria-label="Bars: how well each next word fits">
+      <text x="16" y="30" fill={INK} fontSize="15">The team meets next{chosen && p > 0.5 ? '' : ' …'}</text>
+      {chosen && p > 0.5 && <text x="166" y="30" fill={YELLOW} fontSize="15" fontWeight="700">Monday.</text>}
       {words.map(([w, v], i) => {
         const y = 56 + i * 26;
         const width = 190 * v * Math.min(1, p * 1.6) / 0.46;
@@ -58,11 +58,11 @@ function NextWord({ p, chosen }: { p: number; chosen: boolean }) {
         return (
           <g key={w}>
             <text x="16" y={y + 13} fill={highlight ? YELLOW : DIM} fontSize="13">{w}</text>
-            <rect x="92" y={y} width={width} height="16" rx="3" fill={highlight ? YELLOW : DIM} opacity={highlight ? 1 : 0.7} />
+            <rect x="100" y={y} width={width} height="16" rx="3" fill={highlight ? YELLOW : DIM} opacity={highlight ? 1 : 0.7} />
           </g>
         );
       })}
-      <text x="16" y="192" fill={DIM} fontSize="10">Beispielwerte zur Veranschaulichung</text>
+      <text x="16" y="192" fill={DIM} fontSize="10">Example values for illustration</text>
     </svg>
   );
 }
@@ -70,17 +70,17 @@ function NextWord({ p, chosen }: { p: number; chosen: boolean }) {
 function InventedDetail({ p }: { p: number }) {
   const show = (t: number) => (p >= t ? 1 : 0.15);
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label="Notiz und Zusammenfassung im Vergleich">
-      <text x="16" y="24" fill={DIM} fontSize="12">Notiz</text>
-      <text x="16" y="44" fill={INK} fontSize="13">Das Team trifft sich nächste Woche.</text>
-      <text x="16" y="62" fill={INK} fontSize="13">Der Wochentag ist noch offen.</text>
-      <text x="16" y="120" fill={DIM} fontSize="12">KI-Zusammenfassung</text>
-      <text x="16" y="140" fill={INK} fontSize="13">Das Team trifft sich nächsten</text>
-      <text x="196" y="140" fill={RED} fontSize="13" fontWeight="700">Montag.</text>
+    <svg viewBox="0 0 320 200" role="img" aria-label="Note and summary compared">
+      <text x="16" y="24" fill={DIM} fontSize="12">Note</text>
+      <text x="16" y="44" fill={INK} fontSize="13">The team meets next week.</text>
+      <text x="16" y="62" fill={INK} fontSize="13">The day is still open.</text>
+      <text x="16" y="120" fill={DIM} fontSize="12">AI summary</text>
+      <text x="16" y="140" fill={INK} fontSize="13">The team meets next</text>
+      <text x="146" y="140" fill={RED} fontSize="13" fontWeight="700">Monday.</text>
       <path d="M60 128 L60 70" stroke={YELLOW} strokeWidth="2" strokeDasharray="4 3" opacity={show(0.25)} />
-      <text x="66" y="100" fill={YELLOW} fontSize="11" opacity={show(0.25)}>belegt</text>
-      <ellipse cx="220" cy="135" rx="34" ry="14" fill="none" stroke={RED} strokeWidth="2" strokeDasharray="5 3" opacity={show(0.55)} />
-      <text x="186" y="172" fill={RED} fontSize="12" opacity={show(0.55)}>keine Stelle in der Notiz</text>
+      <text x="66" y="100" fill={YELLOW} fontSize="11" opacity={show(0.25)}>supported</text>
+      <ellipse cx="172" cy="135" rx="34" ry="14" fill="none" stroke={RED} strokeWidth="2" strokeDasharray="5 3" opacity={show(0.55)} />
+      <text x="130" y="172" fill={RED} fontSize="12" opacity={show(0.55)}>not in the note anywhere</text>
     </svg>
   );
 }
@@ -102,12 +102,12 @@ function SecantTangent({ p, moving }: { p: number; moving: boolean }) {
   const slope = (f(b) - f(a)) / (b - a);
   const line = (x: number) => f(a) + slope * (x - a);
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label="Kurve mit Sekante durch zwei Punkte">
+    <svg viewBox="0 0 320 200" role="img" aria-label="Curve with a secant through two points">
       <path d={curvePath(a, 1)} fill="none" stroke={INK} strokeWidth="2" />
       <line x1={X(-1.2)} y1={Y(line(-1.2), f(a))} x2={X(2.6)} y2={Y(line(2.6), f(a))} stroke={YELLOW} strokeWidth="2" />
       <circle cx={X(a)} cy={Y(f(a), f(a))} r="5" fill={YELLOW} />
       <circle cx={X(b)} cy={Y(f(b), f(a))} r="5" fill={INK} />
-      <text x="16" y="24" fill={INK} fontSize="13">Steigung der Sekante: {slope.toFixed(2)}</text>
+      <text x="16" y="24" fill={INK} fontSize="13">Slope of the secant: {slope.toFixed(2)}</text>
     </svg>
   );
 }
@@ -117,11 +117,11 @@ function SlopeZoom({ p, zoom }: { p: number; zoom: boolean }) {
   const z = zoom ? 1 + p * 6 : 1;
   const tangent = (x: number) => f(a) + a * (x - a);
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label="Tangente an der Kurve, hineingezoomt">
+    <svg viewBox="0 0 320 200" role="img" aria-label="Tangent to the curve, zoomed in">
       <path d={curvePath(a, z)} fill="none" stroke={INK} strokeWidth="2" />
       <line x1={X(a - 3, a, z)} y1={Y(tangent(a - 3), f(a), z)} x2={X(a + 3, a, z)} y2={Y(tangent(a + 3), f(a), z)} stroke={YELLOW} strokeWidth="2" />
       <circle cx={X(a, a, z)} cy={Y(f(a), f(a), z)} r="5" fill={YELLOW} />
-      <text x="16" y="24" fill={INK} fontSize="13">Steigung der Tangente: {a.toFixed(2)}</text>
+      <text x="16" y="24" fill={INK} fontSize="13">Slope of the tangent: {a.toFixed(2)}</text>
       {zoom && <text x="16" y="190" fill={DIM} fontSize="11">Zoom ×{z.toFixed(1)}</text>}
     </svg>
   );
@@ -168,7 +168,7 @@ function UrlParts({ p, items }: { p: number; items: string[] }) {
         return (
           <g>
             <path d={`M${start} 104 h${w}`} stroke={YELLOW} strokeWidth="3" />
-            <text x={start + w / 2} y="130" textAnchor="middle" fill={YELLOW} fontSize="13">Diese Domain zählt</text>
+            <text x={start + w / 2} y="130" textAnchor="middle" fill={YELLOW} fontSize="13">This domain counts</text>
           </g>
         );
       })()}
@@ -180,13 +180,13 @@ function Falling({ p, vacuum }: { p: number; vacuum: boolean }) {
   const ball = 30 + p * 140;
   const feather = vacuum ? ball : 30 + p * 55;
   return (
-    <svg viewBox="0 0 320 200" role="img" aria-label={vacuum ? 'Ohne Luft fallen Kugel und Feder gleich schnell' : 'Mit Luft fällt die Feder langsamer'}>
-      <text x="16" y="20" fill={DIM} fontSize="12">{vacuum ? 'ohne Luft (Vakuum)' : 'mit Luft'}</text>
+    <svg viewBox="0 0 320 200" role="img" aria-label={vacuum ? 'Without air, the ball and the feather fall equally fast' : 'With air, the feather falls more slowly'}>
+      <text x="16" y="20" fill={DIM} fontSize="12">{vacuum ? 'without air (vacuum)' : 'with air'}</text>
       <path d="M40 185 H280" stroke={DIM} strokeWidth="1.5" />
       <circle cx="110" cy={Math.min(ball, 174)} r="11" fill={INK} />
-      <text x="110" y="198" textAnchor="middle" fill={DIM} fontSize="10">Kugel</text>
+      <text x="110" y="198" textAnchor="middle" fill={DIM} fontSize="10">Ball</text>
       <path d={`M210 ${Math.min(feather, 174)} q 14 -10 26 -2 q -14 4 -26 2 z`} fill={YELLOW} />
-      <text x="222" y="198" textAnchor="middle" fill={DIM} fontSize="10">Feder</text>
+      <text x="222" y="198" textAnchor="middle" fill={DIM} fontSize="10">Feather</text>
     </svg>
   );
 }
@@ -216,10 +216,10 @@ const PreparedVideo = lazy(() => import('./PreparedVideo.tsx'));
 export function Video(props: { lesson: VideoLesson; prepareUrl?: string; onComplete: (a: Answer) => Promise<void> }) {
   const [fallback, setFallback] = useState(false);
   if (props.lesson.content.narrated && !fallback) {
-    return <Suspense fallback={<p role="status">Erklärvideo wird geladen …</p>}><NarratedVideo {...props} onFallback={() => setFallback(true)} /></Suspense>;
+    return <Suspense fallback={<p role="status">Loading the explainer video …</p>}><NarratedVideo {...props} onFallback={() => setFallback(true)} /></Suspense>;
   }
   if (props.prepareUrl && !fallback) {
-    return <Suspense fallback={<p role="status">Erklärvideo wird vorbereitet …</p>}><PreparedVideo {...props} prepareUrl={props.prepareUrl} onFallback={() => setFallback(true)} /></Suspense>;
+    return <Suspense fallback={<p role="status">Preparing the explainer video …</p>}><PreparedVideo {...props} prepareUrl={props.prepareUrl} onFallback={() => setFallback(true)} /></Suspense>;
   }
   return <StoryboardVideo {...props} />;
 }
@@ -282,7 +282,7 @@ function StoryboardVideo({ lesson, onComplete }: { lesson: VideoLesson; onComple
   };
 
   return <div className="storyboard-video">
-    <LessonProgress completed={Object.keys(answers).length} total={questions.length} label={ui("Deine Wissens-Checks")} detail={`Abschnitt ${scene + 1} / ${scenes.length} · ${Object.keys(answers).length} / ${questions.length} Checks`} />
+    <LessonProgress completed={Object.keys(answers).length} total={questions.length} label={ui("Your knowledge checks")} detail={`Abschnitt ${scene + 1} / ${scenes.length} · ${Object.keys(answers).length} / ${questions.length} Checks`} />
     <div className="video-workspace">
       <div className="video-player">
         <div className="stage storyboard-stage">
@@ -292,20 +292,20 @@ function StoryboardVideo({ lesson, onComplete }: { lesson: VideoLesson; onComple
         {!lesson.content.videoUrl && <>
           <p className="storyboard-caption" aria-live="polite">{scenes[scene].caption}</p>
           <div className="video-timeline">
-            <label className="sr-only" htmlFor={`scene-${lesson.id}`}>{ui("Abschnitt")}</label>
+            <label className="sr-only" htmlFor={`scene-${lesson.id}`}>{ui("Section")}</label>
             <input id={`scene-${lesson.id}`} type="range" min={1} max={scenes.length} step={1} value={scene + 1} onChange={event => go(Number(event.target.value) - 1)} />
             <span>{scene + 1} / {scenes.length}</span>
           </div>
-          <div className="video-controls" role="group" aria-label={ui("Videosteuerung")}>
-            <button className="btn primary small" onClick={() => playing ? setPlaying(false) : atEnd ? go(ended ? 0 : Math.min(scene + 1, scenes.length - 1), true) : setPlaying(true)}><ButtonLabel variants={['Abspielen', 'Pause', 'Nochmals abspielen']}>{playing ? ui('Pause') : ended ? ui('Nochmals abspielen') : ui('Abspielen')}</ButtonLabel></button>
-            <button className="btn quiet small" onClick={() => go(scene, true)}><Icon name="back" size={17} />{ui("Abschnitt wiederholen")}</button>
-            {!ended && <button className="btn quiet small" onClick={onSceneEnd}>{ui("Weiter")}<Icon name="chevron" size={16} /></button>}
+          <div className="video-controls" role="group" aria-label={ui("Video controls")}>
+            <button className="btn primary small" onClick={() => playing ? setPlaying(false) : atEnd ? go(ended ? 0 : Math.min(scene + 1, scenes.length - 1), true) : setPlaying(true)}><ButtonLabel variants={['Play', 'Pause', 'Play again']}>{playing ? ui('Pause') : ended ? ui('Play again') : ui('Play')}</ButtonLabel></button>
+            <button className="btn quiet small" onClick={() => go(scene, true)}><Icon name="back" size={17} />{ui("Repeat section")}</button>
+            {!ended && <button className="btn quiet small" onClick={onSceneEnd}>{ui("Continue")}<Icon name="chevron" size={16} /></button>}
           </div>
         </>}
       </div>
-      {asking !== null && <aside className="video-question-panel" aria-label={ui("Wissens-Check")}><QuestionCard key={asking} prompt={questions[asking].prompt} options={questions[asking].options} index={asking} total={questions.length}
-        check={(option) => ({ type: 'quiz', questionIndex: asking, option })} onContinue={answer} continueLabel={ended && Object.keys(answers).length + 1 === questions.length ? ui('Lektion abschliessen') : ui('Weiter')} /></aside>}
-      {ended && asking === null && <aside className="video-question-panel video-end-card"><span className="finish-disc"><Icon name="check" size={30} /></span><h3>{ui("Alle Abschnitte geschafft!")}</h3><button className="btn primary" disabled={busy || questions.some((_, i) => answers[i] === undefined)} onClick={async () => { setBusy(true); try { await onComplete({ type: 'video', answers }); } finally { setBusy(false); } }}>{ui("Lektion abschliessen")}</button></aside>}
+      {asking !== null && <aside className="video-question-panel" aria-label={ui("Knowledge check")}><QuestionCard key={asking} prompt={questions[asking].prompt} options={questions[asking].options} index={asking} total={questions.length}
+        check={(option) => ({ type: 'quiz', questionIndex: asking, option })} onContinue={answer} continueLabel={ended && Object.keys(answers).length + 1 === questions.length ? ui('Finish lesson') : ui('Continue')} /></aside>}
+      {ended && asking === null && <aside className="video-question-panel video-end-card"><span className="finish-disc"><Icon name="check" size={30} /></span><h3>{ui("All sections done!")}</h3><button className="btn primary" disabled={busy || questions.some((_, i) => answers[i] === undefined)} onClick={async () => { setBusy(true); try { await onComplete({ type: 'video', answers }); } finally { setBusy(false); } }}>{ui("Finish lesson")}</button></aside>}
     </div>
   </div>;
 }

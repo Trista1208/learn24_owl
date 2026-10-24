@@ -5,8 +5,8 @@ import { VideoPlayback } from './videoPlayback.ts';
 
 const scenes = [0, 1, 2, 3].map(i => ({ id: `scene-${i}`, duration: 10 }));
 const questions: VideoQuestion[] = [
-  { afterScene: 1, prompt: 'Sekante?', options: ['A', 'B', 'C'], correct: 2, explanation: '', criterion: 'grenzwert' },
-  { afterScene: 3, prompt: 'Ableitung?', options: ['A', 'B', 'C'], correct: 1, explanation: '', criterion: 'steigung' },
+  { afterScene: 1, prompt: 'Secant?', options: ['A', 'B', 'C'], correct: 2, explanation: '', criterion: 'grenzwert' },
+  { afterScene: 3, prompt: 'Derivative?', options: ['A', 'B', 'C'], correct: 1, explanation: '', criterion: 'steigung' },
 ];
 class FakePlayer {
   state: PlayerState = { revision: 1, scene: 'scene-0', time: 0, duration: 10, status: 'paused', scenes, controls: [], orbitEnabled: false, views: [] };

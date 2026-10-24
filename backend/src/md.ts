@@ -41,7 +41,7 @@ export function slug(text: string): string {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 40)
-      .replace(/-+$/, '') || 'eintrag'
+      .replace(/-+$/, '') || 'entry'
   );
 }
 

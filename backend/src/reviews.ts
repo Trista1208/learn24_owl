@@ -58,16 +58,16 @@ function fromLesson(lesson: Lesson, q: ReviewItem): ReviewCandidate[] {
   if (lesson.type === 'mark-evidence') {
     return lesson.content.summary.flatMap((item) => (item.criterion ?? (item.verdict === 'erfunden' ? 'quelle' : lesson.targets[0])) === q.criterion ? [{
       sourceQuestionId: JSON.stringify([lesson.id, 'statement', item.id]),
-      prompt: `Ist diese Aussage durch die Notiz belegt? «${item.text}»`, context: lesson.content.note,
-      options: ['Belegt', 'Erfunden'], correctOption: item.verdict === 'belegt' ? 0 : 1, explanation: item.explanation,
+      prompt: `Is this statement supported by the note? “${item.text}”`, context: lesson.content.note,
+      options: ['Supported', 'Made up'], correctOption: item.verdict === 'belegt' ? 0 : 1, explanation: item.explanation,
     }] : []);
   }
   if (lesson.type === 'mock-site') {
     const parts = [...(lesson.content.mail ?? []), ...lesson.content.site];
     return parts.flatMap((part) => part.signal?.criterion === q.criterion ? [{
       sourceQuestionId: JSON.stringify([lesson.id, 'signal', part.id]),
-      prompt: 'Welches Warnzeichen erkennst du hier?', context: [part.text, ...(part.linkTarget ? [`Linkziel: ${part.linkTarget}`] : [])],
-      options: [part.signal.explanation, ...new Set(parts.filter((p) => p.signal && p.signal.criterion !== q.criterion && p.signal.explanation !== part.signal!.explanation).map((p) => p.signal!.explanation))].slice(0, 3).concat('Hier ist kein Warnzeichen zu erkennen.'),
+      prompt: 'Which warning sign do you see here?', context: [part.text, ...(part.linkTarget ? [`Link target: ${part.linkTarget}`] : [])],
+      options: [part.signal.explanation, ...new Set(parts.filter((p) => p.signal && p.signal.criterion !== q.criterion && p.signal.explanation !== part.signal!.explanation).map((p) => p.signal!.explanation))].slice(0, 3).concat('There is no warning sign here.'),
       correctOption: 0, explanation: part.signal.explanation,
     }] : []);
   }
@@ -87,8 +87,8 @@ function questionBank(st: Stored, q: ReviewItem): ReviewCandidate[] {
   const criterion = track.criteria.find((c) => c.id === q.criterion)!;
   const options = [criterion.ruleOfThumb, ...track.criteria.filter((c) => c.id !== q.criterion && c.ruleOfThumb !== criterion.ruleOfThumb).map((c) => c.ruleOfThumb).slice(0, 3)];
   // Custom tracks have at least three criteria; keep a meaningful binary fallback for legacy tracks.
-  if (options.length < 2) options.push('Das muss ich nicht prüfen.');
-  return [{ sourceQuestionId: JSON.stringify([q.trackId, 'rule', q.criterion]), prompt: `Was solltest du bei «${criterion.label}» beachten?`, options, correctOption: 0, explanation: criterion.ruleOfThumb }];
+  if (options.length < 2) options.push('I do not need to check that.');
+  return [{ sourceQuestionId: JSON.stringify([q.trackId, 'rule', q.criterion]), prompt: `What should you keep in mind for “${criterion.label}”?`, options, correctOption: 0, explanation: criterion.ruleOfThumb }];
 }
 
 /** Unseen questions first, then the least recently answered. Opening a card never consumes it. */
@@ -107,8 +107,8 @@ function publicQuestion(challenge: ReviewChallenge): ReviewQuestion {
 export function startReview(st: Stored, reviewId: string): ReviewQuestion {
   ensureReviews(st);
   const q = st.session.reviewQueue.find((q) => q.id === reviewId && trackIn(st, q.trackId));
-  if (!q) throw new HttpError(404, 'Wiederholung nicht gefunden.');
-  if (!isDue(st, q)) throw new HttpError(409, 'Diese Wiederholung ist noch nicht fällig.');
+  if (!q) throw new HttpError(404, 'Review not found.');
+  if (!isDue(st, q)) throw new HttpError(409, 'This review is not due yet.');
   const challenges = st.session.reviewChallenges ??= {};
   const existing = challenges[q.id];
   if (existing && !existing.feedback) return publicQuestion(existing);
@@ -130,15 +130,15 @@ export function startReview(st: Stored, reviewId: string): ReviewQuestion {
 export function answerReview(st: Stored, reviewId: string, input: { challengeId?: unknown; option?: unknown }) {
   const q = st.session.reviewQueue.find((q) => q.id === reviewId);
   const challenge = st.session.reviewChallenges?.[reviewId];
-  if (!q || !challenge || challenge.id !== input.challengeId) throw new HttpError(409, 'Bitte öffne die Wiederholung erneut.');
+  if (!q || !challenge || challenge.id !== input.challengeId) throw new HttpError(409, 'Please open the review again.');
   const option = input.option;
-  if (typeof option !== 'number' || !Number.isInteger(option) || option < 0 || option >= challenge.options.length) throw new HttpError(400, 'Ungültige Antwort.');
+  if (typeof option !== 'number' || !Number.isInteger(option) || option < 0 || option >= challenge.options.length) throw new HttpError(400, 'Invalid answer.');
   if (challenge.feedback) {
-    if (challenge.answeredOption !== option) throw new HttpError(409, 'Diese Antwort wurde bereits geprüft.');
+    if (challenge.answeredOption !== option) throw new HttpError(409, 'This answer has already been checked.');
     return challenge.feedback;
   }
   // A normal lesson can reschedule a review while an old browser tab is open.
-  if (!isDue(st, q)) throw new HttpError(409, 'Diese Wiederholung wurde bereits erledigt.');
+  if (!isDue(st, q)) throw new HttpError(409, 'This review is already done.');
   const bank = questionBank(st, q);
   // An outstanding card from before rotation was added has no source identity yet.
   const sourceId = challenge.sourceQuestionId ?? [...bank].reverse().find((question) => question.prompt === challenge.prompt

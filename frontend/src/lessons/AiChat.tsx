@@ -7,9 +7,9 @@ import { api } from '../lib/api.ts';
 import { LessonProgress } from './LessonActivity.tsx';
 
 const KIND_NOTE: Record<AiChatLesson['content']['kind'], string> = {
-  tutor: 'Die KI stellt Fragen und verrät keine fertige Lösung.',
-  roleplay: 'Die KI spielt eine Rolle. Schreib so, wie du es bei der Arbeit tun würdest.',
-  'prompt-lab': 'Die KI führt deinen Auftrag wörtlich aus. Was du offen lässt, füllt sie mit Annahmen.',
+  tutor: 'The AI asks questions and does not give away a finished solution.',
+  roleplay: 'The AI plays a role. Write as you would at work.',
+  'prompt-lab': 'The AI follows your brief literally. What you leave open, it fills with assumptions.',
 };
 
 export function AiChat({ lesson, sessionId, nodeId, onComplete }: { lesson: AiChatLesson; sessionId: string; nodeId: string; onComplete: (a: Answer) => Promise<void> }) {
@@ -36,7 +36,7 @@ export function AiChat({ lesson, sessionId, nodeId, onComplete }: { lesson: AiCh
       const reply = await api.chat(sessionId, nodeId, next);
       setTurns([...next, { role: 'ai', text: reply.text, source: reply.source }]);
     } catch (e) {
-      setTurns([...next, { role: 'ai', text: `Keine Antwort: ${e instanceof Error ? e.message : String(e)}`, source: 'prepared' }]);
+      setTurns([...next, { role: 'ai', text: `No answer: ${e instanceof Error ? e.message : String(e)}`, source: 'prepared' }]);
     } finally {
       setBusy(false);
     }
@@ -53,21 +53,21 @@ export function AiChat({ lesson, sessionId, nodeId, onComplete }: { lesson: AiCh
 
   return (
     <>
-      <LessonProgress completed={learnerTurns} total={c.minTurns} label={ui("Deine Beiträge")} detail={`${Math.min(learnerTurns, c.minTurns)} / ${c.minTurns}`} />
-      <div className="goal"><strong>{ui("Dein Ziel:")}</strong> {c.goal}</div>
-      <details className="chat-how"><summary>{ui("So funktioniert das Gespräch")}</summary><p>{ui(KIND_NOTE[c.kind])}</p></details>
+      <LessonProgress completed={learnerTurns} total={c.minTurns} label={ui("Your contributions")} detail={`${Math.min(learnerTurns, c.minTurns)} / ${c.minTurns}`} />
+      <div className="goal"><strong>{ui("Your goal:")}</strong> {c.goal}</div>
+      <details className="chat-how"><summary>{ui("How the conversation works")}</summary><p>{ui(KIND_NOTE[c.kind])}</p></details>
       <div className={c.material ? 'two-col chat-layout' : 'chat-layout'}>
         {c.material && (
-          <details className="card source chat-material"><summary>{ui("Unterlagen ansehen")}</summary>
-            <h3>{c.material.title} {lesson.source === 'model' && <span className="tag model">{ui("Beispiel erfunden")}</span>}</h3>
+          <details className="card source chat-material"><summary>{ui("View the material")}</summary>
+            <h3>{c.material.title} {lesson.source === 'model' && <span className="tag model">{ui("Invented example")}</span>}</h3>
             <ul>{c.material.lines.map((l, i) => <li key={i}>{l}</li>)}</ul>
           </details>
         )}
         <div className="chat">
-          <div className="chat-log" ref={log} role="log" aria-label={ui("Gespräch mit der KI")} aria-live="polite">
+          <div className="chat-log" ref={log} role="log" aria-label={ui("Conversation with the AI")} aria-live="polite">
             {turns.map((t, i) => (
               <div key={i} className={`bubble ${t.role}`}>
-                <span className="who">{t.role === 'ai' ? ui('KI') : ui('Du')}</span>
+                <span className="who">{t.role === 'ai' ? ui('AI') : ui('You')}</span>
                 <span className="txt">{t.text}</span>
                 {t.role === 'ai' && t.source && t.source !== 'model' && i > 0 && <span className={`tag ${t.source}`}>{ui(SOURCE_LABEL[t.source])}</span>}
               </div>
@@ -85,17 +85,17 @@ export function AiChat({ lesson, sessionId, nodeId, onComplete }: { lesson: AiCh
                   send();
                 }
               }}
-              placeholder={c.kind === 'prompt-lab' ? ui('Dein Auftrag an die KI …') : ui('Deine Antwort …')}
-              aria-label={ui("Nachricht")}
+              placeholder={c.kind === 'prompt-lab' ? ui('Your brief to the AI …') : ui('Your answer …')}
+              aria-label={ui("Message")}
               rows={2}
               disabled={busy}
             />
-            <button className="btn primary" disabled={busy || !text.trim()}>{ui("Senden")}</button>
+            <button className="btn primary" disabled={busy || !text.trim()}>{ui("Send")}</button>
           </form>
         </div>
       </div>
       <div className="actions activity-actions">
-        <button className="btn primary" disabled={busy || learnerTurns < c.minTurns} onClick={finish}>{ui("Fertig")}</button>
+        <button className="btn primary" disabled={busy || learnerTurns < c.minTurns} onClick={finish}>{ui("Done")}</button>
       </div>
     </>
   );

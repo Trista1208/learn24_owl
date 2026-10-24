@@ -41,9 +41,9 @@ const ICON: Record<Theme, ReactNode> = {
 };
 
 const OPTIONS: { value: Theme; label: string }[] = [
-  { value: 'auto', label: 'Automatisch' },
-  { value: 'light', label: 'Hell' },
-  { value: 'dark', label: 'Dunkel' },
+  { value: 'auto', label: 'Automatic (follows the system)' },
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
 ];
 
 export function ThemeSwitch() {
@@ -64,5 +64,5 @@ export function ThemeSwitch() {
     label: t(o.label),
     icon: <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">{ICON[o.value]}</svg>,
   }));
-  return <FoldMenu className="theme-switch" label={t('Erscheinungsbild')} value={theme} options={options} onChoose={choose} />;
+  return <FoldMenu className="theme-switch" label={t('Appearance')} value={theme} options={options} onChoose={choose} />;
 }

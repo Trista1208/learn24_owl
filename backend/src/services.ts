@@ -5,7 +5,7 @@ import { chatResult, judgeChatKeywords, learnerText } from './judge.ts';
 import { callModel } from './provider.ts';
 import { extractJson } from './util.ts';
 
-const STYLE = 'Schreibe in Schweizer Hochdeutsch ohne ß (immer ss), duze die Person, höchstens drei kurze Sätze.';
+const STYLE = 'Write in plain English, address the learner as "you", at most three short sentences.';
 
 export interface Opts {
   offline: boolean;
@@ -23,18 +23,18 @@ export async function chatReply(lesson: AiChatLesson, turns: ChatTurn[], opts: O
   const c = lesson.content;
   const system = [
     c.aiRole,
-    `Ziel der Person: ${c.goal}`,
-    c.material ? `Material (erfunden), das die Person sieht:\n${c.material.title}\n${c.material.lines.join('\n')}` : '',
-    'Regeln:',
+    `The learner's goal: ${c.goal}`,
+    c.material ? `Material (made up) that the learner sees:\n${c.material.title}\n${c.material.lines.join('\n')}` : '',
+    'Rules:',
     `- ${STYLE}`,
-    '- Stelle höchstens eine Frage pro Antwort.',
+    '- Ask at most one question per reply.',
     c.kind === 'prompt-lab'
-      ? '- Wenn die Person einen Auftrag schreibt: Führe ihn wörtlich aus. Wo der Auftrag etwas offen lässt, fülle die Lücke sichtbar mit einer plausiblen Annahme und markiere sie mit [Annahme]. Frag danach, was sie am Auftrag verbessern möchte.'
-      : '- Verrate keine fertige Lösung. Hilf mit Rückfragen, damit die Person selbst darauf kommt.',
-    `- Nach ${c.minTurns} Antworten der Person: Fasse kurz zusammen und sag, dass sie die Lektion abschliessen kann.`,
+      ? '- When the learner writes a prompt: carry it out literally. Where the prompt leaves something open, fill the gap visibly with a plausible assumption and mark it with [Assumption]. Then ask what they would like to improve in the prompt.'
+      : '- Never give away a finished solution. Help with questions so the learner works it out themselves.',
+    `- After ${c.minTurns} replies from the learner: sum up briefly and say they can finish the lesson.`,
   ].filter(Boolean).join('\n');
   const messages = [
-    { role: 'user' as const, content: '(Gesprächsbeginn)' },
+    { role: 'user' as const, content: '(start of conversation)' },
     { role: 'assistant' as const, content: c.opening },
     ...turns.map((t) => ({ role: t.role === 'ai' ? ('assistant' as const) : ('user' as const), content: t.text })),
   ];
@@ -48,17 +48,17 @@ export async function judgeChat(lesson: AiChatLesson, turns: ChatTurn[], opts: O
   const text = learnerText(turns);
   if (opts.offline || !text.trim()) return judgeChatKeywords(lesson, turns, track);
   const system = [
-    'Du beurteilst in einer Lern-App, was eine Person in einem Übungsgespräch geschrieben hat.',
-    'Ein Kriterium ist nur erfüllt, wenn die Person es selbst ausdrücklich geschrieben hat (nicht die KI).',
-    `Begründe jedes Urteil in einem kurzen Satz. Schweizer Hochdeutsch ohne ß.`,
-    'Antworte NUR mit JSON: {"criteria":[{"id":"...","met":true,"reason":"..."}]}',
+    'In a learning app, you judge what a learner wrote in a practice conversation.',
+    'A criterion is only met if the learner wrote it explicitly themselves (not the AI).',
+    'Give the reason for each verdict in one short sentence, in English.',
+    'Answer ONLY with JSON: {"criteria":[{"id":"...","met":true,"reason":"..."}]}',
   ].join('\n');
   const user = [
-    `Ziel: ${lesson.content.goal}`,
-    'Kriterien:',
+    `Goal: ${lesson.content.goal}`,
+    'Criteria:',
     ...lesson.content.criteria.map((c) => `- ${c.id}: ${c.label} (${c.hint})`),
-    'Gesprächsverlauf:',
-    ...turns.map((t) => `${t.role === 'ai' ? 'KI' : 'Person'}: ${t.text}`),
+    'Conversation:',
+    ...turns.map((t) => `${t.role === 'ai' ? 'AI' : 'Learner'}: ${t.text}`),
   ].join('\n');
   const reply = await callModel({ purpose: 'judge', system, messages: [{ role: 'user', content: user }], maxTokens: 500 });
   opts.onCall(reply.call);
@@ -78,26 +78,26 @@ export async function judgeChat(lesson: AiChatLesson, turns: ChatTurn[], opts: O
 // --- Hints after a first mistake (R6) -----------------------------------------------------------
 
 const MOCK_HINTS: Record<string, string> = {
-  absender: 'Schau dir die Adresse nach dem @ genau an. Gehört sie wirklich zur Firma?',
-  druck: 'Was soll der Betreff bei dir auslösen?',
-  anrede: 'Wie spricht dich eine Firma an, bei der du Kundin bist?',
-  link: 'Wohin führt der Link wirklich? Zeig dir das Linkziel an.',
-  adresse: 'Welcher Teil der Webadresse steht direkt vor der Endung?',
-  daten: 'Welche Daten würde eine seriöse Firma nie über einen Link abfragen?',
+  absender: 'Look closely at the address after the @. Does it really belong to the company?',
+  druck: 'What is the subject line trying to make you feel?',
+  anrede: 'How does a company you are a customer of normally address you?',
+  link: 'Where does the link really go? Show the link target.',
+  adresse: 'Which part of the web address comes right before the ending?',
+  daten: 'Which data would a trustworthy company never ask for through a link?',
 };
 
 export async function hintMarkEvidence(lesson: MarkEvidenceLesson, marks: Record<string, string>, opts: Opts): Promise<{ text: string; source: Source }> {
   const missed = lesson.content.summary.find((s) => s.verdict === 'erfunden' && marks[s.id] !== 'erfunden');
   const wrong = lesson.content.summary.find((s) => s.verdict === 'belegt' && marks[s.id] === 'erfunden');
   if (!missed) {
-    return { text: wrong ? `Lies «${wrong.text}» noch einmal neben der Notiz. Steht es vielleicht doch so dort?` : 'Deine Markierungen stimmen.', source: 'prepared' };
+    return { text: wrong ? `Read “${wrong.text}” again next to the note. Maybe it does say that after all?` : 'Your marks are correct.', source: 'prepared' };
   }
-  const fallback = { text: missed.hint ?? 'Lies jeden Satz Wort für Wort und such die Stelle in der Notiz.', source: 'prepared' as Source };
+  const fallback = { text: missed.hint ?? 'Read each sentence word by word and find the place in the note.', source: 'prepared' as Source };
   if (opts.offline) return fallback;
   const reply = await callModel({
     purpose: 'hint',
-    system: `Du hilfst beim Prüfen einer KI-Zusammenfassung. Stelle genau EINE kurze Rückfrage, die zum genannten Satz führt, ohne zu verraten, was falsch ist. ${STYLE} Nur die Frage.`,
-    messages: [{ role: 'user', content: `Notiz: ${lesson.content.note.join(' ')}\nZusammenfassung: ${lesson.content.summary.map((s) => s.text).join(' ')}\nSatz: ${missed.text}` }],
+    system: `You help someone check an AI summary. Ask exactly ONE short question that leads to the given sentence without revealing what is wrong. ${STYLE} Only the question.`,
+    messages: [{ role: 'user', content: `Note: ${lesson.content.note.join(' ')}\nSummary: ${lesson.content.summary.map((s) => s.text).join(' ')}\nSentence: ${missed.text}` }],
     maxTokens: 100,
   });
   opts.onCall(reply.call);
@@ -109,7 +109,7 @@ export async function hintMarkEvidence(lesson: MarkEvidenceLesson, marks: Record
 export function hintMockSite(lesson: MockSiteLesson, marked: string[]): { text: string; source: Source } {
   const all = [...(lesson.content.mail ?? []), ...lesson.content.site];
   const missing = all.find((p) => p.signal && !marked.includes(p.id));
-  if (missing?.signal) return { text: MOCK_HINTS[missing.signal.criterion] ?? 'Schau dir Absender und Linkziel noch einmal an.', source: 'prepared' };
-  if (lesson.content.correctVerdict === 'echt') return { text: 'Prüf Absender, Linkziel und Webadresse: Passen sie zur echten Domain? Hast du das selbst angefordert?', source: 'prepared' };
-  return { text: 'Du hast alle Warnzeichen gefunden. Prüfe noch deinen Entscheid.', source: 'prepared' };
+  if (missing?.signal) return { text: MOCK_HINTS[missing.signal.criterion] ?? 'Look at the sender and the link target again.', source: 'prepared' };
+  if (lesson.content.correctVerdict === 'echt') return { text: 'Check the sender, link target and web address: do they match the real domain? Did you ask for this yourself?', source: 'prepared' };
+  return { text: 'You found all the warning signs. Now check your decision.', source: 'prepared' };
 }

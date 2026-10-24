@@ -30,7 +30,7 @@ export function LearnMore({ query }: { query: string }) {
       setVideos(r.videos);
       setWeb(r.web);
     }).catch((e) => {
-      if (!cancelled) setError(e instanceof Error ? e.message : 'Die Suche ist gerade nicht erreichbar.');
+      if (!cancelled) setError(e instanceof Error ? e.message : 'Search is not reachable just now.');
     }).finally(() => { if (!cancelled) setBusy(false); });
     return () => { cancelled = true; };
   }, [open, query, lang, videos]);
@@ -39,17 +39,17 @@ export function LearnMore({ query }: { query: string }) {
     <section className="learn-more">
       <button type="button" className="learn-more-toggle" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
         <Icon name="play" size={16} />
-        {t('Mehr lernen')}
+        {t('Learn more')}
       </button>
       {open && (
         <div className="learn-more-body">
-          <p className="small muted">{t('Videos und Texte zu diesem Thema.')}</p>
-          {busy && <p className="small" role="status">{t('Wird gesucht …')}</p>}
+          <p className="small muted">{t('Videos and pages on this topic.')}</p>
+          {busy && <p className="small" role="status">{t('Searching …')}</p>}
           {error && <p className="error small" role="alert">{t(error)}</p>}
-          {videos && web && !videos.length && !web.length && <p className="small muted">{t('Dazu gibt es gerade keine Treffer.')}</p>}
+          {videos && web && !videos.length && !web.length && <p className="small muted">{t('Nothing turned up for this just now.')}</p>}
           {!!videos?.length && (
             <div>
-              <h3>{t('Passende Videos')}</h3>
+              <h3>{t('Related videos')}</h3>
               <ul className="learn-videos">
                 {videos.map((v) => (
                   <li key={v.url}>
@@ -64,7 +64,7 @@ export function LearnMore({ query }: { query: string }) {
           )}
           {!!web?.length && (
             <div>
-              <h3>{t('Im Web')}</h3>
+              <h3>{t('On the web')}</h3>
               <ul className="learn-web">
                 {web.map((item) => (
                   <li key={item.url}>

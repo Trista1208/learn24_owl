@@ -1,5 +1,5 @@
 // The workspace on disk: a restart (new createApp) keeps progress, records and generated lessons.
-// Login with an existing name offers "Weitermachen" or "Neu beginnen"; missions change only when confirmed.
+// Login with an existing name offers "Continue" or "Start over"; missions change only when confirmed.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import request from 'supertest';
@@ -16,9 +16,9 @@ beforeEach(() => {
   setMockHandler((req) => (req.purpose === 'generate' ? mockSiteJson() : 'ok'));
   setMockAgentHandler(scripted([
     () => [use('get_learner_state', { trackId: 't-sicherheit' })],
-    () => [use('generate_lesson', { type: 'mock-site', trackId: 't-sicherheit', criterion: 'link', level: 'Grundstufe', contextHint: 'Rechnungsmail' })],
+    () => [use('generate_lesson', { type: 'mock-site', trackId: 't-sicherheit', criterion: 'link', level: 'Grundstufe', contextHint: 'Invoice email' })],
     (t) => [use('add_to_map', { lessonId: (t.results[0].content as { lessonId: string }).lessonId, parentNodeId: 'n-sich-v1' })],
-    (t) => [use('recommend', { nodeId: (t.results[0].content as { nodeId: string }).nodeId, alternativeNodeId: t.state!.rulePlan!.nodeId, reason: 'Linkziel an einer Rechnungsmail üben.', basedOn: [t.state!.activeRecords[0].id] })],
+    (t) => [use('recommend', { nodeId: (t.results[0].content as { nodeId: string }).nodeId, alternativeNodeId: t.state!.rulePlan!.nodeId, reason: 'Practise the link target on an invoice email.', basedOn: [t.state!.activeRecords[0].id] })],
   ]));
 });
 afterEach(async () => {
@@ -28,8 +28,8 @@ afterEach(async () => {
   process.env.MODEL_PROVIDER = 'none';
 });
 
-describe('Lernstand auf der Festplatte', () => {
-  it('bleibt nach einem Neustart erhalten: Verlauf, Lerneinträge und erzeugte Lektionen', async () => {
+describe('Progress on disk', () => {
+  it('survives a restart: history, learning records and generated lessons', async () => {
     const app1 = createApp();
     const v = await login(app1, { name: 'Mara' });
     await finish(app1, v, node(v, 'sich-v1'), v1Right);
@@ -70,7 +70,7 @@ describe('Lernstand auf der Festplatte', () => {
     expect(again.session.reviewQueue.filter((q) => q.status === 'waiting' && q.addedInSession === 1)).toHaveLength(2);
   });
 
-  it('«Neu beginnen» legt eine neue Person an und löscht nichts', async () => {
+  it('"Start over" creates a new learner and deletes nothing', async () => {
     const app = createApp();
     const a = await login(app, { name: 'Mara' });
     await finish(app, a, node(a, 'sich-v1'), v1Right);
@@ -80,12 +80,12 @@ describe('Lernstand auf der Festplatte', () => {
     expect(b.session.learnerId).not.toBe(a.session.learnerId);
     expect(b.session.events).toHaveLength(0);
     expect(existsSync(join(learnersRoot(), a.session.learnerId, 'state.json'))).toBe(true);
-    // "Weitermachen" now continues the newest learner with this name.
+    // "Continue" now continues the newest learner with this name.
     const c = await login(app, { name: 'Mara', resume: 'continue' });
     expect(c.session.learnerId).toBe(b.session.learnerId);
   });
 
-  it('speichert ein neues DCC-Resultat als neuen Stand und behält die Lerneinträge', async () => {
+  it('saves a new DCC result as a new record and keeps the learning records', async () => {
     const app = createApp();
     const a = await login(app, { name: 'Mara' });
     await finish(app, a, node(a, 'sich-v1'), v1Right);
@@ -104,27 +104,27 @@ describe('Lernstand auf der Festplatte', () => {
 });
 
 describe('Mission', () => {
-  it('wird beim ersten Mal gesetzt und ändert sich nur nach Bestätigung', async () => {
+  it('is set the first time and only changes after confirmation', async () => {
     const app = createApp();
     const v = await login(app);
     const url = `/api/sessions/${v.session.id}/missions/t-sicherheit`;
-    let res = await request(app).put(url).send({ text: 'Ich beantworte Kundenmails und will Phishing sicher erkennen' }).expect(200);
+    let res = await request(app).put(url).send({ text: 'I answer customer emails and want to recognise phishing reliably' }).expect(200);
     expect(res.body.workspace.missions[0]).toMatchObject({ trackId: 't-sicherheit', status: 'set' });
     const file = join(learnersRoot(), v.session.learnerId, 'missions', 't-sicherheit.md');
-    expect(readFileSync(file, 'utf8')).toMatch(/# Mission: Sicherheit\n\n## Warum\nIch beantworte Kundenmails/);
+    expect(readFileSync(file, 'utf8')).toMatch(/# Mission: Safety\n\n## Why\nI answer customer emails/);
 
-    await request(app).put(url).send({ text: 'Ich will meine Familie vor Betrug schützen' }).expect(409);
-    res = await request(app).put(url).send({ text: 'Ich will meine Familie vor Betrug schützen', confirm: true }).expect(200);
-    expect(res.body.workspace.missions[0].text).toBe('Ich will meine Familie vor Betrug schützen');
+    await request(app).put(url).send({ text: 'I want to protect my family from fraud' }).expect(409);
+    res = await request(app).put(url).send({ text: 'I want to protect my family from fraud', confirm: true }).expect(200);
+    expect(res.body.workspace.missions[0].text).toBe('I want to protect my family from fraud');
     const shift = res.body.workspace.records.find((r: { kind: string }) => r.kind === 'mission-shift');
     expect(shift.evidence[0]).toMatch(/^mi-/);
     expect(res.body.session.missionChanges).toHaveLength(1);
   });
 
-  it('nimmt beim Überspringen die Standard-Mission', async () => {
+  it('takes the default mission when skipped', async () => {
     const app = createApp();
     const v = await login(app);
     const res = await request(app).put(`/api/sessions/${v.session.id}/missions/t-info`).send({ skip: true }).expect(200);
-    expect(res.body.workspace.missions[0]).toMatchObject({ trackId: 't-info', status: 'default', text: 'Ich will KI-Zusammenfassungen sicher gegen die Quelle prüfen.' });
+    expect(res.body.workspace.missions[0]).toMatchObject({ trackId: 't-info', status: 'default', text: 'I want to check AI summaries against the source with confidence.' });
   });
 });

@@ -14,13 +14,7 @@ export interface LearnMoreResult {
 }
 
 const SEARCH = 'https://html.duckduckgo.com/html/';
-const TAIL: Record<string, string> = {
-  de: 'erklärt',
-  en: 'explained',
-  fr: 'expliqué',
-  it: 'spiegato',
-  rm: '',
-};
+const TAIL = 'explained';
 
 const cache = new Map<string, { at: number; value: LearnMoreResult }>();
 
@@ -85,11 +79,11 @@ async function hits(q: string): Promise<{ title: string; url: string; snippet: s
 
 export async function learnMore(rawQuery: string, lang: string): Promise<LearnMoreResult> {
   const topic = rawQuery.replace(/\s+/g, ' ').trim().slice(0, 120);
-  if (topic.length < 2) throw new HttpError(400, 'Sag, worüber du mehr lernen willst.');
+  if (topic.length < 2) throw new HttpError(400, 'Say what you want to learn more about.');
   const key = `${lang}:${topic.toLowerCase()}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < 10 * 60_000) return hit.value;
-  const tail = TAIL[lang] ?? '';
+  const tail = TAIL;
   const q = tail ? `${topic} ${tail}` : topic;
   let pages: { title: string; url: string; snippet: string }[];
   let clips: { title: string; url: string; snippet: string }[];
@@ -97,7 +91,7 @@ export async function learnMore(rawQuery: string, lang: string): Promise<LearnMo
     [pages, clips] = await Promise.all([hits(q), hits(`${q} site:youtube.com`)]);
   } catch (err) {
     console.error('learn-more', err);
-    throw new HttpError(503, 'Die Suche ist gerade nicht erreichbar.');
+    throw new HttpError(503, 'Search is not reachable just now.');
   }
   const videos = clips.flatMap((item) => {
     const id = youtubeId(item.url);

@@ -1,163 +1,163 @@
 [
   {
     "id": "digital",
-    "name": "Digitale Kompetenz",
+    "name": "Digital competence",
     "dccBased": true,
     "tracks": [
       {
         "id": "t-info",
         "skillId": "digital",
-        "name": "Informations- und Datenkompetenz",
+        "name": "Information and data literacy",
         "dccArea": "1",
         "criteria": [
-          { "id": "zeit", "label": "Termine und Fristen", "ruleOfThumb": "Jedes Datum und jede Frist braucht eine Stelle in der Quelle. Steht dort «offen», bleibt es offen." },
-          { "id": "zahl", "label": "Zahlen und Mengen", "ruleOfThumb": "Eine genaue Zahl ist nur richtig, wenn dieselbe Zahl in der Quelle steht." },
-          { "id": "status", "label": "Entscheide und Status", "ruleOfThumb": "Achte auf «freigegeben» oder «beschlossen». War es in der Quelle noch offen?" },
-          { "id": "person", "label": "Personen und Zuständigkeiten", "ruleOfThumb": "Prüfe bei jeder Aufgabe, ob in der Quelle dieselbe Person dabeisteht." },
-          { "id": "bedingung", "label": "Bedingungen", "ruleOfThumb": "Ein «falls» oder «sofern» darf nicht verschwinden." },
-          { "id": "quelle", "label": "Quelle prüfen", "ruleOfThumb": "Frag bei jeder Behauptung: Woher stammt sie, und kann ich die Quelle selbst öffnen?" }
+          { "id": "zeit", "label": "Dates and deadlines", "ruleOfThumb": "Every date and every deadline needs a place in the source. If it says “open” there, it stays open." },
+          { "id": "zahl", "label": "Numbers and amounts", "ruleOfThumb": "An exact number is only right if the same number is in the source." },
+          { "id": "status", "label": "Decisions and status", "ruleOfThumb": "Watch out for “approved” or “decided”. Was it still open in the source?" },
+          { "id": "person", "label": "People and responsibilities", "ruleOfThumb": "For every task, check whether the same person is named next to it in the source." },
+          { "id": "bedingung", "label": "Conditions", "ruleOfThumb": "An “if” or “provided that” must not disappear." },
+          { "id": "quelle", "label": "Check the source", "ruleOfThumb": "Ask for every claim: where does it come from, and can I open the source myself?" }
         ],
         "mission": {
           "suggestions": [
-            "Ich fasse Sitzungen mit KI zusammen und will keine erfundenen Termine verschicken",
-            "Ich lese viele Berichte und will Zahlen schnell an der Quelle prüfen",
-            "Ich recherchiere für die Arbeit und will wissen, welchen Angaben ich trauen kann"
+            "I summarise meetings with AI and don't want to send out made-up dates",
+            "I read a lot of reports and want to check numbers against the source quickly",
+            "I do research for work and want to know which details I can trust"
           ],
-          "default": "Ich will KI-Zusammenfassungen sicher gegen die Quelle prüfen."
+          "default": "I want to check AI summaries against the source with confidence."
         }
       },
       {
         "id": "t-komm",
         "skillId": "digital",
-        "name": "Kommunikation und Zusammenarbeit",
+        "name": "Communication and collaboration",
         "dccArea": "2",
         "criteria": [
-          { "id": "stand", "label": "Was erledigt ist", "ruleOfThumb": "Nenne zuerst, was fertig ist und wo es liegt." },
-          { "id": "offen", "label": "Was offen ist", "ruleOfThumb": "Offene Punkte gehören ausdrücklich in die Nachricht." },
-          { "id": "wer", "label": "Wer beteiligt ist", "ruleOfThumb": "Zu jeder offenen Sache gehört ein Name." },
-          { "id": "wann", "label": "Termine", "ruleOfThumb": "Feste Termine mit Datum nennen." },
-          { "id": "ton", "label": "Ton und Klarheit", "ruleOfThumb": "Sachlich bleiben, das Anliegen im ersten Satz nennen, einen nächsten Schritt anbieten." }
+          { "id": "stand", "label": "What is done", "ruleOfThumb": "First say what is finished and where it is." },
+          { "id": "offen", "label": "What is open", "ruleOfThumb": "Open points belong in the message, explicitly." },
+          { "id": "wer", "label": "Who is involved", "ruleOfThumb": "Every open item needs a name." },
+          { "id": "wann", "label": "Dates", "ruleOfThumb": "Give fixed appointments with a date." },
+          { "id": "ton", "label": "Tone and clarity", "ruleOfThumb": "Stay factual, state your request in the first sentence, offer a next step." }
         ],
         "mission": {
           "suggestions": [
-            "Ich schreibe Status-Updates fürs Team und will, dass nichts untergeht",
-            "Ich übergebe Arbeit an Kolleginnen und will klar sagen, was offen ist",
-            "Ich antworte Kundinnen per Mail und will freundlich und klar bleiben"
+            "I write status updates for the team and want nothing to get lost",
+            "I hand work over to colleagues and want to say clearly what is open",
+            "I answer customers by email and want to stay friendly and clear"
           ],
-          "default": "Ich will Nachrichten schreiben, in denen Stand, Offenes und Termine klar sind."
+          "default": "I want to write messages in which the status, open points and dates are clear."
         }
       },
       {
         "id": "t-inhalte",
         "skillId": "digital",
-        "name": "Erstellung digitaler Inhalte",
+        "name": "Digital content creation",
         "dccArea": "3",
         "criteria": [
-          { "id": "adressat", "label": "Für wen", "ruleOfThumb": "Sag der KI, wer das Ergebnis liest." },
-          { "id": "umfang", "label": "Umfang und Format", "ruleOfThumb": "Gib Länge und Form vor, zum Beispiel «höchstens fünf Stichpunkte»." },
-          { "id": "inhalt", "label": "Was hinein muss", "ruleOfThumb": "Nenne die Angaben, die nicht fehlen dürfen." },
-          { "id": "luecken", "label": "Umgang mit fehlenden Angaben", "ruleOfThumb": "Sag, was die KI tun soll, wenn etwas fehlt: als offen markieren, nicht erfinden." },
-          { "id": "pruefen", "label": "Ergebnis prüfen", "ruleOfThumb": "Vergleiche das Ergebnis Punkt für Punkt mit deinen Vorgaben." }
+          { "id": "adressat", "label": "Who it is for", "ruleOfThumb": "Tell the AI who will read the result." },
+          { "id": "umfang", "label": "Length and format", "ruleOfThumb": "Set the length and form, for example “at most five bullet points”." },
+          { "id": "inhalt", "label": "What must be in it", "ruleOfThumb": "Name the details that must not be missing." },
+          { "id": "luecken", "label": "Handling missing details", "ruleOfThumb": "Say what the AI should do when something is missing: mark it as open, don't make it up." },
+          { "id": "pruefen", "label": "Check the result", "ruleOfThumb": "Compare the result with your instructions point by point." }
         ],
         "mission": {
           "suggestions": [
-            "Ich lasse die KI Protokolle schreiben und will brauchbare Ergebnisse",
-            "Ich erstelle Texte für Kundinnen und will der KI klare Aufträge geben",
-            "Ich mache Präsentationen und will Inhalte mit KI schneller vorbereiten"
+            "I let the AI write meeting minutes and want usable results",
+            "I write texts for customers and want to give the AI clear briefs",
+            "I make presentations and want to prepare content faster with AI"
           ],
-          "default": "Ich will der KI Aufträge geben, die zum gewünschten Ergebnis führen."
+          "default": "I want to give the AI briefs that lead to the result I want."
         }
       },
       {
         "id": "t-sicherheit",
         "skillId": "digital",
-        "name": "Sicherheit",
+        "name": "Safety",
         "dccArea": "4",
         "criteria": [
-          { "id": "absender", "label": "Absender-Adresse", "ruleOfThumb": "Schau auf die Domain nach dem @, nicht auf den Anzeigenamen." },
-          { "id": "druck", "label": "Zeitdruck und Drohung", "ruleOfThumb": "Druck wie «in 24 Stunden gesperrt» soll dich vom Prüfen abhalten." },
-          { "id": "anrede", "label": "Unpersönliche Anrede", "ruleOfThumb": "Echte Kundenmails nennen meist deinen Namen." },
-          { "id": "link", "label": "Linkziel", "ruleOfThumb": "Vor dem Klick prüfen, wohin der Link wirklich führt." },
-          { "id": "adresse", "label": "Adresse der Webseite", "ruleOfThumb": "Entscheidend ist der Teil direkt vor der Endung." },
-          { "id": "daten", "label": "Abfrage sensibler Daten", "ruleOfThumb": "Passwort und Kartendaten gibt man nie über einen Link aus einer Mail ein." }
+          { "id": "absender", "label": "Sender address", "ruleOfThumb": "Look at the domain after the @, not at the display name." },
+          { "id": "druck", "label": "Time pressure and threats", "ruleOfThumb": "Pressure like “locked in 24 hours” is meant to stop you from checking." },
+          { "id": "anrede", "label": "Impersonal greeting", "ruleOfThumb": "Real customer emails usually use your name." },
+          { "id": "link", "label": "Link target", "ruleOfThumb": "Before you click, check where the link really goes." },
+          { "id": "adresse", "label": "Website address", "ruleOfThumb": "What counts is the part right before the ending." },
+          { "id": "daten", "label": "Requests for sensitive data", "ruleOfThumb": "Never enter a password or card details through a link from an email." }
         ],
         "mission": {
           "suggestions": [
-            "Ich beantworte Kundenmails und will Phishing sicher erkennen",
-            "Ich mache E-Banking und will gefälschte Login-Seiten erkennen",
-            "Ich bekomme oft Paket-SMS und will wissen, welche echt sind"
+            "I answer customer emails and want to recognise phishing reliably",
+            "I use e-banking and want to recognise fake login pages",
+            "I often get parcel text messages and want to know which ones are real"
           ],
-          "default": "Ich will Phishing-Mails und gefälschte Webseiten sicher erkennen."
+          "default": "I want to recognise phishing emails and fake websites reliably."
         }
       },
       {
         "id": "t-problem",
         "skillId": "digital",
-        "name": "Problemlösen",
+        "name": "Problem solving",
         "dccArea": "5",
         "criteria": [
-          { "id": "schritte", "label": "Was du getan hast", "ruleOfThumb": "Beschreibe die Schritte, die zum Fehler geführt haben." },
-          { "id": "meldung", "label": "Fehlermeldung wörtlich", "ruleOfThumb": "Kopiere die Fehlermeldung genau, mit Code." },
-          { "id": "erwartet", "label": "Was du erwartet hast", "ruleOfThumb": "Sag, was eigentlich hätte passieren sollen." },
-          { "id": "versucht", "label": "Was du schon versucht hast", "ruleOfThumb": "Nenne, was du schon probiert hast." },
-          { "id": "umgebung", "label": "Gerät und Programm", "ruleOfThumb": "Browser, Gerät und Programm gehören in jede Meldung." },
-          { "id": "anforderung", "label": "Anforderungen klären", "ruleOfThumb": "Bevor du ein Werkzeug wählst: Was muss es können, für wen, mit welchen Daten?" }
+          { "id": "schritte", "label": "What you did", "ruleOfThumb": "Describe the steps that led to the error." },
+          { "id": "meldung", "label": "Exact error message", "ruleOfThumb": "Copy the error message exactly, with its code." },
+          { "id": "erwartet", "label": "What you expected", "ruleOfThumb": "Say what should actually have happened." },
+          { "id": "versucht", "label": "What you already tried", "ruleOfThumb": "Name what you have already tried." },
+          { "id": "umgebung", "label": "Device and program", "ruleOfThumb": "Browser, device and program belong in every report." },
+          { "id": "anforderung", "label": "Clarify the requirements", "ruleOfThumb": "Before you choose a tool: what must it do, for whom, with which data?" }
         ],
         "mission": {
           "suggestions": [
-            "Ich melde IT-Probleme und will, dass der Support schnell helfen kann",
-            "Ich wähle neue Tools fürs Team und will die Anforderungen klären",
-            "Ich helfe Kolleginnen bei Computerproblemen und will strukturiert vorgehen"
+            "I report IT problems and want support to be able to help quickly",
+            "I choose new tools for the team and want to clarify the requirements",
+            "I help colleagues with computer problems and want to work in a structured way"
           ],
-          "default": "Ich will technische Probleme so beschreiben, dass andere schnell helfen können."
+          "default": "I want to describe technical problems so that others can help quickly."
         }
       }
     ]
   },
   {
     "id": "math",
-    "name": "Mathematik",
+    "name": "Mathematics",
     "dccBased": false,
     "tracks": [
       {
         "id": "t-analysis",
         "skillId": "math",
-        "name": "Ableitung",
+        "name": "Derivative",
         "criteria": [
-          { "id": "steigung", "label": "Steigung der Tangente", "ruleOfThumb": "Die Ableitung an einer Stelle ist die Steigung der Tangente dort." },
-          { "id": "grenzwert", "label": "Sekante wird Tangente", "ruleOfThumb": "Rückt der zweite Punkt immer näher, wird aus der Sekante die Tangente." }
+          { "id": "steigung", "label": "Slope of the tangent", "ruleOfThumb": "The derivative at a point is the slope of the tangent there." },
+          { "id": "grenzwert", "label": "Secant becomes tangent", "ruleOfThumb": "As the second point moves closer and closer, the secant becomes the tangent." }
         ],
         "mission": {
           "suggestions": [
-            "Ich bereite mich auf eine Prüfung vor und will Ableitungen verstehen",
-            "Ich will in der Arbeit Änderungsraten richtig deuten",
-            "Ich helfe meinem Kind bei den Hausaufgaben in Mathe"
+            "I am preparing for an exam and want to understand derivatives",
+            "I want to interpret rates of change correctly at work",
+            "I help my child with maths homework"
           ],
-          "default": "Ich will verstehen, was eine Ableitung bedeutet."
+          "default": "I want to understand what a derivative means."
         }
       }
     ]
   },
   {
     "id": "science",
-    "name": "Naturwissenschaften",
+    "name": "Science",
     "dccBased": false,
     "tracks": [
       {
         "id": "t-physik",
         "skillId": "science",
-        "name": "Freier Fall",
+        "name": "Free fall",
         "criteria": [
-          { "id": "masse", "label": "Masse und Fallzeit", "ruleOfThumb": "Ohne Luft fallen alle Körper gleich schnell, unabhängig von ihrer Masse." },
-          { "id": "luft", "label": "Luftwiderstand", "ruleOfThumb": "Unterschiede beim Fallen kommen vom Luftwiderstand, nicht vom Gewicht." }
+          { "id": "masse", "label": "Mass and fall time", "ruleOfThumb": "Without air, all bodies fall equally fast, regardless of their mass." },
+          { "id": "luft", "label": "Air resistance", "ruleOfThumb": "Differences in falling come from air resistance, not from weight." }
         ],
         "mission": {
           "suggestions": [
-            "Ich will Alltagsbeobachtungen zum Fallen richtig erklären",
-            "Ich bereite mich auf eine Physikprüfung vor",
-            "Ich will meinem Kind erklären, warum alles gleich schnell fällt"
+            "I want to explain everyday observations about falling correctly",
+            "I am preparing for a physics exam",
+            "I want to explain to my child why everything falls at the same speed"
           ],
-          "default": "Ich will verstehen, wovon die Fallzeit abhängt."
+          "default": "I want to understand what the fall time depends on."
         }
       }
     ]

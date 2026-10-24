@@ -1,4 +1,4 @@
-// One topic as a climb: the mountain being climbed with its finished lessons and "Wie geht es weiter?" as the next
+// One topic as a climb: the mountain being climbed with its finished lessons and "What comes next?" as the next
 // step, then the mountains already topped, each named after what its lessons covered.
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { MapNode, SessionView } from '@l45/shared';
@@ -49,11 +49,11 @@ export function TrackView({ view, trackId, onStart, onReview, paused = false }: 
       <section className={`climb${big ? ' is-big' : ''}`} aria-labelledby="climb-title">
         <div className="climb-visual">
           <div className="climb-head">
-            <h2 id="climb-title">{t('Berg {n}', { n: current.number })}</h2>
-            <span className="muted">{left === 1 ? (view.canCreateTracks ? t('Als Letztes: die Gipfelprüfung') : t('Noch 1 Lektion bis zum Gipfel')) : t('Noch {n} Lektionen bis zum Gipfel', { n: left })}</span>
-            <button type="button" className="climb-size" aria-pressed={big} onClick={toggleBig} title={big ? t('Originalgrösse') : t('Grösser anzeigen')}>
+            <h2 id="climb-title">{t('Mountain {n}', { n: current.number })}</h2>
+            <span className="muted">{left === 1 ? (view.canCreateTracks ? t('Last step: the peak exam') : t('1 more lesson to the peak')) : t('{n} more lessons to the peak', { n: left })}</span>
+            <button type="button" className="climb-size" aria-pressed={big} onClick={toggleBig} title={big ? t('Original size') : t('Show bigger')}>
               <Icon name={big ? 'shrink' : 'fit'} size={18} />
-              <span className="sr-only">{big ? t('Originalgrösse') : t('Grösser anzeigen')}</span>
+              <span className="sr-only">{big ? t('Original size') : t('Show bigger')}</span>
             </button>
           </div>
           <Climb key={track.id} steps={current.lessons.length} mountain={current.number} done={done.length} paused={paused} highlight={hover} />
@@ -72,15 +72,15 @@ export function TrackView({ view, trackId, onStart, onReview, paused = false }: 
 
       {topped.length > 0 && (
         <section className="range" aria-labelledby="range-title">
-          <h2 id="range-title">{t('Geschaffte Berge')}</h2>
+          <h2 id="range-title">{t('Mountains climbed')}</h2>
           {topped.map((m) => (
             <details key={m.number} className="range-item">
               <summary>
                 <MountainArt steps={STEPS_PER_MOUNTAIN} small />
                 <span className="range-text">
-                  <strong>{m.name ?? t('Berg {n}', { n: m.number })}</strong>
+                  <strong>{m.name ?? t('Mountain {n}', { n: m.number })}</strong>
                   <span className="small muted">
-                    {m.name ? `${t('Berg {n}', { n: m.number })} · ` : ''}{t('{done} von {total} Lektionen', { done: m.lessons.length, total: STEPS_PER_MOUNTAIN })}
+                    {m.name ? `${t('Mountain {n}', { n: m.number })} · ` : ''}{t('{done} of {total} lessons', { done: m.lessons.length, total: STEPS_PER_MOUNTAIN })}
                   </span>
                 </span>
                 <Icon name="chevron" size={22} />
@@ -112,9 +112,9 @@ function DoneStep({ node, onStart, onPoint }: { node: MapNode; onStart: (nodeId:
       <span className="line-mark" aria-hidden="true"><Icon name="check" size={22} /></span>
       <span className="line-text">
         <strong>{title}</strong>
-        <span className="small muted">{node.result?.allMet ? t('gelöst') : t('mit Lücken')}{lesson ? ` · ${type(lesson.type)}` : ''}</span>
+        <span className="small muted">{node.result?.allMet ? t('solved') : t('with gaps')}{lesson ? ` · ${type(lesson.type)}` : ''}</span>
       </span>
-      <button className="btn quiet small" onClick={() => onStart(node.id)} aria-label={`${t('Nochmals')}: ${title}`}>{t('Nochmals')}</button>
+      <button className="btn quiet small" onClick={() => onStart(node.id)} aria-label={`${t('Again')}: ${title}`}>{t('Again')}</button>
     </li>
   );
 }
@@ -219,7 +219,7 @@ function Climb({ steps, mountain, done, paused, highlight }: { steps: number; mo
     seen.current = view.done;
     const peak = view.steps === 0;
     const at = peak ? STOPS[STOPS.length - 1] : together ? cabin : me;
-    setCheer({ at, label: peak ? t('Gipfel!') : t('Geschafft!'), big: peak, key: Date.now() });
+    setCheer({ at, label: peak ? t('Summit!') : t('Done!'), big: peak, key: Date.now() });
   }, [moving, view.done]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!cheer) return;
@@ -231,29 +231,29 @@ function Climb({ steps, mountain, done, paused, highlight }: { steps: number; mo
     store(TOGETHER_KEY, together ? '0' : '1');
     setTogether(!together);
   };
-  const name = friend.trim() || t('Dein Freund');
+  const name = friend.trim() || t('Your friend');
   return (
     <>
       <MountainArt
         steps={view.steps}
         highlight={highlight}
-        label={`${t('{done} von {total} Lektionen', { done: view.steps, total: STEPS_PER_MOUNTAIN })}. ${together ? t('Du und {friend} in der Seilbahn.', { friend: name }) : t('Du kletterst den Weg hinauf.')}`}
+        label={`${t('{done} of {total} lessons', { done: view.steps, total: STEPS_PER_MOUNTAIN })}. ${together ? t('You and {friend} in the cable car.', { friend: name }) : t('You climb up the trail.')}`}
       >
-        {together ? <CableCar at={cabin} moving={moving} names={`${t('Du')} + ${name}`} /> : <Hiker at={me} walking={moving} />}
+        {together ? <CableCar at={cabin} moving={moving} names={`${t('You')} + ${name}`} /> : <Hiker at={me} walking={moving} />}
         {cheer && <Cheer key={cheer.key} at={cheer.at} label={cheer.label} big={cheer.big} />}
       </MountainArt>
       <div className="climb-tools">
         <button type="button" className="btn quiet small" aria-pressed={together} onClick={toggle}>
-          <span aria-hidden="true">🚠</span> {t('Mit Freund lernen')}
+          <span aria-hidden="true">🚠</span> {t('Learn with a friend')}
         </button>
         {together && (
           <label className="friend-name">
-            <span>{t('Lernpartner')}</span>
+            <span>{t('Learning partner')}</span>
             <input value={friend} maxLength={20} onChange={(e) => { setFriend(e.target.value); store(FRIEND_KEY, e.target.value); }} />
           </label>
         )}
         <button type="button" className="btn quiet small" onClick={() => setReplay(replay + 1)} disabled={view.steps === 0}>
-          {t('Aufstieg nochmals zeigen')}
+          {t('Replay the climb')}
         </button>
       </div>
     </>

@@ -170,10 +170,10 @@ export function MindMap({
   const edges = [...placed.values()].filter((p) => p.node.parentId);
   const trackDcc = (trackId?: string) => {
     const skill = skills.find((s) => s.tracks.some((t) => t.id === trackId));
-    if (skill?.id === 'custom') return t('eigenes Thema');
-    if (!skill?.dccBased) return t('keine DCC-Position');
+    if (skill?.id === 'custom') return t('own topic');
+    if (!skill?.dccBased) return t('no DCC level');
     const lv = trackId ? dcc.levels[trackId] : null;
-    return lv ? t('DCC: {level}', { level: level(lv) }) : t('DCC: nicht erhoben');
+    return lv ? t('DCC: {level}', { level: level(lv) }) : t('DCC: not assessed');
   };
 
   return (
@@ -182,7 +182,7 @@ export function MindMap({
         ref={svgRef}
         className="mindmap-svg"
         role="application"
-        aria-label={t('Lernkarte als Mindmap. Ziehen zum Verschieben, Mausrad zum Zoomen.')}
+        aria-label={t('Learning map as a mind map. Drag to move, scroll to zoom.')}
         onWheel={onWheel}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -222,10 +222,10 @@ export function MindMap({
         </g>
       </svg>
       <div className="map-controls" style={{ right: rightInset + 16, bottom: size.h * bottomCoverage + 16 }}>
-        <button className="icon-btn" onClick={() => zoomAt((size.w - rightInset) / 2, visibleHeight / 2, 0.8)} aria-label={t('Herauszoomen')} title={t('Herauszoomen')}><Icon name="minus" /></button>
-        <button className="icon-btn" onClick={() => zoomAt((size.w - rightInset) / 2, visibleHeight / 2, 1.25)} aria-label={t('Hineinzoomen')} title={t('Hineinzoomen')}><Icon name="plus" /></button>
+        <button className="icon-btn" onClick={() => zoomAt((size.w - rightInset) / 2, visibleHeight / 2, 0.8)} aria-label={t('Zoom out')} title={t('Zoom out')}><Icon name="minus" /></button>
+        <button className="icon-btn" onClick={() => zoomAt((size.w - rightInset) / 2, visibleHeight / 2, 1.25)} aria-label={t('Zoom in')} title={t('Zoom in')}><Icon name="plus" /></button>
         <span className="sep" aria-hidden="true" />
-        <button className="icon-btn fit" onClick={fit}><Icon name="fit" size={16} />{t('Ganze Karte')}</button>
+        <button className="icon-btn fit" onClick={fit}><Icon name="fit" size={16} />{t('Whole map')}</button>
       </div>
     </div>
   );
@@ -296,7 +296,7 @@ function Node({
   // All labels sit centred below their node; branches run through the node centres, so lines never cross text.
   if (n.kind === 'skill') {
     return (
-      <g {...common} aria-label={t('Bereich {label}', { label })}>
+      <g {...common} aria-label={t('Area {label}', { label })}>
         <circle r={34} className="ring" />
         <circle r={28} className="skill-disc" />
         <circle r={7} className="skill-core" />
@@ -321,10 +321,10 @@ function Node({
 
   // Lesson node
   const lines = wrap(label, 20);
-  const meta = n.topicId ? t('Thema · Format wählen') : lesson ? `${type(lesson.type)}, ${lesson.durationMin} ${t('Min.')}${lesson.source === 'model' ? `, ${t('KI')}` : ''}` : '';
-  const result = n.state === 'done' && n.result ? (n.result.allMet ? t('gelöst') : t('mit Lücken')) : '';
+  const meta = n.topicId ? t('Topic · choose a format') : lesson ? `${type(lesson.type)}, ${lesson.durationMin} ${t('min')}${lesson.source === 'model' ? `, ${t('AI')}` : ''}` : '';
+  const result = n.state === 'done' && n.result ? (n.result.allMet ? t('solved') : t('with gaps')) : '';
   const stateText =
-    n.state === 'recommended' ? t('Nächster Schritt') : n.state === 'alternative' ? t('Alternative') : n.state === 'done' ? t('erledigt') : t('geplant');
+    n.state === 'recommended' ? t('Next step') : n.state === 'alternative' ? t('Alternative') : n.state === 'done' ? t('done') : t('planned');
   return (
     <g {...common} style={{ ['--tc' as string]: color }} aria-label={`${label}. ${meta}. ${stateText}${result ? `, ${result}` : ''}`}>
       {n.state === 'recommended' && <circle r={24} className="halo" />}
@@ -336,9 +336,9 @@ function Node({
       {lesson?.type === 'mock-site' && n.state !== 'done' && <rect x={-6} y={-5} width={12} height={10} rx={1.5} className="glyph" />}
       {lesson?.type === 'mark-evidence' && n.state !== 'done' && <path d="M-5 -3 h10 M-5 0 h10 M-5 3 h6" className="glyph-line" />}
       {lesson?.type === 'podcast' && n.state !== 'done' && <path d="M-6 3 v-2 a6 6 0 0 1 12 0 v2 M-6 1 v4 M6 1 v4" className="glyph-line" />}
-      {n.state === 'recommended' && <Flag y={-33} kind="next" text={n.topicId ? t('Empfohlen') : t('Nächster Schritt')} />}
+      {n.state === 'recommended' && <Flag y={-33} kind="next" text={n.topicId ? t('Recommended') : t('Next step')} />}
       {n.state === 'alternative' && <Flag y={-31} kind="alt" text={t('Alternative')} />}
-      {n.addedByAgent && n.state !== 'done' && n.state !== 'recommended' && n.state !== 'alternative' && <Flag y={-30} kind="new" text={t('neu')} />}
+      {n.addedByAgent && n.state !== 'done' && n.state !== 'recommended' && n.state !== 'alternative' && <Flag y={-30} kind="new" text={t('new')} />}
       {lines.map((line, i) => (
         <text key={i} y={30 + i * 15} textAnchor="middle" className="lesson-label">{line}</text>
       ))}

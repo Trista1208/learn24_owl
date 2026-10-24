@@ -21,82 +21,86 @@ function generatedMockSite(domain?: string): MockSiteLesson {
 }
 
 describe('Validator', () => {
-  it('nimmt alle vorbereiteten Lektionen an', () => {
+  it('accepts all prepared lessons', () => {
     expect(rejectedLessons).toEqual([]);
     expect(content.lessons.length).toBe(24);
   });
 
-  it('nimmt eine gültige erzeugte Webseiten-Lektion an', () => {
+  it('accepts a valid generated website lesson', () => {
     expect(validateLesson(generatedMockSite(), { track: sicherheit, sourceUrls: urls })).toEqual([]);
   });
 
-  it('lehnt echt wirkende Domains und echte Marken ab', () => {
+  it('rejects real-looking domains and real brands', () => {
     const errors = validateLesson(generatedMockSite('kundenportal.ch'), { track: sicherheit, sourceUrls: urls });
-    expect(errors.join()).toMatch(/nur erfundene \.example-Adressen erlaubt, gefunden: kundenportal\.ch/);
+    expect(errors.join()).toMatch(/only made-up \.example addresses are allowed, found: kundenportal\.ch/);
 
     const l = generatedMockSite();
     l.content.mail![0].text = 'PostFinance <service@postfinance-info.example>';
-    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/echte Marken.*postfinance/);
+    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/real brands.*postfinance/);
   });
 
-  it('prüft, dass Entscheid und Warnzeichen zusammenpassen', () => {
+  it('checks that the verdict and the warning signs match', () => {
     const l = generatedMockSite();
     l.content.correctVerdict = 'echt';
-    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/«echt», aber Warnzeichen/);
+    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/"echt" \(genuine\), but warning signs/);
     for (const p of [...l.content.mail!, ...l.content.site]) delete p.signal;
     l.content.correctVerdict = 'phishing';
-    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/«phishing», aber kein Warnzeichen/);
+    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/"phishing", but no warning sign/);
   });
 
-  it('lehnt Quizfragen mit ungleich langen Antworten ab', () => {
+  it('rejects quiz questions with answers of unequal length', () => {
     const l = pool('sich-v1') as VideoLesson;
-    l.content.questions[0].options = ['Kurz', 'Eine viel längere Antwort als die anderen', 'Mittel lang'];
-    expect(validateLesson(l, { track: sicherheit }).join()).toMatch(/höchstens 2 Wörter unterscheiden \(jetzt 1\/7\/2\)/);
+    l.content.questions[0].options = ['Short', 'A much longer answer than the others', 'Medium long'];
+    expect(validateLesson(l, { track: sicherheit }).join()).toMatch(/differ by at most 2 words \(now 1\/7\/2\)/);
   });
 
-  it('lässt Antworten zu, die sich um bis zu 2 Wörter unterscheiden', () => {
+  it('allows answers that differ by up to 2 words', () => {
     const l = pool('sich-v1') as VideoLesson;
-    l.content.questions[0].options = ['Eins zwei drei', 'Eins zwei drei vier', 'Eins zwei drei vier fünf'];
-    expect(validateLesson(l, { track: sicherheit }).join()).not.toMatch(/Wörter/);
+    l.content.questions[0].options = ['One two three', 'One two three four', 'One two three four five'];
+    expect(validateLesson(l, { track: sicherheit }).join()).not.toMatch(/words/);
   });
 
-  it('lehnt die richtige Antwort immer an derselben Stelle ab', () => {
+  it('rejects the right answer always in the same place', () => {
     const l = pool('sich-v1') as VideoLesson;
     l.content.questions.forEach((q) => (q.correct = 0));
-    expect(validateLesson(l, { track: sicherheit }).join()).toMatch(/an derselben Stelle/);
+    expect(validateLesson(l, { track: sicherheit }).join()).toMatch(/in the same place/);
   });
 
-  it('mischt die richtige Antwort an verschiedene Stellen', () => {
+  it('shuffles the right answer into different places', () => {
     for (let i = 0; i < 20; i++) {
       const qs = shuffleQuiz([
-        { options: ['richtig eins', 'falsch zwei', 'falsch drei'], correct: 0 },
-        { options: ['richtig vier', 'falsch fünf', 'falsch sechs'], correct: 0 },
+        { options: ['right one', 'wrong two', 'wrong three'], correct: 0 },
+        { options: ['right four', 'wrong five', 'wrong six'], correct: 0 },
       ]);
       expect(qs[0].correct).not.toBe(qs[1].correct);
-      expect(qs[0].options[qs[0].correct]).toBe('richtig eins');
-      expect(qs[1].options[qs[1].correct]).toBe('richtig vier');
+      expect(qs[0].options[qs[0].correct]).toBe('right one');
+      expect(qs[1].options[qs[1].correct]).toBe('right four');
     }
   });
 
-  it('verlangt Schweizer Schreibweise, höchstens 5 Minuten und eine Quelle aus der Liste', () => {
+  it('requires at most 5 minutes and a source from the list', () => {
     const l = generatedMockSite();
-    l.title = 'Grüße aus dem Kundenportal';
     l.durationMin = 8;
-    l.primarySource = { title: 'Blog', url: 'https://irgendwo.example/blog' };
+    l.primarySource = { title: 'Blog', url: 'https://somewhere.example/blog' };
     const e = validateLesson(l, { track: sicherheit, sourceUrls: urls }).join();
-    expect(e).toMatch(/ss statt ß/);
-    expect(e).toMatch(/Dauer muss 1 bis 5 Minuten/);
-    expect(e).toMatch(/steht nicht in den Quellen/);
+    expect(e).toMatch(/duration must be 1 to 5 minutes/);
+    expect(e).toMatch(/is not among the area's sources/);
   });
 
-  it('verlangt bei Text prüfen einen erfundenen Satz mit Kriterium des Bereichs', () => {
+  it('requires generated practice sites to say that everything is made up', () => {
+    const l = generatedMockSite();
+    l.content.disclaimer = 'Practice example with addresses on .example.';
+    expect(validateLesson(l, { track: sicherheit, sourceUrls: urls }).join()).toMatch(/the notice must say/);
+  });
+
+  it('requires a made-up sentence with a criterion of the area in text checks', () => {
     const l = pool('info-m1');
-    if (l.type !== 'mark-evidence') throw new Error('Testdaten');
+    if (l.type !== 'mark-evidence') throw new Error('test data');
     for (const s of l.content.summary) s.verdict = 'belegt';
-    expect(validateLesson(l, { track: getTrack('t-info') }).join()).toMatch(/mindestens ein Satz muss «erfunden» sein/);
+    expect(validateLesson(l, { track: getTrack('t-info') }).join()).toMatch(/at least one sentence must be "erfunden"/);
     const l2 = pool('info-m1');
-    if (l2.type !== 'mark-evidence') throw new Error('Testdaten');
-    l2.content.summary.find((s) => s.verdict === 'erfunden')!.criterion = 'gibtsnicht';
-    expect(validateLesson(l2, { track: getTrack('t-info') }).join()).toMatch(/unbekanntes Kriterium gibtsnicht/);
+    if (l2.type !== 'mark-evidence') throw new Error('test data');
+    l2.content.summary.find((s) => s.verdict === 'erfunden')!.criterion = 'doesnotexist';
+    expect(validateLesson(l2, { track: getTrack('t-info') }).join()).toMatch(/unknown criterion doesnotexist/);
   });
 });

@@ -129,7 +129,7 @@ describe('spaced recall', () => {
     const migrated = await request(restarted).get(base).expect(200);
     expect(migrated.body.reviews.due.some((q: { id: string }) => q.id === legacy.id)).toBe(true);
     const { question } = await grade(restarted, base, legacy.id, true);
-    expect(question.context?.join(' ')).toContain('24 Stunden');
+    expect(question.context?.join(' ')).toContain('24 hours');
     expect(question.options.length).toBeGreaterThan(1);
   });
 
@@ -157,7 +157,7 @@ async function learnedInfo() {
 
 function podcastFrom(lesson: VideoLesson, id: string): PodcastLesson {
   return { ...lesson, id, type: 'podcast', source: 'model', content: {
-    lines: [{ speaker: 'a', text: 'Wir prüfen Angaben an der Quelle.' }, { speaker: 'b', text: 'Das gilt auch bei Studien.' }],
+    lines: [{ speaker: 'a', text: 'We check details against the source.' }, { speaker: 'b', text: 'That goes for studies too.' }],
     questions: lesson.content.questions.map(({ afterScene: _a, ...question }, i) => ({ ...question, prompt: `${id}: Quellenfrage ${i + 1}` })),
   } };
 }
@@ -262,7 +262,7 @@ describe('question rotation', () => {
       prompts.push(question.prompt);
       expect(question.context?.length).toBe(3);
     }
-    expect(prompts[0]).toContain('Montag');
+    expect(prompts[0]).toContain('Monday');
     expect(prompts[1]).toContain('Lukas');
     expect(prompts.slice(2)).toEqual(prompts.slice(0, 2));
   });
@@ -295,8 +295,8 @@ describe('question rotation', () => {
       const { question } = await grade(app, base, q.id, true);
       contexts.push(question.context!.join(' '));
     }
-    expect(contexts[0]).toContain('musterbank-support.example');
-    expect(contexts[1]).toContain('paketpost-muster-zustellung.example');
+    expect(contexts[0]).toContain('samplebank-support.example');
+    expect(contexts[1]).toContain('sample-parcelpost-delivery.example');
     expect(contexts.slice(2)).toEqual(contexts.slice(0, 2));
   });
 });

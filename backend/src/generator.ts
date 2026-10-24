@@ -42,33 +42,33 @@ export interface GenerateInput {
 export type GenerateResult = { ok: true; lesson: Lesson } | { ok: false; errors: string[]; rejected?: true };
 
 const SCHEMAS: Record<LessonType, string> = {
-  video: `{"scenes":[{"caption":"Ein Satz, der erklärt","visual":"steps","items":["Stichwort","Stichwort","Stichwort"],"seconds":7}],
- "questions":[{"afterScene":0,"prompt":"Frage","options":["Antwort A","Antwort B","Antwort C"],"correct":0,"explanation":"Warum","criterion":"<kriterium-id>"}]}
-Regeln: 2 bis 3 Szenen. visual ist immer "steps" (2 bis 4 Stichworte) oder "url-parts" (items genau: Schema, Vorsatz, Domain, Endung, Pfad, z. B. ["https://","login.","beispiel-shop",".example","/konto"]).
-1 Frage pro Kriterium. Alle Antworten einer Frage sind gleich lang: gleich viele Wörter, höchstens 2 Wörter Unterschied. Die erste Antwort ist die richtige (correct: 0); der Server mischt die Reihenfolge.`,
-  'mark-evidence': `{"noteTitle":"Titel der Notiz","note":["Zeile der Quelle","..."],
- "summary":[{"id":"s1","text":"Satz der KI-Zusammenfassung","verdict":"belegt","explanation":"Steht so in der Notiz."},
-            {"id":"s2","text":"Satz mit erfundener Angabe","verdict":"erfunden","criterion":"<kriterium-id>","explanation":"Warum nicht belegt","hint":"Rückfrage ohne Lösung","correction":"Was korrekt wäre"}]}
-Regeln: Notiz 3 bis 5 Zeilen, Zusammenfassung 3 bis 4 Sätze, davon 1 oder 2 erfunden, jeweils mit criterion.`,
-  'mock-site': `{"disclaimer":"Übungsbeispiel mit erfundener Marke «...» und Adressen auf .example. Alles ist erfunden.",
- "mail":[{"id":"m-from","kind":"from","text":"Name <adresse@domain.example>","signal":{"criterion":"<kriterium-id>","explanation":"Warum verdächtig"}},
-         {"id":"m-p1","kind":"paragraph","text":"...","harmless":"Warum harmlos"},
-         {"id":"m-link","kind":"link","text":"Linktext","linkTarget":"https://...example/..."}],
- "site":[{"id":"w-url","kind":"url","text":"https://...example/..."},{"id":"w-fields","kind":"field","text":"Feld · Feld"}],
+  video: `{"scenes":[{"caption":"One sentence that explains","visual":"steps","items":["Keyword","Keyword","Keyword"],"seconds":7}],
+ "questions":[{"afterScene":0,"prompt":"Question","options":["Answer A","Answer B","Answer C"],"correct":0,"explanation":"Why","criterion":"<criterion-id>"}]}
+Rules: 2 to 3 scenes. visual is always "steps" (2 to 4 keywords) or "url-parts" (items exactly: scheme, prefix, domain, ending, path, e.g. ["https://","login.","example-shop",".example","/account"]).
+1 question per criterion. All answers to a question are the same length: the same number of words, at most 2 words difference. The first answer is the right one (correct: 0); the server shuffles the order.`,
+  'mark-evidence': `{"noteTitle":"Title of the note","note":["Line of the source","..."],
+ "summary":[{"id":"s1","text":"Sentence of the AI summary","verdict":"belegt","explanation":"The note says this."},
+            {"id":"s2","text":"Sentence with a made-up claim","verdict":"erfunden","criterion":"<criterion-id>","explanation":"Why it is not supported","hint":"Question without the solution","correction":"What would be correct"}]}
+Rules: note 3 to 5 lines, summary 3 to 4 sentences, 1 or 2 of them made up (verdict "erfunden"), each with criterion. verdict is always "belegt" (supported) or "erfunden" (made up).`,
+  'mock-site': `{"disclaimer":"Practice example with the made-up brand “...” and addresses on .example. Everything is made up.",
+ "mail":[{"id":"m-from","kind":"from","text":"Name <address@domain.example>","signal":{"criterion":"<criterion-id>","explanation":"Why suspicious"}},
+         {"id":"m-p1","kind":"paragraph","text":"...","harmless":"Why harmless"},
+         {"id":"m-link","kind":"link","text":"Link text","linkTarget":"https://...example/..."}],
+ "site":[{"id":"w-url","kind":"url","text":"https://...example/..."},{"id":"w-fields","kind":"field","text":"Field · Field"}],
  "correctVerdict":"phishing","verdictExplanation":"..."}
-kind ist eines von: from, subject, greeting, paragraph, link, signature, url, logo, heading, field, button, footer.
-Regeln: nur erfundene Marken, nur Adressen auf .example, keine echten Firmen. Bei "phishing" hat mindestens ein Teil ein signal, bei "echt" keiner. 4 bis 6 Teile in der Mail, 3 bis 5 auf der Seite.`,
-  'ai-chat': `{"kind":"tutor","goal":"Was die Person am Schluss kann","aiRole":"Wen die KI spielt und wie sie sich verhält","opening":"Erste Nachricht der KI",
- "material":{"title":"Erfundenes Material","lines":["..."]},
- "criteria":[{"id":"<kriterium-id>","label":"Name","hint":"Hinweis, falls es fehlt"}],
- "fallbackReplies":["Antwort ohne Modell 1","2","3"],"minTurns":3}
-kind ist tutor (stellt Fragen), roleplay (spielt eine Rolle) oder prompt-lab (führt Aufträge wörtlich aus). material ist freiwillig.`,
-  podcast: `{"lines":[{"speaker":"a","text":"Frage oder Überleitung"},{"speaker":"b","text":"Erklärung mit Beispiel"}],
- "questions":[{"prompt":"Frage","options":["Antwort A","Antwort B","Antwort C"],"correct":0,"explanation":"Warum","criterion":"<kriterium-id>"}]}
-Regeln: Ein Gespräch zwischen Mira (speaker "a", stellt die Fragen, die sich Lernende stellen) und Jonas (speaker "b", erklärt mit einem konkreten Beispiel).
-Gesprochene Sprache: kurze Sätze, keine Aufzählungen, keine Klammern, keine Abkürzungen, keine Adressen. Beide sprechen die zuhörende Person mit du an.
-8 bis 14 Beiträge, zusammen höchstens 2500 Zeichen (etwa zwei Minuten), jeder Beitrag höchstens drei Sätze. Schluss: die Faustregel in einem Satz.
-Danach 2 bis 3 Fragen zum Gehörten. Alle Antworten einer Frage sind gleich lang: gleich viele Wörter, höchstens 2 Wörter Unterschied. Die erste Antwort ist die richtige (correct: 0); der Server mischt die Reihenfolge.`,
+kind is one of: from, subject, greeting, paragraph, link, signature, url, logo, heading, field, button, footer.
+Rules: only made-up brands, only addresses on .example, no real companies. correctVerdict is "phishing" or "echt" (genuine). With "phishing" at least one part has a signal, with "echt" none. 4 to 6 parts in the mail, 3 to 5 on the site.`,
+  'ai-chat': `{"kind":"tutor","goal":"What the learner can do at the end","aiRole":"Who the AI plays and how it behaves","opening":"The AI's first message",
+ "material":{"title":"Made-up material","lines":["..."]},
+ "criteria":[{"id":"<criterion-id>","label":"Name","hint":"Hint if it is missing"}],
+ "fallbackReplies":["Reply without a model 1","2","3"],"minTurns":3}
+kind is tutor (asks questions), roleplay (plays a role) or prompt-lab (carries out prompts literally). material is optional.`,
+  podcast: `{"lines":[{"speaker":"a","text":"Question or transition"},{"speaker":"b","text":"Explanation with an example"}],
+ "questions":[{"prompt":"Question","options":["Answer A","Answer B","Answer C"],"correct":0,"explanation":"Why","criterion":"<criterion-id>"}]}
+Rules: a conversation between Mira (speaker "a", asks the questions learners ask themselves) and Jonas (speaker "b", explains with a concrete example).
+Spoken language: short sentences, no lists, no brackets, no abbreviations, no addresses. Both speak to the listener as "you".
+8 to 14 turns, together at most 2500 characters (about two minutes), each turn at most three sentences. End: the rule of thumb in one sentence.
+Then 2 to 3 questions about what was heard. All answers to a question are the same length: the same number of words, at most 2 words difference. The first answer is the right one (correct: 0); the server shuffles the order.`,
 };
 
 const swiss = <T,>(x: T): T => JSON.parse(JSON.stringify(x).replace(/ß/g, 'ss')) as T;
@@ -97,56 +97,56 @@ export function shuffleQuiz<Q extends { options: string[]; correct: number }>(qu
 export async function generateLesson(input: GenerateInput, onCall: (c: ModelCall) => void): Promise<GenerateResult> {
   const { track } = input;
   const types = typesFor(track);
-  if (!types.includes(input.type)) return { ok: false, errors: [`Typ muss in diesem Bereich einer von ${types.join(', ')} sein`] };
-  if (!DCC_LEVELS.includes(input.level)) return { ok: false, errors: ['level muss Grundstufe, Mittelstufe oder Fortgeschritten sein'] };
+  if (!types.includes(input.type)) return { ok: false, errors: [`type must be one of ${types.join(', ')} in this area`] };
+  if (!DCC_LEVELS.includes(input.level)) return { ok: false, errors: ['level must be Grundstufe, Mittelstufe or Fortgeschritten'] };
   const targets = [...new Set([input.criterion, ...(input.reviewOf ?? [])])];
   const unknown = targets.filter((t) => !track.criteria.some((c) => c.id === t));
-  if (unknown.length) return { ok: false, errors: [`unbekannte Kriterien: ${unknown.join(', ')}`] };
+  if (unknown.length) return { ok: false, errors: [`unknown criteria: ${unknown.join(', ')}`] };
   const sources = sourcesOf(track);
-  if (!sources.length) return { ok: false, errors: ['Für diesen Bereich gibt es keine geprüften Quellen'] };
+  if (!sources.length) return { ok: false, errors: ['There are no checked sources for this area'] };
   const review = targets.length > 1;
 
   const system = [
-    'Du schreibst eine kurze Lektion für eine Lern-App. Antworte NUR mit JSON, ohne Text davor oder danach.',
-    'Regeln:',
-    '- Schweizer Hochdeutsch: immer ss, nie ß. Duze die Person. Kurze, klare Sätze.',
-    '- Höchstens 5 Minuten, genau ein Lernziel, ein konkreter Erfolg am Schluss.',
-    '- Wissen leicht halten, Übung darf fordern.',
-    '- Das Beispiel passt zur Mission der Person. Alle Namen, Firmen, Adressen und Zahlen im Beispiel sind erfunden.',
-    '- Nutze nur die genannten Quellen, Kriterien und Faustregeln. Kein eigenes Wissen darüber hinaus.',
-    '- Wähle genau eine Primärquelle aus der Liste (primarySourceUrl).',
+    'You write a short lesson for a learning app. Answer ONLY with JSON, with no text before or after.',
+    'Rules:',
+    '- Write in plain English. Address the learner as "you". Short, clear sentences.',
+    '- At most 5 minutes, exactly one learning goal, one concrete success at the end.',
+    '- Keep the theory light; the practice may be demanding.',
+    '- The example fits the learner\'s mission. All names, companies, addresses and numbers in the example are made up.',
+    '- Use only the given sources, criteria and rules of thumb. No knowledge of your own beyond them.',
+    '- Choose exactly one primary source from the list (primarySourceUrl).',
   ].join('\n');
   const user = [
-    `Bereich: ${track.name}`,
-    `Lektionsart: ${input.type}`,
-    `Stufe der Lektion: ${input.level}`,
+    `Area: ${track.name}`,
+    `Lesson type: ${input.type}`,
+    `Lesson level: ${input.level}`,
     input.exam
-      ? 'Gipfelprüfung: Die Person hat auf diesem Berg fünf Lektionen zu diesen Kriterien geschafft. Prüfe jedes Kriterium mit einer eigenen Aufgabe, an einem neuen Beispiel. Der Rückblick bleibt kurz, der Schwerpunkt liegt auf den Aufgaben. Der Titel beginnt mit «Gipfelprüfung:». Kriterien:'
-      : review ? `Gemischte Wiederholung (Abrufen aus dem Gedächtnis), Kriterien:` : 'Lernziel (Kriterium):',
+      ? 'Summit test: the learner has completed five lessons on these criteria on this mountain. Test each criterion with its own task, on a new example. Keep the recap short; the focus is on the tasks. The title starts with “Summit test:”. Criteria:'
+      : review ? 'Mixed review (recall from memory), criteria:' : 'Learning goal (criterion):',
     ...targets.map((id) => {
       const c = track.criteria.find((x) => x.id === id)!;
-      return `- ${c.id}: ${c.label}. Faustregel: ${c.ruleOfThumb}`;
+      return `- ${c.id}: ${c.label}. Rule of thumb: ${c.ruleOfThumb}`;
     }),
-    `Mission der Person: ${input.mission}`,
-    input.contextHint ? `Hinweis zum Beispiel: ${input.contextHint}` : '',
-    input.preferences.length ? `Vorlieben: ${input.preferences.join('; ')}` : '',
-    'Quellen:',
+    `The learner\'s mission: ${input.mission}`,
+    input.contextHint ? `Hint for the example: ${input.contextHint}` : '',
+    input.preferences.length ? `Preferences: ${input.preferences.join('; ')}` : '',
+    'Sources:',
     ...sources.map((s) => `- ${s.title} (${s.url}): ${s.note}`),
     '',
-    'Antwortformat:',
-    '{"title":"höchstens 60 Zeichen","intro":"Ein Satz: was die Person tut","durationMin":3,"transfer":"Ein Satz für die Arbeit","primarySourceUrl":"<url aus der Liste>","content":<siehe unten>}',
-    'content für diese Lektionsart:',
+    'Answer format:',
+    '{"title":"at most 60 characters","intro":"One sentence: what the learner does","durationMin":3,"transfer":"One sentence for work","primarySourceUrl":"<url from the list>","content":<see below>}',
+    'content for this lesson type:',
     SCHEMAS[input.type],
-    input.previousErrors?.length ? `\nDein letzter Entwurf wurde abgelehnt. Behebe genau diese Punkte:\n${input.previousErrors.map((e) => `- ${e}`).join('\n')}` : '',
+    input.previousErrors?.length ? `\nYour last draft was rejected. Fix exactly these points:\n${input.previousErrors.map((e) => `- ${e}`).join('\n')}` : '',
   ].filter(Boolean).join('\n');
 
   const reply = await callModel({ purpose: 'generate', system, messages: [{ role: 'user', content: user }], maxTokens: 3000, timeoutMs: input.timeoutMs, planner: true });
   onCall(reply.call);
-  if (!reply.ok) return { ok: false, errors: [`Modell: ${reply.error}`] };
+  if (!reply.ok) return { ok: false, errors: [`Model: ${reply.error}`] };
   const raw = extractJson<{ title?: string; intro?: string; durationMin?: number; transfer?: string; primarySourceUrl?: string; content?: Record<string, unknown> }>(reply.text);
   if (!raw?.content) {
-    console.warn(`Erzeugte Lektion verworfen (${track.id}, ${input.type}): Antwort ist kein JSON mit content`);
-    return { ok: false, errors: ['Antwort ist kein JSON mit content'], rejected: true };
+    console.warn(`Generated lesson discarded (${track.id}, ${input.type}): the answer is not JSON with content`);
+    return { ok: false, errors: ['The answer is not JSON with content'], rejected: true };
   }
 
   const source = sources.find((s) => s.url === raw.primarySourceUrl);
@@ -180,7 +180,7 @@ export async function generateLesson(input: GenerateInput, onCall: (c: ModelCall
     targets,
     transfer: raw.transfer ? String(raw.transfer) : undefined,
     source: 'model',
-    primarySource: source ? { title: source.title, url: source.url } : { title: 'unbekannt', url: String(raw.primarySourceUrl ?? '') },
+    primarySource: source ? { title: source.title, url: source.url } : { title: 'unknown', url: String(raw.primarySourceUrl ?? '') },
     provenance: {
       by: 'model',
       model: plannerModelName(),
@@ -195,7 +195,7 @@ export async function generateLesson(input: GenerateInput, onCall: (c: ModelCall
 
   const errors = validateLesson(lesson, { track, sourceUrls: sources.map((s) => s.url) });
   if (errors.length) {
-    console.warn(`Erzeugte Lektion verworfen (${track.id}, ${input.type}): ${errors.join('; ')}`);
+    console.warn(`Generated lesson discarded (${track.id}, ${input.type}): ${errors.join('; ')}`);
     return { ok: false, errors, rejected: true };
   }
   return { ok: true, lesson };

@@ -5,7 +5,7 @@ import type { MapNode, SessionView } from '@l45/shared';
 import type { Express } from 'express';
 import type { AgentBlock, AgentRequest } from '../src/provider.ts';
 
-/** Sicherheit is the only track in the Grundstufe, so the map starts there (R3). */
+/** Safety is the only track at Foundation level (Grundstufe), so the map starts there (R3). */
 export const levels = { 't-info': 'Fortgeschritten', 't-komm': 'Fortgeschritten', 't-inhalte': 'Fortgeschritten', 't-sicherheit': 'Grundstufe', 't-problem': 'Fortgeschritten' };
 
 /** All prepared tracks of the catalog (data/skills.json). */
@@ -39,7 +39,7 @@ export async function session(app: Express, id: string): Promise<SessionView> {
   return (await request(app).get(`/api/sessions/${id}`).expect(200)).body;
 }
 
-/** sich-v1, the starter of Sicherheit: both questions right (adresse, link). */
+/** sich-v1, the starter of Safety: both questions right (adresse, link). */
 export const v1Right = { type: 'video', answers: { 0: 1, 1: 2 } };
 /** sich-v1 with the link question wrong. */
 export const v1MissLink = { type: 'video', answers: { 0: 1, 1: 0 } };
@@ -98,29 +98,29 @@ export function scripted(steps: ((t: Turn) => AgentBlock[])[], seen?: AgentReque
   };
 }
 
-/** A valid generated mock-site lesson for "Linkziel", as the model would answer. */
+/** A valid generated mock-site lesson for "Link target", as the model would answer. */
 export function mockSiteJson(overrides: { domain?: string } = {}) {
-  const d = overrides.domain ?? 'kundenportal-muster.example';
+  const d = overrides.domain ?? 'customer-portal-sample.example';
   return JSON.stringify({
-    title: 'Kundenmail mit Link prüfen',
-    intro: 'Prüfe, wohin der Link in der Kundenmail wirklich führt.',
+    title: 'Check a customer email with a link',
+    intro: 'Check where the link in the customer email really goes.',
     durationMin: 3,
-    transfer: 'Fahre bei jeder Mail mit Link zuerst über den Link und lies das Ziel.',
+    transfer: 'With every email that has a link, hover over the link first and read the target.',
     primarySourceUrl: 'https://www.bacs.admin.ch/de/phishing-de',
     content: {
-      disclaimer: 'Übungsbeispiel mit erfundener Firma «Kundenportal Muster» und Adressen auf .example. Alles ist erfunden.',
+      disclaimer: 'Practice example with the made-up company “Customer Portal Sample” and addresses on .example. Everything is made up.',
       mail: [
-        { id: 'm-from', kind: 'from', text: `Kundenportal Muster <service@${d}>`, harmless: 'Die Domain passt zur Firma.' },
-        { id: 'm-subject', kind: 'subject', text: 'Ihre Rechnung ist bereit', harmless: 'Ein normaler Betreff.' },
-        { id: 'm-p1', kind: 'paragraph', text: 'Ihre neue Rechnung steht im Portal bereit.', harmless: 'Allein kein Hinweis.' },
-        { id: 'm-link', kind: 'link', text: 'Rechnung öffnen', linkTarget: 'https://rechnung-sofort.example/login', signal: { criterion: 'link', explanation: 'Der Link führt zu «rechnung-sofort.example», nicht zum Portal.' } },
+        { id: 'm-from', kind: 'from', text: `Customer Portal Sample <service@${d}>`, harmless: 'The domain matches the company.' },
+        { id: 'm-subject', kind: 'subject', text: 'Your invoice is ready', harmless: 'A normal subject.' },
+        { id: 'm-p1', kind: 'paragraph', text: 'Your new invoice is ready in the portal.', harmless: 'Not a clue on its own.' },
+        { id: 'm-link', kind: 'link', text: 'Open invoice', linkTarget: 'https://invoice-now.example/login', signal: { criterion: 'link', explanation: 'The link goes to “invoice-now.example”, not to the portal.' } },
       ],
       site: [
-        { id: 'w-url', kind: 'url', text: 'https://rechnung-sofort.example/login', signal: { criterion: 'adresse', explanation: 'Die Domain ist nicht die des Portals.' } },
-        { id: 'w-fields', kind: 'field', text: 'Benutzername · Passwort', harmless: 'Ein Login allein ist kein Hinweis.' },
+        { id: 'w-url', kind: 'url', text: 'https://invoice-now.example/login', signal: { criterion: 'adresse', explanation: 'The domain is not the portal\'s.' } },
+        { id: 'w-fields', kind: 'field', text: 'Username · Password', harmless: 'A login alone is not a clue.' },
       ],
       correctVerdict: 'phishing',
-      verdictExplanation: 'Link und Webseite führen auf eine fremde Domain.',
+      verdictExplanation: 'The link and website lead to a foreign domain.',
     },
   });
 }

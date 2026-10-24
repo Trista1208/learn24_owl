@@ -3,8 +3,8 @@ import type { NarratedVideoManifest, VideoLesson } from '@l45/shared';
 /** Check the delivery envelope before handing scene source and audio to the sandboxed engine. */
 export function parseVideoManifest(value: unknown, lesson: VideoLesson): NarratedVideoManifest {
   const m = value as NarratedVideoManifest;
-  const invalid = () => { throw new Error('Das Videoformat ist ungültig.'); };
-  if (!m || m.schemaVersion !== 1 || m.lessonId !== lesson.id || m.locale !== 'de-CH' ||
+  const invalid = () => { throw new Error('The video format is invalid.'); };
+  if (!m || m.schemaVersion !== 1 || m.lessonId !== lesson.id || m.locale !== 'en-GB' ||
       !Array.isArray(m.scenes) || m.scenes.length !== lesson.content.scenes.length || !m.scenes.length) invalid();
   const ids = new Set<string>();
   for (const scene of m.scenes) {
