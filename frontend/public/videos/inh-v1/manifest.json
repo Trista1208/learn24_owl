@@ -1,78 +1,78 @@
 {
   "schemaVersion": 1,
   "lessonId": "inh-v1",
-  "title": "Was in einen guten Auftrag gehört",
-  "locale": "de-CH",
-  "scriptHash": "c2f53d76d42e4ba18b20ff677e8cf900c4437a58fe2968890b138b72ff73de5d",
+  "title": "What belongs in a good brief",
+  "locale": "en-GB",
+  "scriptHash": "4357f07622329c46ae8247da68705bec60074b10dc07367bcbcac887c6e3f38c",
   "narration": {
-    "provider": "elevenlabs",
-    "voice": "pFZP5JQG7iQjIQuC4Bku",
+    "provider": "local",
+    "voice": "Samantha",
     "model": "eleven_multilingual_v2"
   },
   "scenes": [
     {
       "id": "scene-0",
-      "title": "Eine KI kennt weder dich noch dein Projekt. Sie hat nur deinen Auft…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=6.387208333333334;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in einen guten Auftrag gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Dein Auftrag\"],[\"KI füllt Lücken\"],[\"Ergebnis\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(6.037208333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 6.387208333333334,
-      "audioUrl": "/videos/inh-v1/scene-0-a7a8c6aea5f7.wav",
+      "title": "An AI knows neither you nor your project. It only has your brief an…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=5.882666666666666;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good brief\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Your brief\"],[\"AI fills gaps\"],[\"Result\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.532666666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 5.882666666666666,
+      "audioUrl": "/videos/inh-v1/scene-0-b0392a1a5fba.wav",
       "captions": [
         {
           "start": 0,
-          "end": 6.037208333333333,
-          "text": "Eine KI kennt weder dich noch dein Projekt. Sie hat nur deinen Auftrag und füllt den Rest selbst."
+          "end": 5.532666666666667,
+          "text": "An AI knows neither you nor your project. It only has your brief and fills in the rest itself."
         }
       ]
     },
     {
       "id": "scene-1",
-      "title": "Sag, für wen das Ergebnis ist und wie lang es sein soll. Zum Beispi…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=13.65675;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in einen guten Auftrag gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Für wen?\"],[\"Wie lang?\"],[\"Welche Form?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(8.080541666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 13.65675,
-      "audioUrl": "/videos/inh-v1/scene-1-8c8fe17434e5.wav",
+      "title": "Say who the result is for and how long it should be. For example: “…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=12.792875;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good brief\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"For whom?\"],[\"How long?\"],[\"Which form?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(7.593458333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 12.792875,
+      "audioUrl": "/videos/inh-v1/scene-1-ec129b13f457.wav",
       "captions": [
         {
           "start": 0,
-          "end": 8.080541666666667,
-          "text": "Sag, für wen das Ergebnis ist und wie lang es sein soll. Zum Beispiel: «für meine Projektleiterin, höchstens fünf Stichpunkte»."
+          "end": 7.593458333333333,
+          "text": "Say who the result is for and how long it should be. For example: “for my project lead, at most five bullet points”."
         },
         {
-          "start": 8.430541666666667,
-          "end": 13.30675,
-          "text": "Kurze Denkpause: Welcher Auftrag sagt der KI, für wen und wie lang?"
+          "start": 7.943458333333333,
+          "end": 12.442875,
+          "text": "A short pause to think: Which brief tells the AI who it is for and how long?"
         }
       ]
     },
     {
       "id": "scene-2",
-      "title": "Nenne, was auf keinen Fall fehlen darf. Zum Beispiel: alle offenen …",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=5.504833333333333;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in einen guten Auftrag gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Was muss hinein?\"],[\"Offene Punkte\"],[\"Namen\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.154833333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 5.504833333333333,
-      "audioUrl": "/videos/inh-v1/scene-2-69e78c3793a3.wav",
+      "title": "Name what must not be missing under any circumstances. For example:…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=6.8330416666666665;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good brief\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"What must be in it?\"],[\"Open points\"],[\"Names\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(6.483041666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 6.8330416666666665,
+      "audioUrl": "/videos/inh-v1/scene-2-afa462fe98e1.wav",
       "captions": [
         {
           "start": 0,
-          "end": 5.154833333333333,
-          "text": "Nenne, was auf keinen Fall fehlen darf. Zum Beispiel: alle offenen Punkte mit Namen."
+          "end": 6.483041666666667,
+          "text": "Name what must not be missing under any circumstances. For example: all open points with names."
         }
       ]
     },
     {
       "id": "scene-3",
-      "title": "Und sag, was bei fehlenden Angaben passieren soll: «Markiere Fehlen…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=12.31;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in einen guten Auftrag gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Angabe fehlt\"],[\"Als offen markieren\"],[\"Nichts erfinden\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(6.548041666666666*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 12.31,
-      "audioUrl": "/videos/inh-v1/scene-3-66647db9efa8.wav",
+      "title": "And say what should happen with missing details: “Mark anything mis…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=11.950833333333334;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good brief\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Detail missing\"],[\"Mark as open\"],[\"Make nothing up\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.834208333333334*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 11.950833333333334,
+      "audioUrl": "/videos/inh-v1/scene-3-7631338f1cd9.wav",
       "captions": [
         {
           "start": 0,
-          "end": 6.548041666666666,
-          "text": "Und sag, was bei fehlenden Angaben passieren soll: «Markiere Fehlendes als offen, erfinde nichts.»"
+          "end": 5.834208333333334,
+          "text": "And say what should happen with missing details: “Mark anything missing as open, make nothing up.”"
         },
         {
-          "start": 6.898041666666667,
-          "end": 11.96,
-          "text": "Kurze Denkpause: In deinen Notizen fehlt ein Termin. Was schreibst du in den Auftrag?"
+          "start": 6.184208333333333,
+          "end": 11.600833333333334,
+          "text": "A short pause to think: A date is missing from your notes. What do you write in the brief?"
         }
       ]
     }

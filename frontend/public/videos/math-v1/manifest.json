@@ -1,87 +1,87 @@
 {
   "schemaVersion": 1,
   "lessonId": "math-v1",
-  "title": "Was ist eine Ableitung?",
-  "locale": "de-CH",
-  "scriptHash": "8cd8949bd08d33635f9c2b71f033a6e04776bc3a2fa60ff267ae48a834692fee",
+  "title": "What is a derivative?",
+  "locale": "en-GB",
+  "scriptHash": "570f2448e29f449ee3e673614ff1c5d785078ac54ca3da10736c3d51c4b8cb09",
   "narration": {
-    "provider": "elevenlabs",
-    "voice": "pFZP5JQG7iQjIQuC4Bku"
+    "provider": "local",
+    "voice": "Samantha"
   },
   "scenes": [
     {
       "id": "sekante",
-      "title": "Die Steigung zwischen zwei Punkten",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'}, s => {\n    const duration = 18.904416666666666;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"Von zwei Punkten zur Steigung\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      const B=P(2.5,f(2.5));\n      const secant=s.line('secant',{points:line(2.5),stroke:'YELLOW',strokeWidth:0.035,opacity:0});\n      const b=s.circle('b',{position:B,radius:0.07,fill:'WHITE',opacity:0});\n      const bl=text('b-label','B',B[0]+0.2,B[1]+0.2,0.28);\n      s.play(bl.animate({opacity:0}),{duration:0});\n      text('kind','Sekante',3.4,1.3,0.47,'YELLOW');\n      text('meaning','Verbindet A und B',3.4,0.7,0.28);\n      text('formula','Steigung = Δy / Δx',3.4,-0.1,0.31);\n      text('value','hier: 1,75',3.4,-0.65,0.38,'YELLOW');\n      s.wait(8.016291666666667);\n      s.play([secant.fadeIn(),b.fadeIn(),bl.fadeIn()],{duration:0.5});\n      s.line('run',{points:[A,P(2.5,f(1))],stroke:'TEAL',strokeWidth:0.025});\n      s.line('rise',{points:[P(2.5,f(1)),B],stroke:'TEAL',strokeWidth:0.025});\n      text('run-label','Δx',(A[0]+B[0])/2,A[1]-0.3,0.25,'TEAL');\n      text('rise-label','Δy',B[0]+0.3,(A[1]+B[1])/2,0.25,'TEAL');\n      s.wait(duration-8.016291666666667-0.5);\n    });",
-      "duration": 18.904416666666666,
-      "audioUrl": "/videos/math-v1/sekante-1933572615cb.wav",
+      "title": "The slope between two points",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'}, s => {\n    const duration = 16.435916666666667;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"From two points to the slope\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      const B=P(2.5,f(2.5));\n      const secant=s.line('secant',{points:line(2.5),stroke:'YELLOW',strokeWidth:0.035,opacity:0});\n      const b=s.circle('b',{position:B,radius:0.07,fill:'WHITE',opacity:0});\n      const bl=text('b-label','B',B[0]+0.2,B[1]+0.2,0.28);\n      s.play(bl.animate({opacity:0}),{duration:0});\n      text('kind','Secant',3.4,1.3,0.47,'YELLOW');\n      text('meaning','Connects A and B',3.4,0.7,0.28);\n      text('formula','Slope = Δy / Δx',3.4,-0.1,0.31);\n      text('value','here: 1.75',3.4,-0.65,0.38,'YELLOW');\n      s.wait(7.000041666666666);\n      s.play([secant.fadeIn(),b.fadeIn(),bl.fadeIn()],{duration:0.5});\n      s.line('run',{points:[A,P(2.5,f(1))],stroke:'TEAL',strokeWidth:0.025});\n      s.line('rise',{points:[P(2.5,f(1)),B],stroke:'TEAL',strokeWidth:0.025});\n      text('run-label','Δx',(A[0]+B[0])/2,A[1]-0.3,0.25,'TEAL');\n      text('rise-label','Δy',B[0]+0.3,(A[1]+B[1])/2,0.25,'TEAL');\n      s.wait(duration-7.000041666666666-0.5);\n    });",
+      "duration": 16.435916666666667,
+      "audioUrl": "/videos/math-v1/sekante-dcef01c1f97c.wav",
       "captions": [
         {
           "start": 0,
-          "end": 8.266291666666667,
-          "text": "Wie steil ist eine Kurve an einer bestimmten Stelle? Betrachten wir die Funktion: f von x gleich ein halb mal x Quadrat."
+          "end": 7.250041666666666,
+          "text": "How steep is a curve at a particular point? Let's look at the function: f of x equals one half times x squared."
         },
         {
-          "start": 8.616291666666667,
-          "end": 18.55441666666667,
-          "text": "Zuerst verbinden wir zwei Punkte auf der Kurve. Diese Gerade heisst Sekante. Ihre Steigung ist der Höhenunterschied geteilt durch den waagrechten Abstand."
+          "start": 7.600041666666667,
+          "end": 16.085916666666666,
+          "text": "First we connect two points on the curve. This line is called a secant. Its slope is the difference in height divided by the horizontal distance."
         }
       ]
     },
     {
       "id": "grenzwert",
-      "title": "Der zweite Punkt rückt näher",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'}, s => {\n    const duration = 17.836333333333332;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"B nähert sich A\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      const b=s.circle('b',{position:P(2.5,f(2.5)),radius:0.07,fill:'WHITE'});\n      const secant=s.line('secant',{points:line(2.5),stroke:'YELLOW',strokeWidth:0.035});\n      text('kind','B rückt näher',3.4,1.3,0.43,'WHITE');\n      text('meaning','A bleibt fest',3.4,0.7,0.29,'YELLOW');\n      text('formula','Sekante → Tangente',3.4,-0.1,0.3,'YELLOW');\n      text('value','Steigung → 1',3.4,-0.65,0.36);\n      s.wait(2);\n      for(let i=1;i<=50;i++) {\n        const t=i/50; const x=1.04+(1.46)*(1-t)*(1-t);\n        s.play([b.moveTo(P(x,f(x))),secant.morphTo({kind:'line',points:line(x)})],{duration:0.156905,ease:'linear'});\n      }\n      s.wait(duration-2-7.84525);\n    });",
-      "duration": 17.836333333333332,
-      "audioUrl": "/videos/math-v1/grenzwert-de86fb234213.wav",
+      "title": "The second point moves closer",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'}, s => {\n    const duration = 16.167125;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"B approaches A\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      const b=s.circle('b',{position:P(2.5,f(2.5)),radius:0.07,fill:'WHITE'});\n      const secant=s.line('secant',{points:line(2.5),stroke:'YELLOW',strokeWidth:0.035});\n      text('kind','B moves closer',3.4,1.3,0.43,'WHITE');\n      text('meaning','A stays fixed',3.4,0.7,0.29,'YELLOW');\n      text('formula','Secant → tangent',3.4,-0.1,0.3,'YELLOW');\n      text('value','Slope → 1',3.4,-0.65,0.36);\n      s.wait(2);\n      for(let i=1;i<=50;i++) {\n        const t=i/50; const x=1.04+(1.46)*(1-t)*(1-t);\n        s.play([b.moveTo(P(x,f(x))),secant.morphTo({kind:'line',points:line(x)})],{duration:0.13753416666666665,ease:'linear'});\n      }\n      s.wait(duration-2-6.876708333333333);\n    });",
+      "duration": 16.167125,
+      "audioUrl": "/videos/math-v1/grenzwert-fc688b78c0ed.wav",
       "captions": [
         {
           "start": 0,
-          "end": 9.84525,
-          "text": "Der Punkt A bleibt bei x gleich eins. Jetzt rückt der zweite Punkt B auf der Kurve immer näher an A heran. Dabei dreht sich die Sekante."
+          "end": 8.876708333333333,
+          "text": "Point A stays at x equals one. Now the second point B moves along the curve, closer and closer to A. As it does, the secant turns."
         },
         {
-          "start": 10.19525,
-          "end": 17.486333333333334,
-          "text": "Ihre Steigung nähert sich hier dem Wert eins. Die Sekante nähert sich der Tangente an. Was passiert also mit der Sekante?"
+          "start": 9.226708333333333,
+          "end": 15.817125,
+          "text": "Its slope approaches the value one here. The secant approaches the tangent. So what happens to the secant?"
         }
       ]
     },
     {
       "id": "tangente",
-      "title": "Die Ableitung ist eine Steigung",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'}, s => {\n    const duration = 19.693958333333335;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"Die Ableitung ist die Tangentensteigung\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      s.line('tangent',{points:[P(-0.1,-0.6),P(2.7,2.2)],stroke:'YELLOW',strokeWidth:0.04});\n      text('kind','Tangente',3.4,1.3,0.47,'YELLOW');\n      text('meaning','Steigung an A',3.4,0.7,0.29);\n      s.latex('formula',{tex:\"f'(1) = 1\",position:[3.4,-0.1],fontSize:0.48,fill:'YELLOW'});\n      text('value','1 nach rechts, 1 nach oben',3.3,-0.75,0.25);\n      s.wait(9.288);\n      const run=s.line('run',{points:[A,P(2,f(1))],stroke:'TEAL',strokeWidth:0.03,opacity:0});\n      const rise=s.line('rise',{points:[P(2,f(1)),P(2,1.5)],stroke:'TEAL',strokeWidth:0.03,opacity:0});\n      text('run-label','1',P(1.5,0.5)[0],A[1]-0.3,0.26,'TEAL');\n      text('rise-label','1',P(2,1)[0]+0.25,P(2,1)[1],0.26,'TEAL');\n      s.play([run.fadeIn(),rise.fadeIn()],{duration:0.6});\n      s.wait(duration-9.288-0.6);\n    });",
-      "duration": 19.693958333333335,
-      "audioUrl": "/videos/math-v1/tangente-ab1eadf18890.wav",
+      "title": "The derivative is a slope",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'}, s => {\n    const duration = 17.347458333333332;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"The derivative is the slope of the tangent\", 0, 2.9, 0.34);\n  \n    s.line('axis-x',{points:[P(-0.5,0),P(2.9,0)],stroke:'GREY_C',strokeWidth:0.018});\n    s.line('axis-y',{points:[P(0,-0.5),P(0,3.9)],stroke:'GREY_C',strokeWidth:0.018});\n    text('axis-x-label','x',1.9,-1.5,0.23,'GREY_B');\n    text('axis-y-label','f(x)',-3.1,2.7,0.23,'GREY_B');\n    for(let x=1;x<=2;x++) {\n      s.line('tick-'+x,{points:[P(x,-0.06),P(x,0.06)],stroke:'GREY_B',strokeWidth:0.02});\n      text('number-'+x,String(x),P(x,0)[0],-1.8,0.23,'GREY_B');\n    }\n    s.path('curve',{points:curve,stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n    s.circle('a',{position:A,radius:0.07,fill:'YELLOW'});\n    text('a-label','A',A[0]-0.2,A[1]+0.24,0.28,'YELLOW');\n    s.latex('function',{tex:'f(x) = '+String.fromCharCode(92)+'frac{1}{2} x^2',position:[-1.3,2.3],fontSize:0.29,fill:'BLUE'});\n  \n      s.line('tangent',{points:[P(-0.1,-0.6),P(2.7,2.2)],stroke:'YELLOW',strokeWidth:0.04});\n      text('kind','Tangent',3.4,1.3,0.47,'YELLOW');\n      text('meaning','Slope at A',3.4,0.7,0.29);\n      s.latex('formula',{tex:\"f'(1) = 1\",position:[3.4,-0.1],fontSize:0.48,fill:'YELLOW'});\n      text('value','1 to the right, 1 up',3.3,-0.75,0.25);\n      s.wait(8.010666666666667);\n      const run=s.line('run',{points:[A,P(2,f(1))],stroke:'TEAL',strokeWidth:0.03,opacity:0});\n      const rise=s.line('rise',{points:[P(2,f(1)),P(2,1.5)],stroke:'TEAL',strokeWidth:0.03,opacity:0});\n      text('run-label','1',P(1.5,0.5)[0],A[1]-0.3,0.26,'TEAL');\n      text('rise-label','1',P(2,1)[0]+0.25,P(2,1)[1],0.26,'TEAL');\n      s.play([run.fadeIn(),rise.fadeIn()],{duration:0.6});\n      s.wait(duration-8.010666666666667-0.6);\n    });",
+      "duration": 17.347458333333332,
+      "audioUrl": "/videos/math-v1/tangente-f3390238d234.wav",
       "captions": [
         {
           "start": 0,
-          "end": 9.288,
-          "text": "Wenn sich die Sekantensteigungen von beiden Seiten demselben Wert nähern, erhalten wir die Ableitung. Sie ist die Steigung der Tangente an dieser Stelle."
+          "end": 8.010666666666667,
+          "text": "When the slopes of the secants approach the same value from both sides, we get the derivative. It is the slope of the tangent at this point."
         },
         {
-          "start": 9.638,
-          "end": 19.343958333333333,
-          "text": "Bei unserer Funktion ist die Ableitung an der Stelle x gleich eins genau eins. Gehen wir auf der Tangente eine Einheit nach rechts, geht es eine Einheit nach oben."
+          "start": 8.360666666666667,
+          "end": 16.997458333333334,
+          "text": "For our function, the derivative at x equals one is exactly one. If we go one unit to the right along the tangent, we go one unit up."
         }
       ]
     },
     {
       "id": "zoom",
-      "title": "Ganz nah sieht die Kurve fast gerade aus",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'}, s => {\n    const duration = 22.480291666666666;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"Ganz nah: fast eine Gerade\", 0, 2.9, 0.34);\n  \n      const points = z => Array.from({length:101},(_,i) => {\n        const t=-1.7+i*0.034; const x=1+t/z;\n        return [-1.8+t, z*(f(x)-f(1))];\n      });\n      const zoomCurve=s.path('curve',{points:points(1),stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n      s.line('tangent',{points:[[-3.5,-1.7],[-0.1,1.7]],stroke:'YELLOW',strokeWidth:0.035});\n      s.circle('a',{position:[-1.8,0],radius:0.07,fill:'YELLOW'});\n      text('a-label','A',-2.05,0.3,0.27,'YELLOW');\n      text('kind','Lokale Steigung',3.1,1.3,0.4,'WHITE');\n      text('legend-curve','Blau: die Kurve',3.1,0.65,0.3,'BLUE');\n      text('legend-tangent','Gelb: die Tangente',3.1,0.15,0.3,'YELLOW');\n      s.latex('formula',{tex:\"f'(1) = 1\",position:[3.1,-0.65],fontSize:0.48,fill:'YELLOW'});\n      text('zoom-label','Ausschnitt um A',-1.8,-2.3,0.25,'GREY_B');\n      s.wait(1);\n      for(let i=1;i<=50;i++) {\n        const z=1+15*i/50;\n        s.play(zoomCurve.morphTo({kind:'path',points:points(z),fill:'none'}),{duration:0.20384,ease:'linear'});\n      }\n      s.wait(duration-1-10.192);\n    });",
-      "duration": 22.480291666666666,
-      "audioUrl": "/videos/math-v1/zoom-3e690f26a35e.wav",
+      "title": "Up close, the curve looks almost straight",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'}, s => {\n    const duration = 18.764541666666666;\n    const P = (x, y) => [1.65*x-3.1, 1.05*y-1.5];\n    const f = x => 0.5*x*x;\n    const A = P(1, f(1));\n    const curve = Array.from({length:101}, (_,i) => { const x=-0.4+i*0.031; return P(x,f(x)); });\n    const line = b => { const m=(f(b)-f(1))/(b-1); return [P(-0.1,f(1)+m*(-1.1)),P(2.7,f(1)+m*1.7)]; };\n    const text = (id, value, x, y, size=0.3, fill='WHITE') => s.text(id,{text:value,position:[x,y],fontSize:size,fill});\n    s.play(s.camera.to2D({height:7}),{duration:0});\n    text('title', \"Up close: almost a straight line\", 0, 2.9, 0.34);\n  \n      const points = z => Array.from({length:101},(_,i) => {\n        const t=-1.7+i*0.034; const x=1+t/z;\n        return [-1.8+t, z*(f(x)-f(1))];\n      });\n      const zoomCurve=s.path('curve',{points:points(1),stroke:'BLUE',strokeWidth:0.045,fill:'none'});\n      s.line('tangent',{points:[[-3.5,-1.7],[-0.1,1.7]],stroke:'YELLOW',strokeWidth:0.035});\n      s.circle('a',{position:[-1.8,0],radius:0.07,fill:'YELLOW'});\n      text('a-label','A',-2.05,0.3,0.27,'YELLOW');\n      text('kind','Local slope',3.1,1.3,0.4,'WHITE');\n      text('legend-curve','Blue: the curve',3.1,0.65,0.3,'BLUE');\n      text('legend-tangent','Yellow: the tangent',3.1,0.15,0.3,'YELLOW');\n      s.latex('formula',{tex:\"f'(1) = 1\",position:[3.1,-0.65],fontSize:0.48,fill:'YELLOW'});\n      text('zoom-label','Section around A',-1.8,-2.3,0.25,'GREY_B');\n      s.wait(1);\n      for(let i=1;i<=50;i++) {\n        const z=1+15*i/50;\n        s.play(zoomCurve.morphTo({kind:'path',points:points(z),fill:'none'}),{duration:0.16418166666666667,ease:'linear'});\n      }\n      s.wait(duration-1-8.209083333333334);\n    });",
+      "duration": 18.764541666666666,
+      "audioUrl": "/videos/math-v1/zoom-8c8f671679c4.wav",
       "captions": [
         {
           "start": 0,
-          "end": 11.192,
-          "text": "Zoomen wir um den Punkt A hinein. Die Kurve und ihre Tangente liegen immer näher beieinander. In diesem kleinen Ausschnitt sieht die Kurve fast wie eine Gerade aus."
+          "end": 9.209083333333334,
+          "text": "Let's zoom in around point A. The curve and its tangent lie closer and closer together. In this small section, the curve looks almost like a straight line."
         },
         {
-          "start": 11.542,
-          "end": 22.13029166666667,
-          "text": "Die Ableitung beschreibt diese lokale Steigung. Sie beschreibt keine Fläche und auch keinen höchsten Punkt. Was gibt die Ableitung an einer Stelle an?"
+          "start": 9.559083333333334,
+          "end": 18.41454166666667,
+          "text": "The derivative describes this local slope. It does not describe an area, and not a highest point either. What does the derivative at a point tell you?"
         }
       ]
     }

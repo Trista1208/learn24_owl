@@ -1,78 +1,78 @@
 {
   "schemaVersion": 1,
   "lessonId": "phys-v1",
-  "title": "Fallen schwere Dinge schneller?",
-  "locale": "de-CH",
-  "scriptHash": "67e3559c3e329200273839b1d505a3c2de19f14ff49bdf7a5b2fdd5f787285aa",
+  "title": "Do heavy things fall faster?",
+  "locale": "en-GB",
+  "scriptHash": "4c5beace096972cedb9db0d9125165487ca253b28c0927e925eb674a9301f342",
   "narration": {
-    "provider": "elevenlabs",
-    "voice": "pFZP5JQG7iQjIQuC4Bku",
+    "provider": "local",
+    "voice": "Samantha",
     "model": "eleven_multilingual_v2"
   },
   "scenes": [
     {
       "id": "scene-0",
-      "title": "Ein Ball und eine Feder fallen gleichzeitig los. Der Ball landet zu…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=7.826833333333333;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Fallen schwere Dinge schneller?\"],0,3.18,.31,'WHITE');\n    \n        label('environment',[\"Mit Luft\"],0,1.9,.4,'WHITE');\n        s.line('ground',{points:[[-5,-2.6],[5,-2.6]],stroke:'GREY_B',strokeWidth:.02});\n        label('ball-label',['Ball'],-2.5,-3,.25,'WHITE');label('feather-label',['Feder'],2.5,-3,.25,'YELLOW');\n        const ball=s.circle('ball',{position:[-2.5,1.15],radius:.22,fill:'WHITE'});\n        const feather=s.path('feather',{position:[2.5,1.15],points:[[-.3,-.15],[0,.25],[.35,.2],[.05,-.05],[-.3,-.15]],fill:'YELLOW',stroke:'YELLOW',strokeWidth:.02});\n        wait(Math.min(.6,duration/8));\n        play([ball.moveTo([-2.5,-2.35]),feather.moveTo([2.5,-0.1])],Math.min(3,7.476833333333333*.6));\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 7.826833333333333,
-      "audioUrl": "/videos/phys-v1/scene-0-a2159dec2128.wav",
+      "title": "A ball and a feather start falling at the same time. The ball lands…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=6.869666666666666;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Do heavy things fall faster?\"],0,3.18,.31,'WHITE');\n    \n        label('environment',[\"With air\"],0,1.9,.4,'WHITE');\n        s.line('ground',{points:[[-5,-2.6],[5,-2.6]],stroke:'GREY_B',strokeWidth:.02});\n        label('ball-label',['Ball'],-2.5,-3,.25,'WHITE');label('feather-label',['Feather'],2.5,-3,.25,'YELLOW');\n        const ball=s.circle('ball',{position:[-2.5,1.15],radius:.22,fill:'WHITE'});\n        const feather=s.path('feather',{position:[2.5,1.15],points:[[-.3,-.15],[0,.25],[.35,.2],[.05,-.05],[-.3,-.15]],fill:'YELLOW',stroke:'YELLOW',strokeWidth:.02});\n        wait(Math.min(.6,duration/8));\n        play([ball.moveTo([-2.5,-2.35]),feather.moveTo([2.5,-0.1])],Math.min(3,6.519666666666667*.6));\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 6.869666666666666,
+      "audioUrl": "/videos/phys-v1/scene-0-df495cc74dbc.wav",
       "captions": [
         {
           "start": 0,
-          "end": 7.476833333333333,
-          "text": "Ein Ball und eine Feder fallen gleichzeitig los. Der Ball landet zuerst, die Feder schwebt langsam nach unten."
+          "end": 6.519666666666667,
+          "text": "A ball and a feather start falling at the same time. The ball lands first, the feather floats slowly down."
         }
       ]
     },
     {
       "id": "scene-1",
-      "title": "Liegt das am Gewicht? Nein. Die Feder bietet der Luft viel Fläche, …",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=13.145875;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Fallen schwere Dinge schneller?\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Gewicht?\"],[\"Nein: Luftwiderstand\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(8.4985*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 13.145875,
-      "audioUrl": "/videos/phys-v1/scene-1-00137696dc8b.wav",
+      "title": "Is it because of the weight? No. The feather offers the air a lot o…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=13.11325;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Do heavy things fall faster?\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Weight?\"],[\"No: air resistance\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(8.494333333333334*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 13.11325,
+      "audioUrl": "/videos/phys-v1/scene-1-252071d3eea2.wav",
       "captions": [
         {
           "start": 0,
-          "end": 8.4985,
-          "text": "Liegt das am Gewicht? Nein. Die Feder bietet der Luft viel Fläche, die Luft bremst sie stark. Den Ball bremst sie kaum."
+          "end": 8.494333333333334,
+          "text": "Is it because of the weight? No. The feather offers the air a lot of surface, and the air slows it down a lot. It hardly slows the ball."
         },
         {
-          "start": 8.8485,
-          "end": 12.795875,
-          "text": "Kurze Denkpause: Warum landet die Feder später als der Ball?"
+          "start": 8.844333333333333,
+          "end": 12.76325,
+          "text": "A short pause to think: Why does the feather land later than the ball?"
         }
       ]
     },
     {
       "id": "scene-2",
-      "title": "Jetzt pumpen wir die Luft aus einer Röhre. Im Vakuum fallen Ball un…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=10.3595;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Fallen schwere Dinge schneller?\"],0,3.18,.31,'WHITE');\n    \n        label('environment',[\"Ohne Luft (Vakuum)\"],0,1.9,.4,'WHITE');\n        s.line('ground',{points:[[-5,-2.6],[5,-2.6]],stroke:'GREY_B',strokeWidth:.02});\n        label('ball-label',['Ball'],-2.5,-3,.25,'WHITE');label('feather-label',['Feder'],2.5,-3,.25,'YELLOW');\n        const ball=s.circle('ball',{position:[-2.5,1.15],radius:.22,fill:'WHITE'});\n        const feather=s.path('feather',{position:[2.5,1.15],points:[[-.3,-.15],[0,.25],[.35,.2],[.05,-.05],[-.3,-.15]],fill:'YELLOW',stroke:'YELLOW',strokeWidth:.02});\n        wait(Math.min(.6,duration/8));\n        play([ball.moveTo([-2.5,-2.35]),feather.moveTo([2.5,-2.35])],Math.min(3,5.9442916666666665*.6));\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 10.3595,
-      "audioUrl": "/videos/phys-v1/scene-2-b3ef163a9dee.wav",
+      "title": "Now we pump the air out of a tube. In a vacuum, the ball and the fe…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=11.345791666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Do heavy things fall faster?\"],0,3.18,.31,'WHITE');\n    \n        label('environment',[\"With air\"],0,1.9,.4,'WHITE');\n        s.line('ground',{points:[[-5,-2.6],[5,-2.6]],stroke:'GREY_B',strokeWidth:.02});\n        label('ball-label',['Ball'],-2.5,-3,.25,'WHITE');label('feather-label',['Feather'],2.5,-3,.25,'YELLOW');\n        const ball=s.circle('ball',{position:[-2.5,1.15],radius:.22,fill:'WHITE'});\n        const feather=s.path('feather',{position:[2.5,1.15],points:[[-.3,-.15],[0,.25],[.35,.2],[.05,-.05],[-.3,-.15]],fill:'YELLOW',stroke:'YELLOW',strokeWidth:.02});\n        wait(Math.min(.6,duration/8));\n        play([ball.moveTo([-2.5,-2.35]),feather.moveTo([2.5,-0.1])],Math.min(3,6.459833333333333*.6));\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 11.345791666666667,
+      "audioUrl": "/videos/phys-v1/scene-2-59bcb09eb829.wav",
       "captions": [
         {
           "start": 0,
-          "end": 5.9442916666666665,
-          "text": "Jetzt pumpen wir die Luft aus einer Röhre. Im Vakuum fallen Ball und Feder genau gleich schnell."
+          "end": 6.459833333333333,
+          "text": "Now we pump the air out of a tube. In a vacuum, the ball and the feather fall exactly equally fast."
         },
         {
-          "start": 6.294291666666667,
-          "end": 10.0095,
-          "text": "Kurze Denkpause: Was passiert ohne Luft mit Ball und Feder?"
+          "start": 6.809833333333334,
+          "end": 10.995791666666667,
+          "text": "A short pause to think: What happens to the ball and the feather without air?"
         }
       ]
     },
     {
       "id": "scene-3",
-      "title": "Ohne Luft fallen alle Körper gleich schnell, egal wie schwer. Unter…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=7.6410833333333334;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Fallen schwere Dinge schneller?\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Ohne Luft: gleich schnell\"],[\"Mit Luft: Form zählt\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(7.291083333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 7.6410833333333334,
-      "audioUrl": "/videos/phys-v1/scene-3-5e6c45469b31.wav",
+      "title": "Without air, all bodies fall equally fast, however heavy they are. …",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=7.664583333333334;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Do heavy things fall faster?\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Without air: equally fast\"],[\"With air: shape counts\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(7.314583333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 7.664583333333334,
+      "audioUrl": "/videos/phys-v1/scene-3-c84986f3b064.wav",
       "captions": [
         {
           "start": 0,
-          "end": 7.291083333333333,
-          "text": "Ohne Luft fallen alle Körper gleich schnell, egal wie schwer. Unterschiede im Alltag kommen von der Luft."
+          "end": 7.314583333333333,
+          "text": "Without air, all bodies fall equally fast, however heavy they are. Differences in everyday life come from the air."
         }
       ]
     }

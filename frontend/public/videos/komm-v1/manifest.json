@@ -1,78 +1,78 @@
 {
   "schemaVersion": 1,
   "lessonId": "komm-v1",
-  "title": "Was in eine gute Übergabe gehört",
-  "locale": "de-CH",
-  "scriptHash": "3aa10767ba407b7ea531321a2fd2b1689374247f179e3552ffa425ca3efdc1fc",
+  "title": "What belongs in a good handover",
+  "locale": "en-GB",
+  "scriptHash": "3761da8f9bbcda0ea0a8823690b719ed0de4f581650b48683bc2877002edf25f",
   "narration": {
-    "provider": "elevenlabs",
-    "voice": "pFZP5JQG7iQjIQuC4Bku",
+    "provider": "local",
+    "voice": "Samantha",
     "model": "eleven_multilingual_v2"
   },
   "scenes": [
     {
       "id": "scene-0",
-      "title": "Deine Kollegin übernimmt dein Projekt. Sie kennt nur das, was du ih…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=5.040416666666666;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in eine gute Übergabe gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Dein Wissen\"],[\"Deine Nachricht\"],[\"Ihr Wissen\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.690416666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 5.040416666666666,
-      "audioUrl": "/videos/komm-v1/scene-0-841bfaa6477f.wav",
+      "title": "Your colleague takes over your project. She only knows what you wri…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=5.193416666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good handover\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"What you know\"],[\"Your message\"],[\"What she knows\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.843416666666666*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 5.193416666666667,
+      "audioUrl": "/videos/komm-v1/scene-0-ed5664ba4b05.wav",
       "captions": [
         {
           "start": 0,
-          "end": 4.690416666666667,
-          "text": "Deine Kollegin übernimmt dein Projekt. Sie kennt nur das, was du ihr aufschreibst."
+          "end": 4.843416666666666,
+          "text": "Your colleague takes over your project. She only knows what you write down for her."
         }
       ]
     },
     {
       "id": "scene-1",
-      "title": "Nenne zuerst, was erledigt ist und wo es liegt. Dann muss niemand s…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=9.152041666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in eine gute Übergabe gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Erledigt\"],[\"Wo es liegt\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.365333333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 9.152041666666667,
-      "audioUrl": "/videos/komm-v1/scene-1-97d69077dfa5.wav",
+      "title": "First say what is done and where it is. Then nobody has to search.",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=7.973166666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good handover\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Done\"],[\"Where it is\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(3.93475*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 7.973166666666667,
+      "audioUrl": "/videos/komm-v1/scene-1-eb2cf4993482.wav",
       "captions": [
         {
           "start": 0,
-          "end": 4.365333333333333,
-          "text": "Nenne zuerst, was erledigt ist und wo es liegt. Dann muss niemand suchen."
+          "end": 3.93475,
+          "text": "First say what is done and where it is. Then nobody has to search."
         },
         {
-          "start": 4.715333333333334,
-          "end": 8.802041666666666,
-          "text": "Kurze Denkpause: Was gehört bei «erledigt» unbedingt dazu?"
+          "start": 4.28475,
+          "end": 7.623166666666667,
+          "text": "A short pause to think: What must you include with “done”?"
         }
       ]
     },
     {
       "id": "scene-2",
-      "title": "Dann das Offene. Zu jeder offenen Sache gehört ein Name: Wer kümmer…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=6.898041666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in eine gute Übergabe gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Offen\"],[\"Wer kümmert sich?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(6.548041666666666*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 6.898041666666667,
-      "audioUrl": "/videos/komm-v1/scene-2-0b6334e59211.wav",
+      "title": "Then what is open. Every open item needs a name: who takes care of it?",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=4.9787083333333335;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good handover\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Open\"],[\"Who takes care of it?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.628708333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 4.9787083333333335,
+      "audioUrl": "/videos/komm-v1/scene-2-4531ef6eb980.wav",
       "captions": [
         {
           "start": 0,
-          "end": 6.548041666666666,
-          "text": "Dann das Offene. Zu jeder offenen Sache gehört ein Name: Wer kümmert sich darum?"
+          "end": 4.628708333333333,
+          "text": "Then what is open. Every open item needs a name: who takes care of it?"
         }
       ]
     },
     {
       "id": "scene-3",
-      "title": "Zum Schluss feste Termine mit Datum. «Bald» hilft niemandem, «am 12…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=10.777458333333334;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Was in eine gute Übergabe gehört\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Erledigt\"],[\"Offen\"],[\"Wer\"],[\"Wann\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.712125*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 10.777458333333334,
-      "audioUrl": "/videos/komm-v1/scene-3-6a07185ed715.wav",
+      "title": "Finally, fixed dates with the date. “Soon” helps nobody, “on 12 Jun…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=10.411291666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"What belongs in a good handover\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Done\"],[\"Open\"],[\"Who\"],[\"When\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.664666666666666*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 10.411291666666667,
+      "audioUrl": "/videos/komm-v1/scene-3-a43ec51a211b.wav",
       "captions": [
         {
           "start": 0,
-          "end": 5.712125,
-          "text": "Zum Schluss feste Termine mit Datum. «Bald» hilft niemandem, «am 12. Juni» schon."
+          "end": 5.664666666666666,
+          "text": "Finally, fixed dates with the date. “Soon” helps nobody, “on 12 June” does."
         },
         {
-          "start": 6.062125,
-          "end": 10.427458333333334,
-          "text": "Kurze Denkpause: Welcher Satz hilft bei einer Übergabe am meisten?"
+          "start": 6.014666666666667,
+          "end": 10.061291666666667,
+          "text": "A short pause to think: Which sentence helps most in a handover?"
         }
       ]
     }

@@ -1,78 +1,78 @@
 {
   "schemaVersion": 1,
   "lessonId": "prob-v1",
-  "title": "Ein Problem so beschreiben, dass andere helfen können",
-  "locale": "de-CH",
-  "scriptHash": "1829eb90b0913dab0a0a353d13980b6f52a39361e98ed73dfb22633a9f0a0148",
+  "title": "Describe a problem so others can help",
+  "locale": "en-GB",
+  "scriptHash": "5551a2548456bdd14ff5f9fd879bfc9264c0957497f1f05c4172898facbf9aa3",
   "narration": {
-    "provider": "elevenlabs",
-    "voice": "pFZP5JQG7iQjIQuC4Bku",
+    "provider": "local",
+    "voice": "Samantha",
     "model": "eleven_multilingual_v2"
   },
   "scenes": [
     {
       "id": "scene-0",
-      "title": "«Es geht nicht» hilft dem Support kaum. Wer helfen soll, muss den F…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=6.34075;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Ein Problem so beschreiben, dass andere helfen\",\"können\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"\\\"Es geht nicht\\\"\"],[\"Viele Rückfragen\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.99075*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 6.34075,
-      "audioUrl": "/videos/prob-v1/scene-0-35bde4a84553.wav",
+      "title": "“It doesn't work” hardly helps support. Whoever is meant to help ha…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-0',background:'BLACK'},s=>{\n    const duration=6.429583333333333;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 1 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Describe a problem so others can help\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"\\\"It doesn't work\\\"\"],[\"Lots of questions\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(6.079583333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 6.429583333333333,
+      "audioUrl": "/videos/prob-v1/scene-0-cd1ac411e115.wav",
       "captions": [
         {
           "start": 0,
-          "end": 5.99075,
-          "text": "«Es geht nicht» hilft dem Support kaum. Wer helfen soll, muss den Fehler nachstellen können."
+          "end": 6.079583333333333,
+          "text": "“It doesn't work” hardly helps support. Whoever is meant to help has to be able to reproduce the fault."
         }
       ]
     },
     {
       "id": "scene-1",
-      "title": "Beschreib die Schritte bis zum Fehler. Und sag, was eigentlich hätt…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=5.6905833333333335;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Ein Problem so beschreiben, dass andere helfen\",\"können\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Was getan?\"],[\"Was erwartet?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.340583333333333*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 5.6905833333333335,
-      "audioUrl": "/videos/prob-v1/scene-1-31da4ffa1ce2.wav",
+      "title": "Describe the steps up to the fault. And say what should actually ha…",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-1',background:'BLACK'},s=>{\n    const duration=4.811875;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 2 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Describe a problem so others can help\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"What did you do?\"],[\"What did you expect?\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.461875*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 4.811875,
+      "audioUrl": "/videos/prob-v1/scene-1-276222a31dba.wav",
       "captions": [
         {
           "start": 0,
-          "end": 5.340583333333333,
-          "text": "Beschreib die Schritte bis zum Fehler. Und sag, was eigentlich hätte passieren sollen."
+          "end": 4.461875,
+          "text": "Describe the steps up to the fault. And say what should actually have happened."
         }
       ]
     },
     {
       "id": "scene-2",
-      "title": "Kopier die Fehlermeldung wörtlich, mit Code. «PW-412» findet der Su…",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=13.238791666666666;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Ein Problem so beschreiben, dass andere helfen\",\"können\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Meldung kopieren\"],[\"Code mitschicken\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(8.080541666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 13.238791666666666,
-      "audioUrl": "/videos/prob-v1/scene-2-ed060861a60e.wav",
+      "title": "Copy the error message word for word, with the code. Support finds …",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-2',background:'BLACK'},s=>{\n    const duration=13.101791666666667;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 3 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Describe a problem so others can help\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Copy the message\"],[\"Send the code\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(8.030083333333334*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 13.101791666666667,
+      "audioUrl": "/videos/prob-v1/scene-2-e4d7bf501b5d.wav",
       "captions": [
         {
           "start": 0,
-          "end": 8.080541666666667,
-          "text": "Kopier die Fehlermeldung wörtlich, mit Code. «PW-412» findet der Support sofort, «irgendein Fehler» nicht."
+          "end": 8.030083333333334,
+          "text": "Copy the error message word for word, with the code. Support finds “PW-412” at once, “some error” not."
         },
         {
-          "start": 8.430541666666667,
-          "end": 12.888791666666666,
-          "text": "Kurze Denkpause: Wie gibst du eine Fehlermeldung am besten weiter?"
+          "start": 8.380083333333333,
+          "end": 12.751791666666668,
+          "text": "A short pause to think: What is the best way to pass on an error message?"
         }
       ]
     },
     {
       "id": "scene-3",
-      "title": "Zum Schluss: Was hast du schon versucht? Und mit welchem Gerät und …",
-      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=16.210916666666666;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Szene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Ein Problem so beschreiben, dass andere helfen\",\"können\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Schon versucht?\"],[\"Gerät und Browser\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(4.597541666666666*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
-      "duration": 16.210916666666666,
-      "audioUrl": "/videos/prob-v1/scene-3-d59a99d3bdaf.wav",
+      "title": "Finally: what have you already tried? And which device and browser …",
+      "source": "export default scene({mode:'2d',end:'hold',audio:'narration-3',background:'BLACK'},s=>{\n    const duration=18.1435;let elapsed=0;\n    const wait=t=>{s.wait(t);elapsed+=t;};const play=(a,t)=>{s.play(a,{duration:t,ease:'linear'});elapsed+=t;};\n    const label=(id,lines,x,y,size,fill)=>lines.forEach((text,i)=>s.text(id+'-'+i,{text,position:[x,y-i*size*1.4],fontSize:size,fill}));\n    s.play(s.camera.to2D({height:8}),{duration:0});\n    label('scene',['Scene 4 / 4'],0,3.7,.18,'GREY_B');\n    label('title',[\"Describe a problem so others can help\"],0,3.18,.31,'WHITE');\n    \n        const rows=[[\"Already tried?\"],[\"Device and browser\"]];\n        const columns=rows.length>4?2:1, count=Math.ceil(rows.length/columns);\n        const height=Math.min(1.55,5/count), fade=Math.min(.3,duration/(rows.length+1));\n        const gap=Math.max(0,(5.246666666666667*.75-rows.length*fade)/Math.max(1,rows.length-1));\n        rows.forEach((lines,i)=>{\n          const col=Math.floor(i/count),row=i%count;\n          const x=columns===1?0:(col===0?-3:3), y=1.65-row*height;\n          const number=s.circle('number-'+i,{position:[x-(columns===1?4.8:2.4),y],radius:.22,fill:'YELLOW',opacity:0});\n          const digit=s.text('digit-'+i,{text:String(i+1),position:[x-(columns===1?4.8:2.4),y],fontSize:.23,fill:'BLACK',opacity:0});\n          const labels=lines.map((line,j)=>s.text('item-'+i+'-'+j,{text:line,position:[x+.35,y+(lines.length-1)*.18-j*.36],fontSize:.29,fill:'WHITE',opacity:0}));\n          play([number.fadeIn(),digit.fadeIn(),...labels.map(label=>label.fadeIn())],fade);\n          if(i<rows.length-1)wait(gap);\n        });\n    wait(Math.max(0,duration-elapsed));\n  });",
+      "duration": 18.1435,
+      "audioUrl": "/videos/prob-v1/scene-3-19cf458083e3.wav",
       "captions": [
         {
           "start": 0,
-          "end": 4.597541666666666,
-          "text": "Zum Schluss: Was hast du schon versucht? Und mit welchem Gerät und Browser arbeitest du?"
+          "end": 5.246666666666667,
+          "text": "Finally: what have you already tried? And which device and browser do you use?"
         },
         {
-          "start": 4.947541666666667,
-          "end": 15.860916666666666,
-          "text": "Kurze Denkpause: Was fehlt hier? «Ich wollte den Bericht als PDF speichern. Nach Export → PDF kam Fehler PW-412. Neu laden half nicht.»"
+          "start": 5.596666666666667,
+          "end": 17.7935,
+          "text": "A short pause to think: What is missing here? “I wanted to save the report as a PDF. After Export → PDF, error PW-412 appeared. Reloading didn't help.”"
         }
       ]
     }
